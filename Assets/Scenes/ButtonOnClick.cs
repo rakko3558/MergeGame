@@ -37,8 +37,10 @@ public class ButtonOnClick : MonoBehaviour
                 //spawnedB.transform.rotation = Quaternion.Euler(0, 0, 0);
                 Script.Crop = spawnedB;
                 Farm NewCrop = spawnedB.GetComponent<Farm>();
-                NewCrop.ChangeSprite();
+                
                 NewCrop.OnThisGrid= GridPrefabs[i];
+                NewCrop.GetRandomCrop();
+                NewCrop.ChangeSprite();
                 GridManager.CropAmount++;
                 return;
             }
@@ -48,5 +50,7 @@ public class ButtonOnClick : MonoBehaviour
         return;
         //Debug.Log($"隨機選到的 A 是：{chosenA.name}");
     }
+
+ 
 }
 

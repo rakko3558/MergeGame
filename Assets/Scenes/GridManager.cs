@@ -108,4 +108,87 @@ public class GridmManager : MonoBehaviour
 
         Destroy(cellPrefab);
     }
+
+    //獲取鄰近一樣的作物格子
+    public Queue<GameObject> SearchSameCrop(Queue<GameObject> CellsQueue, int x, int y)//, HashSet<(int, int)> visited)
+    {
+
+     
+       //Queue<GameObject> CellsQueue = new Queue<GameObject>();
+        //if (x >= 0 && y >= 0 && x < width && y < height)
+       // {
+           
+            
+            //HashSet<(int, int)> visited = new HashSet<(int, int)>();
+            //if (GridPrefabs[x, y] == null)
+             //   return null;
+            /*
+            if (visited.Contains((x, y)))
+                return CellsQueue; // 如果已經訪問過，則返回空隊列
+            visited.Add((x, y)); // 將當前座標加入已訪問集合
+            */
+              
+                //if (GridPrefabs[x, y].GetComponent<GridCell>().status == GridPrefabs[x, y].GetComponent<GridCell>().status && GridPrefabs[x, y].GetComponent<GridCell>().level == GridPrefabs[x, y].GetComponent<GridCell>().level)
+                //{
+                    Debug.Log($"{x},{y}");
+                    CellsQueue.Enqueue(GridPrefabs[x, y]);
+            if (IsValid(x - 1, y))
+                if (FindQueue(CellsQueue, GridPrefabs[x-1, y]) == false)
+                      if ( GridPrefabs[x , y].GetComponent<GridCell>().status == GridPrefabs[x - 1, y].GetComponent<GridCell>().status && GridPrefabs[x , y].GetComponent<GridCell>().level == GridPrefabs[x - 1, y].GetComponent<GridCell>().level)
+                    CellsQueue=SearchSameCrop(CellsQueue,x - 1, y);
+        if (IsValid(x + 1, y))
+            if (FindQueue(CellsQueue, GridPrefabs[x + 1, y]) == false)
+                if ( GridPrefabs[x , y].GetComponent<GridCell>().status == GridPrefabs[x + 1, y].GetComponent<GridCell>().status && GridPrefabs[x , y].GetComponent<GridCell>().level == GridPrefabs[x + 1, y].GetComponent<GridCell>().level)
+                    CellsQueue=SearchSameCrop(CellsQueue,x + 1, y);
+        if (IsValid(x , y - 1))
+            if (FindQueue(CellsQueue, GridPrefabs[x , y - 1]) == false)
+                if (IsValid(x ,y-1) && GridPrefabs[x , y].GetComponent<GridCell>().status == GridPrefabs[x, y - 1].GetComponent<GridCell>().status && GridPrefabs[x, y ].GetComponent<GridCell>().level == GridPrefabs[x, y - 1].GetComponent<GridCell>().level)
+                        CellsQueue =SearchSameCrop(CellsQueue, x, y - 1);
+        if (IsValid(x , y+1))
+            if (FindQueue(CellsQueue, GridPrefabs[x , y + 1]) == false)
+                if (IsValid(x , y+1) && GridPrefabs[x , y].GetComponent<GridCell>().status == GridPrefabs[x, y + 1].GetComponent<GridCell>().status && GridPrefabs[x, y ].GetComponent<GridCell>().level == GridPrefabs[x, y + 1].GetComponent<GridCell>().level)
+                        CellsQueue = SearchSameCrop(CellsQueue, x, y + 1);
+                
+              
+
+        return CellsQueue; 
+    }
+    private bool IsValid(int w,int h)
+    {
+        if (w >= 0 && h >= 0 && w < width && h < height)
+               return true;
+        return false;
+    }
+    private Queue<GameObject> AddQueue(Queue<GameObject> CellsQueue, Queue<GameObject> NewQueue)
+    {
+        foreach (var item in NewQueue)
+        {
+            CellsQueue.Enqueue(item);
+        }
+        NewQueue.Clear();
+        return CellsQueue;
+    }
+
+    private bool FindQueue(Queue<GameObject> myQueue, GameObject find)
+    {
+        GameObject found = null;
+
+        foreach (var item in myQueue)
+        {
+            if (item == find)
+            {
+                found = item;
+                break;
+            }
+        }
+
+        if (found != null)
+        {
+            return true; // 找到就返回 true
+        }
+        else
+        {
+            return false; // 沒找到就返回 false
+        }
+    }
 }

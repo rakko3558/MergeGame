@@ -5,10 +5,26 @@ using UnityEngine;
 public class Farm : MonoBehaviour
 {
 
-    private string[] cropNames = { "ts0","ylr0", "uu0", "tk0", "t00","sc0","rik0","pkc0","pj0","gz0"};
+     private static string[,] cropNames= new string[,]
+        {
+
+           { "", "", "", ""},
+           { "ts0", "ts1", "ts2", "ts3"},
+           { "ylr0", "ylr1", "ylr2", "ylr3"},
+           { "uu0", "uu1", "uu2", "uu3"},
+           { "tk0", "tk1", "tk2", "tk3"},
+           { "t00", "t01", "t02", "t03"},
+           { "sc0", "sc1", "sc2", "sc3"},
+           { "rik0", "rik1", "rik2", "rik3"},
+           { "pkc0", "pkc1", "pkc2", "pkc3"},
+           { "pj0", "pj1", "pj2", "pj3"},
+           { "gz0", "gz1", "gz2", "gz3"}
+        };
 
     //public GameObject image;
-    public int CropIndex;
+    public int CropIndex=0;
+    public int CropLevel=0;
+    public int CropValue = 3;//預設 3塊錢
     public GameObject GridsManager; // 這是用來顯示作物圖片的 UI 元件
     public GameObject OnThisGrid;
     void Start()
@@ -20,10 +36,16 @@ public class Farm : MonoBehaviour
     }
     public void ChangeSprite()
     {
-        CropIndex = GetRandomCrop();
-        Sprite firstSprite = Resources.Load<Sprite>("Source/"+ cropNames[CropIndex]);
+        OnThisGrid.GetComponent<GridCell>().status = CropIndex; // 設定格子狀態為有作物
+        OnThisGrid.GetComponent<GridCell>().level = CropLevel;
+        Sprite firstSprite = Resources.Load<Sprite>("Source/"+ cropNames[CropIndex,CropLevel]);
         SpriteRenderer U_Sprite = GetComponentInChildren<SpriteRenderer>();
         U_Sprite.sprite = firstSprite;
+
+        if (CropLevel == 3)
+        {
+            U_Sprite.color = new Color(1f, 0.9f, 0.5f, 1f);
+        }
     }
     // Update is called once per frame
     void Update()
@@ -113,8 +135,8 @@ public class Farm : MonoBehaviour
         image.sprite = newSprite;
     }
     */
-    private int GetRandomCrop()
+    public void GetRandomCrop()
     {
-        return Random.Range(0, cropNames.Length);
+        CropIndex = Random.Range(1, 6);// cropNames.GetLength(0));
     }
 }
