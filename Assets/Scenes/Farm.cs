@@ -18,7 +18,6 @@ public class Farm : MonoBehaviour
            { "rik0", "rik1", "rik2", "rik3","","",""},
            { "pkc0", "pkc1", "pkc2", "pkc3","","",""},
            { "pj0", "pj1", "pj2", "pj3","","",""},
-           { "gz0", "gz1", "gz2", "gz3","","",""},
            { "gz0", "gz1", "gz2", "gz3","","",""}
         };
 
