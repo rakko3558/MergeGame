@@ -41,7 +41,7 @@ public class GridmManager : MonoBehaviour
 
             if (hit.collider != null)
             {
-                Debug.Log("點擊到：" + hit.collider.gameObject.name);
+               // Debug.Log("點擊到：" + hit.collider.gameObject.name);
 
                 // 你可以根據 Tag 或元件類型來做事情
                 //if (hit.collider.CompareTag("Clickable"))
@@ -64,7 +64,7 @@ public class GridmManager : MonoBehaviour
 
             if (PressedObject != null)
             {
-                Debug.Log("滑鼠放開點到：" + PressedObject.name);
+                //Debug.Log("滑鼠放開點到：" + PressedObject.name);
 
                 // 假設有 Crop Tag
                 //if (hit.collider.CompareTag("Clickable"))
@@ -130,7 +130,7 @@ public class GridmManager : MonoBehaviour
               
                 //if (GridPrefabs[x, y].GetComponent<GridCell>().status == GridPrefabs[x, y].GetComponent<GridCell>().status && GridPrefabs[x, y].GetComponent<GridCell>().level == GridPrefabs[x, y].GetComponent<GridCell>().level)
                 //{
-                    Debug.Log($"{x},{y}");
+                    //Debug.Log($"{x},{y}");
                     CellsQueue.Enqueue(GridPrefabs[x, y]);
             if (IsValid(x - 1, y))
                 if (FindQueue(CellsQueue, GridPrefabs[x-1, y]) == false)

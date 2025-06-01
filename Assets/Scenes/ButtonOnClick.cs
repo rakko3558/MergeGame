@@ -20,7 +20,7 @@ public class ButtonOnClick : MonoBehaviour
     {
         if (GridPrefabs.Count== GridManager.CropAmount)
         {
-            Debug.Log("沒有空格子可以放置物品了！！");
+            //Debug.Log("沒有空格子可以放置物品了！！");
             return;
         }
         //int index = Random.Range(0, GridPrefabs.Count);
@@ -32,7 +32,7 @@ public class ButtonOnClick : MonoBehaviour
             {
                 GameObject chosenA = GridPrefabs[i];
                 spawnPoint = chosenA.transform;
-                Script.status = 1;
+                //Script.status = 1;
                 GameObject spawnedB = Instantiate(BoxPrefabs, spawnPoint.position, Quaternion.identity);
                 //spawnedB.transform.rotation = Quaternion.Euler(0, 0, 0);
                 Script.Crop = spawnedB;
@@ -46,7 +46,7 @@ public class ButtonOnClick : MonoBehaviour
             }
             
         }
-        Debug.Log("沒有空格子可以放置物品了！");
+        //Debug.Log("沒有空格子可以放置物品了！");
         return;
         //Debug.Log($"隨機選到的 A 是：{chosenA.name}");
     }

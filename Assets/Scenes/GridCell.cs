@@ -8,7 +8,7 @@ public class GridCell : MonoBehaviour
 
     public int x;
     public int y;
-    public int status=0; //[0:empty, 1:Box, 2:...]
+    public int status=-1; //[0:empty, 1:Box, 2:...]
     public int level = 0;
     private SpriteRenderer sr;
     public GameObject Crop; // 用來存放格子上的作物物件
