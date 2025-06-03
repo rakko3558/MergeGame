@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+
+using UnityEngine.EventSystems;
 //複製格子
 public class GridmManager : MonoBehaviour
 {
@@ -29,7 +31,8 @@ public class GridmManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject())
+            return;
         // 滑鼠左鍵點擊時執行
         if (Input.GetMouseButtonDown(0))
         {

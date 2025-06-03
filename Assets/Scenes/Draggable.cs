@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.EventSystems;
 //拖移作物
 public class Draggable : MonoBehaviour
 {
@@ -29,6 +30,7 @@ public class Draggable : MonoBehaviour
     }
     public void OnPressed()
     {
+   
         // 放開滑鼠停止拖曳
         if ( GetComponent<Farm>().CropIndex != 0 && GetComponent<Farm>().CropLevel == 3 && GetComponent<Farm>().HaveCoin == true)
             {
@@ -83,10 +85,12 @@ public class Draggable : MonoBehaviour
 
     public void OnReleased()
     {
-       
+   
+        
         Collider2D NearestTriggerGrid = GetNearestGrid();//獲取當前碰直撞距離最近的格子
         if (NearestTriggerGrid != null)
         {
+            Debug.Log($"NearestTriggerGrid Not null");
             if (NearestTriggerGrid.GetComponent<GridCell>().Crop != null && NearestTriggerGrid.GetComponent<GridCell>().status == GetComponent<Farm>().CropIndex && NearestTriggerGrid.GetComponent<GridCell>().level == GetComponent<Farm>().CropLevel &&( NearestTriggerGrid.GetComponent<GridCell>().level<3 || (NearestTriggerGrid.GetComponent<GridCell>().status == 0 && NearestTriggerGrid.GetComponent<GridCell>().level < 5)))//同樣物品進行合成
             {
                 Queue<GameObject> SameCropCells = new Queue<GameObject>()  ;
