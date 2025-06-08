@@ -36,7 +36,7 @@ public class CameraZoom : MonoBehaviour
 
             float difference = currentMagnitude - prevMagnitude;
 
-            cam.orthographicSize -= difference * 0.01f;
+            cam.orthographicSize += difference * 0.01f;
             cam.orthographicSize = Mathf.Clamp(cam.orthographicSize, minZoom, maxZoom);
         }
     }

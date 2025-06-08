@@ -31,8 +31,7 @@ public class GridmManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject())
-            return;
+        if (EventSystem.current == null || !EventSystem.current.IsPointerOverGameObject())
         // 滑鼠左鍵點擊時執行
         if (Input.GetMouseButtonDown(0))
         {
@@ -89,7 +88,7 @@ public class GridmManager : MonoBehaviour
         {
             for (int y = 0; y < height; y++)
             {
-                Vector3 pos = new Vector3((x - y) * 0.75f, (x + y) * 0.5f, 1);// * cellSpacing;
+                Vector3 pos = new Vector3(((x - y)-(x/4)*4) * 0.75f, ((x + y)+(x/4*8)) * 0.5f, 1);// * cellSpacing;
                 
                 //Vector2 pos = new Vector2(x-originPosition, y-originPosition) * cellSpacing;
                 GameObject cell = Instantiate(cellPrefab, pos, Quaternion.identity, this.transform);
@@ -115,31 +114,13 @@ public class GridmManager : MonoBehaviour
     //獲取鄰近一樣的作物格子
     public Queue<GameObject> SearchSameCrop(Queue<GameObject> CellsQueue, int x, int y)//, HashSet<(int, int)> visited)
     {
-
-     
-       //Queue<GameObject> CellsQueue = new Queue<GameObject>();
-        //if (x >= 0 && y >= 0 && x < width && y < height)
-       // {
-           
-            
-            //HashSet<(int, int)> visited = new HashSet<(int, int)>();
-            //if (GridPrefabs[x, y] == null)
-             //   return null;
-            /*
-            if (visited.Contains((x, y)))
-                return CellsQueue; // 如果已經訪問過，則返回空隊列
-            visited.Add((x, y)); // 將當前座標加入已訪問集合
-            */
-              
-                //if (GridPrefabs[x, y].GetComponent<GridCell>().status == GridPrefabs[x, y].GetComponent<GridCell>().status && GridPrefabs[x, y].GetComponent<GridCell>().level == GridPrefabs[x, y].GetComponent<GridCell>().level)
-                //{
-                    //Debug.Log($"{x},{y}");
-                    CellsQueue.Enqueue(GridPrefabs[x, y]);
-            if (IsValid(x - 1, y))
-                if (FindQueue(CellsQueue, GridPrefabs[x-1, y]) == false)
-                      if ( GridPrefabs[x , y].GetComponent<GridCell>().status == GridPrefabs[x - 1, y].GetComponent<GridCell>().status && GridPrefabs[x , y].GetComponent<GridCell>().level == GridPrefabs[x - 1, y].GetComponent<GridCell>().level)
-                    CellsQueue=SearchSameCrop(CellsQueue,x - 1, y);
-        if (IsValid(x + 1, y))
+        
+        CellsQueue.Enqueue(GridPrefabs[x, y]);
+        if (IsValid(x - 1, y)&&(x/4)==((x-1)/4))
+            if (FindQueue(CellsQueue, GridPrefabs[x-1, y]) == false)
+                    if ( GridPrefabs[x , y].GetComponent<GridCell>().status == GridPrefabs[x - 1, y].GetComponent<GridCell>().status && GridPrefabs[x , y].GetComponent<GridCell>().level == GridPrefabs[x - 1, y].GetComponent<GridCell>().level)
+                CellsQueue=SearchSameCrop(CellsQueue,x - 1, y);
+        if (IsValid(x + 1, y) && ((x+1)/4) == (x/4))
             if (FindQueue(CellsQueue, GridPrefabs[x + 1, y]) == false)
                 if ( GridPrefabs[x , y].GetComponent<GridCell>().status == GridPrefabs[x + 1, y].GetComponent<GridCell>().status && GridPrefabs[x , y].GetComponent<GridCell>().level == GridPrefabs[x + 1, y].GetComponent<GridCell>().level)
                     CellsQueue=SearchSameCrop(CellsQueue,x + 1, y);
@@ -192,6 +173,25 @@ public class GridmManager : MonoBehaviour
         else
         {
             return false; // 沒找到就返回 false
+        }
+    }
+
+    public void ChargeBank(int amount)
+    {
+        // 假設有一個 Bank 類別來處理金錢
+        Storage save = FindObjectOfType<Storage>();
+        if (save != null)
+        {
+            save.AddMoney(amount);
+        }
+    }
+    public void ChargeCropExp(int facility, int CropIndex, int CropLevel)
+    {
+        // 假設有一個 Bank 類別來處理金錢
+        Storage save = FindObjectOfType<Storage>();
+        if (save != null)
+        {
+            save.AddExp(facility, CropIndex, CropLevel);
         }
     }
 }

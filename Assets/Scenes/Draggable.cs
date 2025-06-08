@@ -8,10 +8,12 @@ public class Draggable : MonoBehaviour
     private Vector3 offset;
     //private Collider2D lastTriggerGrid; // 記錄最後接觸的格子
     public List<Collider2D> collidingGrids= new List<Collider2D>(); // 用來存放所有碰撞的物件
+    private int TouchIndex = -1; // 用來判斷是否碰撞到銀行
 
     public GameObject GridManager; // 用來存放格子管理器
     private GameObject[,] GridPrefabs;
     public GameObject BoxPrefabs;
+
     void Start()
     {
         //GridPrefabs = GridManager.GetComponent<GridmManager>().GridPrefabs;
@@ -34,13 +36,15 @@ public class Draggable : MonoBehaviour
         // 放開滑鼠停止拖曳
         if ( GetComponent<Farm>().CropIndex != 0 && GetComponent<Farm>().CropLevel == 3 && GetComponent<Farm>().HaveCoin == true)
             {
-            
-            while (GetComponent<Farm>().CropValue>0)
+
+            Storage save = FindObjectOfType<Storage>();
+            int CropValue= save.cropLevel[GetComponent<Farm>().CropIndex];
+            while (CropValue > 0)
             {
                 Collider2D NearestEmptyGrid = NocolliderGetNearestGrid();
                 if (NearestEmptyGrid != null)
                 {
-                    GetComponent<Farm>().CropValue--;
+                    CropValue--;
                     //Collider2D NearestEmptyGrid = NocolliderGetNearestGrid();
 
                     SpawnSpecifyCrop(NearestEmptyGrid.GetComponent<GridCell>().x, NearestEmptyGrid.GetComponent<GridCell>().y, 0, 0);
@@ -52,7 +56,7 @@ public class Draggable : MonoBehaviour
                 }
                   
             }
-            if (GetComponent<Farm>().CropValue<=0)
+            if (CropValue <= 0)
             {
                 GetComponent<Farm>().HaveCoin = false;
 
@@ -85,9 +89,23 @@ public class Draggable : MonoBehaviour
 
     public void OnReleased()
     {
-   
+        if (TouchIndex!=-1)//兌換價值
+        {
+            if (TouchIndex == 0)
+            {
+                exchangeValue(TouchIndex);
+                return;
+            }
+            if (TouchIndex != 0 && GetComponent<Farm>().CropLevel == 3)
+            {
+                exchangeValue(TouchIndex);
+                return;
+            }
+        }
         
-        Collider2D NearestTriggerGrid = GetNearestGrid();//獲取當前碰直撞距離最近的格子
+        Collider2D NearestTriggerGrid = GetNearestGrid();//獲取當前碰直撞距離最近的格子(物件)
+
+
         if (NearestTriggerGrid != null)
         {
             Debug.Log($"NearestTriggerGrid Not null");
@@ -176,7 +194,30 @@ public class Draggable : MonoBehaviour
         //Debug.Log($"{lastTriggerGrid.GetComponent<GridCell>().Crop.GetComponent<Farm>().CropIndex}");
         isDragging = false;
     }
+    private void exchangeValue(int facility)
+    {
+        Farm Crop = GetComponent<Farm>();
+        if (Crop.CropIndex == 0)
+        {
+            int initailChange = 1;
+            for (int i = 0; i < Crop.CropLevel; i++)
+            {
+                initailChange *= 5;
+            }
+            GridManager.GetComponent<GridmManager>().ChargeBank(initailChange);
+            GridManager.GetComponent<GridmManager>().CropAmount--;
+            Destroy(gameObject); // 刪除作物
+            return; //如果是初始作物，直接換算錢錢
+        }
+        else if (Crop.CropIndex != 0)
+        {
+            GridManager.GetComponent<GridmManager>().ChargeCropExp(facility,Crop.CropIndex, Crop.CropLevel);
 
+            GridManager.GetComponent<GridmManager>().CropAmount--;
+            Destroy(gameObject); // 刪除作物
+            return; //如果是初始作物，直接換算錢錢
+        }
+    }
     public void SpawnSpecifyCrop(int x, int y, int status, int level)
     {
 
@@ -251,10 +292,6 @@ public class Draggable : MonoBehaviour
         return nearestGrid;
     }
 
-    public int merge()
-    {
-        return 0; 
-    }
 
     public void MoveToGrid(Collider2D grid)
     {
@@ -270,6 +307,23 @@ public class Draggable : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D other)
     {
+        if (other.CompareTag("bank"))
+        {
+            TouchIndex = 0;
+        }
+        if (other.CompareTag("marry"))
+        {
+            TouchIndex = 1;
+        }
+        if (other.CompareTag("stall"))
+        {
+            TouchIndex = 2;
+        }
+        if (other.CompareTag("concert"))
+        {
+            TouchIndex = 3;
+        }
+
         if (other.CompareTag("Grid"))
         {
             collidingGrids.Add(other);
@@ -283,18 +337,26 @@ public class Draggable : MonoBehaviour
         {
             collidingGrids.Remove(other);
         }
-    }
-    /*
-    void OnTriggerStay2D(Collider2D other)
-    {
-       
-        //Debug.Log($"({other.name})");
-        if (other.CompareTag("Grid"))
+
+        if (other.CompareTag("bank"))
         {
-            lastTriggerGrid = other;
-         
+            TouchIndex = -1;
         }
-    }*/
+        if (other.CompareTag("marry"))
+        {
+            TouchIndex = -1;
+        }
+        if (other.CompareTag("stall"))
+        {
+            TouchIndex = -1;
+        }
+        if (other.CompareTag("concert"))
+        {
+            TouchIndex = -1;
+        }
+
+    }
+
 
     void Update()
     {
