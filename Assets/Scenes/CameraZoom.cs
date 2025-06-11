@@ -4,7 +4,10 @@ public class CameraZoom : MonoBehaviour
 {
     public float zoomSpeed = 5f;         // 簎近は莱硉
     public float minZoom = 3f;           // 程跌à程┰
-    public float maxZoom = 10f;          // 程跌à程┰环
+    public float maxZoom = 5f;          // 程跌à程┰环
+
+    public float PhoneMinZoom = 5f;           // 程跌à程┰
+    public float PhoneMaxZoom = 20f;          // 程跌à程┰环
 
     private Camera cam;
 
@@ -37,7 +40,7 @@ public class CameraZoom : MonoBehaviour
             float difference = currentMagnitude - prevMagnitude;
 
             cam.orthographicSize += difference * 0.01f;
-            cam.orthographicSize = Mathf.Clamp(cam.orthographicSize, minZoom, maxZoom);
+            cam.orthographicSize = Mathf.Clamp(cam.orthographicSize, PhoneMinZoom, PhoneMaxZoom);
         }
     }
 }

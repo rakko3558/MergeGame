@@ -16,6 +16,8 @@ public class CameraDrag : MonoBehaviour
         //Debug.Log($"CameraDrag: {EventSystem.current.IsPointerOverGameObject()}");
         if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject())
             return;
+        Vector3 mouseScreenPos = Input.mousePosition;
+        mouseScreenPos.z = 10f; // 🔧 設定 z 軸為正數（對應 2D 相機）
 
         Vector2 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
