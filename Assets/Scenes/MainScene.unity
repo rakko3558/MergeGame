@@ -888,8 +888,8 @@ MonoBehaviour:
   zoomSpeed: 5
   minZoom: 3
   maxZoom: 8
-  PhoneMinZoom: 5
-  PhoneMaxZoom: 20
+  PhoneMinZoom: 3
+  PhoneMaxZoom: 25
 --- !u!1 &74850586
 GameObject:
   m_ObjectHideFlags: 0
@@ -7435,8 +7435,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 378908765
+  m_SortingLayer: 1
   m_SortingOrder: 2
   m_Sprite: {fileID: 21300000, guid: dbd3531429f32814db9ed71f4e96d038, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}

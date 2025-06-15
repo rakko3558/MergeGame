@@ -5,7 +5,7 @@ using TMPro;
 
 public class Storage : MonoBehaviour
 {
-    int money = 1000;// 玩家金錢
+    int money = 0;// 玩家金錢
     public TextMeshProUGUI txt_money;
     public TextMeshProUGUI[] txt_level= new TextMeshProUGUI[11];
     public GameObject panel_TextArea;
