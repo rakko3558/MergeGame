@@ -9,12 +9,22 @@ body {
   top: 0;
   left: 0;
   width: 100vw;
-  height: 100vh;
-  padding-top: 20px;
-  padding-bottom: 5%;
-  box-sizing: border-box; /* 確保 padding 不會撐大容器 */
+  height: 80vh; /* 佔滿整個視窗的 80% 高度 */
+  box-sizing: border-box;
 }
 
+#unity-canvas {
+  width: 100%;
+  height: 100%;
+  background: #231F20;
+}
+
+#unity-container.unity-mobile {
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 80vh;
+}
 
 #unity-canvas {
   width: 100%;
