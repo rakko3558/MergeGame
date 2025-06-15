@@ -25,8 +25,16 @@ body {
   top: 0;
   left: 0;
   width: 100vw;
-  height: 100vh;
+  height: auto; /* 讓它自動變長 */
+  min-height: 2000px; /* 強制畫面拉長 */
 }
+
+.unity-mobile #unity-canvas {
+  width: 100%;
+  height: auto; /* 同上，要延伸 */
+  min-height: 2000px;
+}
+
 
 /* Canvas 滿版 */
 #unity-canvas {
