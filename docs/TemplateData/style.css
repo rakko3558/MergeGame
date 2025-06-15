@@ -10,7 +10,11 @@ body {
   left: 0;
   width: 100vw;
   height: 100vh;
+  padding-top: 20px;
+  padding-bottom: 5%;
+  box-sizing: border-box; /* 確保 padding 不會撐大容器 */
 }
+
 
 #unity-canvas {
   width: 100%;
