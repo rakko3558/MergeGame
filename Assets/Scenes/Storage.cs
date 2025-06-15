@@ -5,7 +5,7 @@ using TMPro;
 
 public class Storage : MonoBehaviour
 {
-    int money = 0;// 玩家金錢
+    int money = 1200;// 玩家金錢
     public TextMeshProUGUI txt_money;
     public TextMeshProUGUI[] txt_level= new TextMeshProUGUI[11];
     public GameObject panel_TextArea;
@@ -171,7 +171,7 @@ public class Storage : MonoBehaviour
 
     public void buyLand()
     {
-        int LandPrice = Lands * 10; // 每土的價格
+        int LandPrice = Lands * 5; // 每土的價格
         if (money < LandPrice)
         {
 

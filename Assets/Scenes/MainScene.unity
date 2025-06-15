@@ -872,7 +872,7 @@ MonoBehaviour:
   minX: -4.9
   maxX: 0.4
   minY: 1
-  maxY: 15
+  maxY: 20
 --- !u!114 &52118419
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1678,7 +1678,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 0
+  m_text: 1200
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 407d6055f49ba7c489e3e5c567957151, type: 2}
   m_sharedMaterial: {fileID: 3227408109233245013, guid: 407d6055f49ba7c489e3e5c567957151, type: 2}
@@ -11028,7 +11028,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\u958B\u5730\n200 Coins"
+  m_text: "\u958B\u5730\n100 Coins"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 407d6055f49ba7c489e3e5c567957151, type: 2}
   m_sharedMaterial: {fileID: 3227408109233245013, guid: 407d6055f49ba7c489e3e5c567957151, type: 2}

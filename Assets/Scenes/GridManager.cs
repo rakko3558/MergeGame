@@ -237,7 +237,7 @@ public class GridmManager : MonoBehaviour
             if (Lands < width * height)
             {
                 //OpenLandButtom.GetComponentInChildren<TextMeshProUGUI>().text=new string($"開地({Lands*10} Coins)");
-                OpenLandText.text = new string($"開地\n{Lands*10} Coins");
+                OpenLandText.text = new string($"開地\n{Lands*5} Coins");
                 OpenLandButtom.transform.position = GridPrefabs[Lands / 10, Lands % 10].transform.position;
                
 
