@@ -16,23 +16,13 @@ public class Draggable : MonoBehaviour
 
     void Start()
     {
-        //GridPrefabs = GridManager.GetComponent<GridmManager>().GridPrefabs;
-        /*
-        Collider2D col = GetComponent<Collider2D>();
-        if (col != null)
-        {
-
-            if (col is BoxCollider2D box)
-            {
-                Debug.Log($"{box.transform.position}");
-            }
-        }
-        else { Debug.Log($"NON"); }*/
+     
 
     }
     public void OnPressed()
     {
-   
+
+        isDragging = true;
         // 放開滑鼠停止拖曳
         if ( GetComponent<Farm>().CropIndex != 0 && GetComponent<Farm>().CropLevel == 3 && GetComponent<Farm>().HaveCoin == true)
             {
@@ -64,7 +54,6 @@ public class Draggable : MonoBehaviour
             }
         }
         // 點下去時開始拖曳
-        isDragging = true;
         //Debug.Log($"clicked");
         // 計算點下去的 offset（滑鼠和物件之間的差距）
         Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -86,9 +75,9 @@ public class Draggable : MonoBehaviour
             GetComponent<Farm>().OnThisGrid = null; //清除原格子上的作物引用 
         }
     }
-
     public void OnReleased()
     {
+        isDragging = false;
         if (TouchIndex!=-1)//兌換價值
         {
             if (TouchIndex == 0)
@@ -192,7 +181,7 @@ public class Draggable : MonoBehaviour
             
         }
         //Debug.Log($"{lastTriggerGrid.GetComponent<GridCell>().Crop.GetComponent<Farm>().CropIndex}");
-        isDragging = false;
+        
     }
     private void exchangeValue(int facility)
     {
@@ -233,7 +222,6 @@ public class Draggable : MonoBehaviour
         GridManager.GetComponent<GridmManager>().CropAmount++;
         return;
     }
-
     private void DestroyCrop(GameObject Grid)//刪除作物
     {
         Grid.GetComponent<GridCell>().status = -1;
@@ -261,7 +249,6 @@ public class Draggable : MonoBehaviour
         }
         return nearestGrid;
     }
-
     // 沒有碰撞時 獲取的格子中距離最近的空格子
     private Collider2D NocolliderGetNearestGrid()
     {
@@ -293,8 +280,6 @@ public class Draggable : MonoBehaviour
         }
         return nearestGrid;
     }
-
-
     public void MoveToGrid(Collider2D grid)
     {
         // 移動到格子中心
@@ -304,9 +289,6 @@ public class Draggable : MonoBehaviour
         GetComponent<Farm>().OnThisGrid.GetComponent<GridCell>().status =  GetComponent<Farm>().CropIndex;
         GetComponent<Farm>().OnThisGrid.GetComponent<GridCell>().level = GetComponent<Farm>().CropLevel;
     }
-    //碰撞
-
-
     void OnTriggerEnter2D(Collider2D other)
     {
         if (other.CompareTag("bank"))
@@ -335,7 +317,6 @@ public class Draggable : MonoBehaviour
         }
            
     }
-
     void OnTriggerExit2D(Collider2D other)
     {
         if (other.CompareTag("Grid"))
@@ -361,8 +342,6 @@ public class Draggable : MonoBehaviour
         }
 
     }
-
-
     void Update()
     {
        
