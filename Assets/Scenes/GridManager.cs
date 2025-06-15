@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 using UnityEngine.EventSystems;
 //複製格子
@@ -13,17 +14,25 @@ public class GridmManager : MonoBehaviour
     public float cellSpacing = 1f;
     public float originPosition = 0f;
     public GameObject Buttom;
+
+    public GameObject OpenLandButtom;
+    public Storage save;
     public GameObject[,] GridPrefabs;
     //public List<GameObject> CropdPrefabs; //記錄所有在場作物
     public int CropAmount = 0; // 作物數量
     //public List<GameObject> GridPrefabs;
     // Start is called before the first frame update
+    public int Lands=0;
+    public TextMeshPro OpenLandText;
 
     public LayerMask clickableLayer;
     public GameObject PressedObject;
 
+    public Facilitys[] facilityArray;
+
     void Start()
     {
+        
         GenerateGrid();
      
     }
@@ -83,18 +92,30 @@ public class GridmManager : MonoBehaviour
 
     void GenerateGrid()
     {
+        Lands= save.Lands;
+        int openLands = Lands;
+
         GridPrefabs = new GameObject[width, height];
         for (int x = 0; x < width; x++)
         {
             for (int y = 0; y < height; y++)
             {
-                Vector3 pos = new Vector3(((x - y)-(x/4)*4) * 0.75f, ((x + y)+(x/4*8)) * 0.5f, 1);// * cellSpacing;
-                
+
+                Vector3 pos = new Vector3(((x - y)-(x/4)*4) * 0.75f, ((x + y)+(x/4*12)) * 0.5f, 1);// * cellSpacing;
+
                 //Vector2 pos = new Vector2(x-originPosition, y-originPosition) * cellSpacing;
                 GameObject cell = Instantiate(cellPrefab, pos, Quaternion.identity, this.transform);
                 cell.transform.rotation = Quaternion.Euler(0, 0, 0);
                 GridCell gridCell = cell.GetComponent<GridCell>();
-                gridCell.SetCoordinates(x, y);
+                gridCell.SetCoordinates(width, height,x, y);
+                if (openLands > 0)
+                {
+                    gridCell.isOpen = true;
+                    cell.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Source/Rectangle");
+                    cell.GetComponent<SpriteRenderer>().color = new Color(1f, 1f, 1f, 0f); // 白色 + 半透明
+
+                    openLands--;
+                }
 
                 ButtonOnClick Script = Buttom.GetComponent<ButtonOnClick>();
                 if (Script.GridPrefabs == null)
@@ -105,10 +126,19 @@ public class GridmManager : MonoBehaviour
                 Script.GridPrefabs.Add(cell);
                 //GridPrefabs.Add(cell);
                 GridPrefabs[x, y] = cell;
+
+               
             }
         }
 
         Destroy(cellPrefab);
+
+        //設定開地按鈕
+        if (Lands < width * height)
+        {
+            OpenLandButtom.transform.position = GridPrefabs[Lands / 10,Lands % 10].transform.position;
+        }
+        
     }
 
     //獲取鄰近一樣的作物格子
@@ -179,7 +209,7 @@ public class GridmManager : MonoBehaviour
     public void ChargeBank(int amount)
     {
         // 假設有一個 Bank 類別來處理金錢
-        Storage save = FindObjectOfType<Storage>();
+      
         if (save != null)
         {
             save.AddMoney(amount);
@@ -188,10 +218,35 @@ public class GridmManager : MonoBehaviour
     public void ChargeCropExp(int facility, int CropIndex, int CropLevel)
     {
         // 假設有一個 Bank 類別來處理金錢
-        Storage save = FindObjectOfType<Storage>();
         if (save != null)
         {
             save.AddExp(facility, CropIndex, CropLevel);
         }
+    }
+
+    public bool OpenGridCell()
+    {
+        if (Lands < width * height)
+        {
+            GameObject cell = GridPrefabs[Lands / 10, Lands % 10];
+            cell.GetComponent<GridCell>().isOpen = true;//啟用地
+            cell.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Source/Rectangle");
+            cell.GetComponent<SpriteRenderer>().color = new Color(1f, 1f, 1f, 0f); // 白色 + 半透明
+            Lands++;
+            save.Lands = Lands;
+            if (Lands < width * height)
+            {
+                //OpenLandButtom.GetComponentInChildren<TextMeshProUGUI>().text=new string($"開地({Lands*10} Coins)");
+                OpenLandText.text = new string($"開地\n{Lands*10} Coins");
+                OpenLandButtom.transform.position = GridPrefabs[Lands / 10, Lands % 10].transform.position;
+               
+
+            }
+            else if (Lands == width * height)
+                OpenLandButtom.transform.position = new Vector3(0f,0f,-10f);
+            return true;
+        }
+        return false;
+        
     }
 }

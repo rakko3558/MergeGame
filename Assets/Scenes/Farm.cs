@@ -22,7 +22,7 @@ public class Farm : MonoBehaviour
 
     //public GameObject image;
 
-    public int PlayerLevel = 1;
+    //public int PlayerLevel = 1;
     public int CropIndex=0;
     public int CropLevel=0;
     public bool HaveCoin=false;
@@ -71,7 +71,7 @@ public class Farm : MonoBehaviour
         {
             for (int j=0;j< Grids.height; j ++)
             {
-                if (Grids.GridPrefabs[i,j].GetComponent<GridCell>().Crop == null)
+                if (Grids.GridPrefabs[i, j].GetComponent<GridCell>().isOpen==true &&Grids.GridPrefabs[i,j].GetComponent<GridCell>().Crop == null)
                 {
                     float distance = Vector2.Distance(new Vector2(x, y), new Vector2(i, j));
                     if (NearstDistance > distance)
@@ -139,7 +139,7 @@ public class Farm : MonoBehaviour
         image.sprite = newSprite;
     }
     */
-    public void GetRandomCrop()
+    public void GetRandomCrop(int PlayerLevel)
     {
         CropIndex = Random.Range(1, PlayerLevel+1);// cropNames.GetLength(0));
     }

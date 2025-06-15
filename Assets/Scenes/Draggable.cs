@@ -60,7 +60,7 @@ public class Draggable : MonoBehaviour
             {
                 GetComponent<Farm>().HaveCoin = false;
 
-                GetComponentInChildren<SpriteRenderer>().color = new Color(1f, 1f, 1f, 1f);
+                GetComponentInChildren<SpriteRenderer>().color = new Color(0.5f, 0.5f, 0.5f, 1f);
             }
         }
         // 點下去時開始拖曳
@@ -249,6 +249,7 @@ public class Draggable : MonoBehaviour
 
         for (int i = 0; i < collidingGrids.Count; i++)
         {
+           
             Collider2D grid = collidingGrids[i];
             float distance = Vector2.Distance(transform.position, grid.bounds.center);
             if (distance < nearestDistance)
@@ -256,6 +257,7 @@ public class Draggable : MonoBehaviour
                 nearestDistance = distance;
                 nearestGrid = grid;
             }
+            
         }
         return nearestGrid;
     }
@@ -272,7 +274,7 @@ public class Draggable : MonoBehaviour
         {
             for (int j = 0; j < height; j++)
             {
-                if (GridPrefabs[i, j].GetComponent<GridCell>().Crop == null)
+                if (GridPrefabs[i, j].GetComponent<GridCell>().Crop == null && GridPrefabs[i, j].GetComponent<GridCell>().isOpen==true)
                 {
                     Collider2D grid = GridPrefabs[i, j].GetComponent<Collider2D>();
                     float distance = Vector2.Distance(transform.position, grid.bounds.center);
@@ -326,7 +328,10 @@ public class Draggable : MonoBehaviour
 
         if (other.CompareTag("Grid"))
         {
-            collidingGrids.Add(other);
+            if (other.GetComponent<GridCell>().isOpen == true)
+            {
+                collidingGrids.Add(other);
+            }
         }
            
     }

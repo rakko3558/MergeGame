@@ -11,6 +11,7 @@ public class ButtonOnClick : MonoBehaviour
     public GameObject BoxPrefabs;
     public Transform spawnPoint;
     public GridmManager GridManager;
+    public int playerLevel = 1;
     void Start()
     {
        myButton.onClick.AddListener(OnClick); // 直接用程式接上事件
@@ -18,13 +19,13 @@ public class ButtonOnClick : MonoBehaviour
     
     void OnClick()
     {
-        if (GridPrefabs.Count== GridManager.CropAmount)
+        if (GridManager.Lands== GridManager.CropAmount)
         {
             //Debug.Log("沒有空格子可以放置物品了！！");
             return;
         }
         //int index = Random.Range(0, GridPrefabs.Count);
-        for (int i=0;i< GridPrefabs.Count; i++)
+        for (int i=0;i< GridManager.Lands; i++)
         {
            
             GridCell Script = GridPrefabs[i].GetComponent<GridCell>();
@@ -39,7 +40,7 @@ public class ButtonOnClick : MonoBehaviour
                 Farm NewCrop = spawnedB.GetComponent<Farm>();
                 
                 NewCrop.OnThisGrid= GridPrefabs[i];
-                NewCrop.GetRandomCrop();
+                NewCrop.GetRandomCrop(playerLevel);
                 NewCrop.ChangeSprite();
                 GridManager.CropAmount++;
                 return;
