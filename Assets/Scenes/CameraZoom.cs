@@ -10,7 +10,9 @@ public class CameraZoom : MonoBehaviour
     public float PhoneMaxZoom = 20f;          // 程跌à程┰环
 
     private Camera cam;
-
+    Vector2 ZerodeltaPosition;
+    Vector2 OnedeltaPosition;
+    private bool isZooming = false; // 琌タ罽
     void Start()
     {
         cam = Camera.main;
@@ -28,11 +30,22 @@ public class CameraZoom : MonoBehaviour
 
         if (Input.touchCount == 2)
         {
+            ZerodeltaPosition= Input.GetTouch(0).position;
+            OnedeltaPosition = Input.GetTouch(1).position;
+            isZooming = true;
+           
+        }
+        if (Input.touchCount != 2)
+        {
+            isZooming=false; // 狦ぃ琌ㄢ牟北玥氨ゎ罽
+        }
+        if (isZooming)
+        {
             Touch touchZero = Input.GetTouch(0);
             Touch touchOne = Input.GetTouch(1);
 
-            Vector2 touchZeroPrevPos = touchZero.position - touchZero.deltaPosition;
-            Vector2 touchOnePrevPos = touchOne.position - touchOne.deltaPosition;
+            Vector2 touchZeroPrevPos = touchZero.position - ZerodeltaPosition;
+            Vector2 touchOnePrevPos = touchOne.position - OnedeltaPosition;
 
             float prevMagnitude = (touchZeroPrevPos - touchOnePrevPos).magnitude;
             float currentMagnitude = (touchZero.position - touchOne.position).magnitude;
