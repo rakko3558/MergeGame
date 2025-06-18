@@ -46,8 +46,10 @@ public class CameraDrag : MonoBehaviour
             cam.orthographicSize -= scroll * zoomSpeed;
             cam.orthographicSize = Mathf.Clamp(cam.orthographicSize, minZoom, maxZoom);
         }
-
-        if (Input.touchCount == 2)
+        if (isZooming == true && Input.touchCount == 0)
+        {
+            isZooming = false;
+        }else if (Input.touchCount == 2)
         {
             Touch touchZero = Input.GetTouch(0);
             Touch touchOne = Input.GetTouch(1);
@@ -77,8 +79,7 @@ public class CameraDrag : MonoBehaviour
         }
         else
         {
-            isZooming = false;
-       
+
 
 
             //Debug.Log($"CameraDrag: {EventSystem.current.IsPointerOverGameObject()}");
@@ -175,10 +176,10 @@ public class CameraDrag : MonoBehaviour
 
                 if (hit == null) // 沒碰到東西才能拖曳
                 {
-                        lastMousePosition = mouseWorldPos;
-                        //currentMousePosition = mouseWorldPos;
-                        //lastMousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-                        isDragging = true;
+                    lastMousePosition = mouseWorldPos;
+                    //currentMousePosition = mouseWorldPos;
+                    //lastMousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                    isDragging = true;
                 }
             }
 
@@ -189,7 +190,7 @@ public class CameraDrag : MonoBehaviour
 
             if (isDragging)
             {
-                mouseWorldPos= Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
                 Vector3 newPosition = transform.position + lastMousePosition - (Vector3)mouseWorldPos;
                 newPosition.x = Mathf.Clamp(newPosition.x, minX, maxX);
                 newPosition.y = Mathf.Clamp(newPosition.y, minY, maxY);
