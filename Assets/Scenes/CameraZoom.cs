@@ -28,7 +28,7 @@ public class CameraZoom : MonoBehaviour
             cam.orthographicSize = Mathf.Clamp(cam.orthographicSize, minZoom, maxZoom);
         }
 
-        if (Input.touchCount == 2)
+        if (Input.touchCount == 2 && isZooming==false)
         {
             ZerodeltaPosition= Input.GetTouch(0).position;
             OnedeltaPosition = Input.GetTouch(1).position;
