@@ -30,8 +30,8 @@ public class CameraZoom : MonoBehaviour
 
         if (Input.touchCount == 2 && isZooming==false)
         {
-            ZerodeltaPosition= Input.GetTouch(0).position;
-            OnedeltaPosition = Input.GetTouch(1).position;
+            ZerodeltaPosition= Vector2.zero;
+            OnedeltaPosition = Vector2.zero;
             isZooming = true;
            
         }
@@ -52,8 +52,11 @@ public class CameraZoom : MonoBehaviour
 
             float difference = currentMagnitude - prevMagnitude;
 
-            cam.orthographicSize += difference * 0.01f;
+            cam.orthographicSize -= difference * 0.01f;
             cam.orthographicSize = Mathf.Clamp(cam.orthographicSize, PhoneMinZoom, PhoneMaxZoom);
+
+            ZerodeltaPosition = touchZeroPrevPos;
+            OnedeltaPosition = touchOnePrevPos;
         }
     }
 }
