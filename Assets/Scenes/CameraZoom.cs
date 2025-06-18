@@ -10,9 +10,10 @@ public class CameraZoom : MonoBehaviour
     public float PhoneMaxZoom = 20f;          // 最大視角（最拉遠）
 
     private Camera cam;
-    Vector2 ZerodeltaPosition;
-    Vector2 OnedeltaPosition;
-    private bool isZooming = false; // 是否正在縮放
+    private bool isZooming = false;
+    private Vector2 prevTouchZeroPos;
+    private Vector2 prevTouchOnePos;
+
     void Start()
     {
         cam = Camera.main;
@@ -28,35 +29,37 @@ public class CameraZoom : MonoBehaviour
             cam.orthographicSize = Mathf.Clamp(cam.orthographicSize, minZoom, maxZoom);
         }
 
-        if (Input.touchCount == 2 && isZooming==false)
-        {
-            
-            isZooming = true;
-           ZerodeltaPosition = Input.GetTouch(0).position;
-            OnedeltaPosition = Input.GetTouch(1).position;
-        }
-        if (Input.touchCount != 2)
-        {
-            isZooming=false; // 如果不是兩指觸控，則停止縮放
-        }
-        if (isZooming)
+        if (Input.touchCount == 2)
         {
             Touch touchZero = Input.GetTouch(0);
             Touch touchOne = Input.GetTouch(1);
 
-            Vector2 touchZeroPrevPos = touchZero.position - ZerodeltaPosition;
-            Vector2 touchOnePrevPos = touchOne.position - OnedeltaPosition;
+            // 第一次觸發縮放時，儲存初始位置
+            if (!isZooming)
+            {
+                prevTouchZeroPos = touchZero.position;
+                prevTouchOnePos = touchOne.position;
+                isZooming = true;
+                return;
+            }
 
-            float prevMagnitude = (touchZeroPrevPos - touchOnePrevPos).magnitude;
+            // 計算上一幀與這一幀的距離差
+            float prevMagnitude = (prevTouchZeroPos - prevTouchOnePos).magnitude;
             float currentMagnitude = (touchZero.position - touchOne.position).magnitude;
 
             float difference = currentMagnitude - prevMagnitude;
 
-            cam.orthographicSize -= difference * 0.001f;
+            // 縮放處理
+            cam.orthographicSize -= difference * 0.01f;
             cam.orthographicSize = Mathf.Clamp(cam.orthographicSize, PhoneMinZoom, PhoneMaxZoom);
 
-            ZerodeltaPosition = touchZero.position;
-            OnedeltaPosition = touchOne.position;
+            // 更新上一幀位置
+            prevTouchZeroPos = touchZero.position;
+            prevTouchOnePos = touchOne.position;
+        }
+        else
+        {
+            isZooming = false;
         }
     }
 }
