@@ -2,10 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
-
+using UnityEngine.UI;
 public class Storage : MonoBehaviour
 {
-    int money = 1200;// 玩家金錢
+    public int money = 1200000;// 玩家金錢
     public TextMeshProUGUI txt_money;
     public TextMeshProUGUI[] txt_level= new TextMeshProUGUI[11];
     public GameObject panel_TextArea;
@@ -32,6 +32,12 @@ public class Storage : MonoBehaviour
     void Start()
     {
         checkFacility();
+
+        for (int i = 1; i < cropLevel.Length; i++) 
+        {
+
+            CheckLevelUp(cropLevel[i]);
+        }
     }
 
     // Update is called once per frame
@@ -151,13 +157,20 @@ public class Storage : MonoBehaviour
     // 判斷是否升級
     private void CheckLevelUp(int CropIndex)
     {
-        
+        txt_level[CropIndex].text = cropLevel[CropIndex].ToString();
+        Debug.Log($"{cropExp[CropIndex]}/{ExpToNextLevel(cropLevel[CropIndex])}");
+        txt_level[CropIndex].GetComponentInChildren<Slider>().value = cropExp[CropIndex] / ExpToNextLevel(cropLevel[CropIndex]);
+        txt_level[CropIndex].GetComponentInChildren<Slider>().GetComponentInChildren<TextMeshProUGUI>().text = $"{cropExp[CropIndex]}/{ExpToNextLevel(cropLevel[CropIndex])}";
+
         while (cropExp[CropIndex] >= ExpToNextLevel(cropLevel[CropIndex]))
         {
-           
+            
             cropExp[CropIndex] -= ExpToNextLevel(cropLevel[CropIndex]);
             cropLevel[CropIndex]++;
+            
             txt_level[CropIndex].text = cropLevel[CropIndex].ToString();
+            txt_level[CropIndex].GetComponentInChildren<Slider>().value = cropExp[CropIndex]/ ExpToNextLevel(cropLevel[CropIndex]);
+            txt_level[CropIndex].GetComponentInChildren<Slider>().GetComponentInChildren<TextMeshProUGUI>().text =$"{cropExp[CropIndex]}/{ExpToNextLevel(cropLevel[CropIndex])}";
             Debug.Log($"升級！目前等級：{cropLevel[CropIndex]}");
 
             // TODO: 可加技能點數、獎勵、解鎖物品等
@@ -200,17 +213,18 @@ public class Storage : MonoBehaviour
         if (SetPlayerLevel(1))
         {
             
-        money = money - price;// 暫定每個角色100元
-        txt_money.text = money.ToString();
-        string message = $"獲得新角色(-{price} Coins)";
-        showTextMessage(message);
+            money = money - price;// 暫定每個角色100元
+            txt_money.text = money.ToString();
+            string message = $"獲得新角色(-{price} Coins)";
+            showTextMessage(message);
 
             UnlockCharacter.text = $"解鎖角色\n({playerLevel * 1000} Coins)";
             
 
-            //GameObject clonedTextGO = Instantiate(TextPerfab.gameObject);
-            //clonedTextGO.GetComponent<TextMeshProUGUI>().text = $"{amount}元存入了匯豐銀行";
-         checkFacility();
+             //GameObject clonedTextGO = Instantiate(TextPerfab.gameObject);
+             //clonedTextGO.GetComponent<TextMeshProUGUI>().text = $"{amount}元存入了匯豐銀行";
+             checkFacility();
+             CheckLevelUp(playerLevel);
         }
     }
 
