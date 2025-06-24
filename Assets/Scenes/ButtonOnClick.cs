@@ -7,27 +7,29 @@ public class ButtonOnClick : MonoBehaviour
 {
 
     public Button myButton;
-    public  List<GameObject> GridPrefabs;
+    public List<GameObject> GridPrefabs;
     public GameObject BoxPrefabs;
     public Transform spawnPoint;
     public GridmManager GridManager;
+
     public int playerLevel = 1;
     void Start()
     {
-       myButton.onClick.AddListener(OnClick); // 直接用程式接上事件
+        playerLevel= GridManager.save.playerLevel; // 取得玩家等級
+        myButton.onClick.AddListener(OnClick); // 直接用程式接上事件
     }
-    
+
     void OnClick()
     {
-        if (GridManager.Lands== GridManager.CropAmount)
+        if (GridManager.Lands == GridManager.CropAmount)
         {
             //Debug.Log("沒有空格子可以放置物品了！！");
             return;
         }
         //int index = Random.Range(0, GridPrefabs.Count);
-        for (int i=0;i< GridManager.Lands; i++)
+        for (int i = 0; i < GridManager.Lands; i++)
         {
-           
+
             GridCell Script = GridPrefabs[i].GetComponent<GridCell>();
             if (Script.Crop == null)
             {
@@ -38,20 +40,19 @@ public class ButtonOnClick : MonoBehaviour
                 //spawnedB.transform.rotation = Quaternion.Euler(0, 0, 0);
                 Script.Crop = spawnedB;
                 Farm NewCrop = spawnedB.GetComponent<Farm>();
-                
-                NewCrop.OnThisGrid= GridPrefabs[i];
+
+                NewCrop.OnThisGrid = GridPrefabs[i];
                 NewCrop.GetRandomCrop(playerLevel);
                 NewCrop.ChangeSprite();
                 GridManager.CropAmount++;
                 return;
             }
-            
+
         }
         //Debug.Log("沒有空格子可以放置物品了！");
         return;
         //Debug.Log($"隨機選到的 A 是：{chosenA.name}");
     }
 
- 
 }
 

@@ -14,7 +14,16 @@ public class Storage : MonoBehaviour
     public TextMeshProUGUI UnlockCharacter;
 
     public ButtonOnClick ButtonOnClickScript;
+
+    //任務相關
+    public TextMeshProUGUI questDepiction;
+    public TextMeshProUGUI questReward;
+    public int questIndex = -1; // 目前任務索引，-1 代表沒有任務 0:銀行，1:結婚，2:出攤，3:演唱會
+    public int questCharacter = -1; // 目前任務索引，-1 代表沒有任務 0:錢，1:紙屑，2:....
+    public int questExp = 0; // 任務經驗值
+    public int questMoney = 0; // 任務金錢獎勵
     public int playerLevel = 1;
+
     public  int MaxLevel = 50;
 
     public int[] cropExp = new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
@@ -26,7 +35,7 @@ public class Storage : MonoBehaviour
     public Facilitys[] facilityArray;
     //private int facility = 0; // 0:銀行，1:結婚，2:出攤，3:演唱會
 
-    private string[] cropName = new string[] { "錢錢", "紙屑", "羊肉爐", "阿鵝", "Taki", "+0", "SC", "Riku", "皮卡丘", "波吉", "公主" };
+    private string[] cropName = new string[] { "金錢", "紙屑", "羊肉爐", "阿鵝", "Taki", "+0", "SC", "Riku", "皮卡丘", "波吉", "公主" };
     public GameObject[] CharaterIndex;
     // Start is called before the first frame update
     void Start()
@@ -38,6 +47,8 @@ public class Storage : MonoBehaviour
 
             CheckLevelUp(cropLevel[i]);
         }
+
+        RandomQuest(); // 初始化隨機任務 //或載入之前的任務
     }
 
     // Update is called once per frame
@@ -61,19 +72,23 @@ public class Storage : MonoBehaviour
         clonedTextGO.SetActive(true); // 啟用 GameObject（如果 template 是 hidden 的話）
     }
 
-    public void AddMoney(int amount)
+    public void AddMoney(int amount) //專for 銀行
     {
-        money= money+amount;
-        txt_money.text = money.ToString();
+       
         string message = $"{amount}元存入了匯豐銀行";
         showTextMessage(message);
 
+        AddMoneyCompute(amount);
         //GameObject clonedTextGO = Instantiate(TextPerfab.gameObject);
         //clonedTextGO.GetComponent<TextMeshProUGUI>().text = $"{amount}元存入了匯豐銀行";
         Debug.Log($"玩家金錢增加：{amount}，目前金錢：{money}");
     }
-
-    public void AddExp(int facility ,int CropIndex, int CropExp)//CropExp是作物進化階段
+    public void AddMoneyCompute(int amount)
+    {
+        money = money + amount;
+        txt_money.text = money.ToString();
+    }
+    public void AddExp(int facility ,int CropIndex, int CropExp)//CropExp是作物進化階段 //名字取的爛 這專for設施
     {
 
         //計算經驗值
@@ -91,20 +106,20 @@ public class Storage : MonoBehaviour
             case 0: // 銀行
                 int[] CropExpLevel = new int[] { 1, 3, 10, 50 };
                 encreaseExp = CropExpLevel[CropExp];
-                cropExp[CropIndex] += encreaseExp;
+                AddExpCompute(CropIndex,encreaseExp); // 計算經驗值
                 clonedTextGO.GetComponent<TextMeshProUGUI>().text = $"將" +
                     $"{cropName[CropIndex]}存入了匯豐銀行！(EXP+{encreaseExp})";
                 break;
             case 1: // 結婚
                 encreaseExp = facilityArray[1].expAmount;
-                cropExp[CropIndex] += encreaseExp;
+                AddExpCompute(CropIndex, encreaseExp); // 計算經驗值
                 string[] marriageNames = { "紙屑", "羊肉爐", "阿鵝", "Taki", "+0", "SC", "Riku", "波吉", "公主" };
                 clonedTextGO.GetComponent<TextMeshProUGUI>().text =
                             $"恭喜{cropName[CropIndex]}跟{marriageNames[Random.Range(0, marriageNames.Length)]}結婚了！(EXP+{encreaseExp})";
                 break;
             case 2: // 出攤
                 encreaseExp = facilityArray[2].expAmount;
-                cropExp[CropIndex] += encreaseExp;
+                AddExpCompute(CropIndex, encreaseExp); // 計算經驗值
                 string CPName1;
                 string CPName2;
                 int a = Random.Range(0, 1);
@@ -134,7 +149,7 @@ public class Storage : MonoBehaviour
                 break;
             case 3: // 演唱會
                 encreaseExp = facilityArray[3].expAmount;
-                cropExp[CropIndex] += encreaseExp;
+                AddExpCompute(CropIndex, encreaseExp); // 計算經驗值
                 string[] bandname = { "約束約團", "Ave Mujica", "MyGO!!!!!", "有刺無刺" };//, "Poppin'Party", "Roselia", "Afterglow", "Pastel*Palettes", "Hello, Happy World!","RAISE A SUILEN", "Morfonica", "夢限大MewType",""};
 
 
@@ -150,10 +165,17 @@ public class Storage : MonoBehaviour
         // 啟用 GameObject（如果 template 是 hidden 的話）
         clonedTextGO.SetActive(true);
         //確認等級
+        CheckQuestComplete(facility, CropIndex); // 檢查任務是否完成
         CheckLevelUp(CropIndex);
 
         Debug.Log($"作物{CropIndex}經驗值增加：{CropExp * 50}，目前經驗值：{cropExp[CropIndex]}，等級：{cropLevel[CropIndex]}");
     }
+
+    public void AddExpCompute(int CropIndex, int encreaseExp)
+    {
+        cropExp[CropIndex] += encreaseExp;
+    }
+
     // 判斷是否升級
     private void CheckLevelUp(int CropIndex)
     {
@@ -259,5 +281,60 @@ public class Storage : MonoBehaviour
             Debug.Log($"{playerLevel / 2},{i},{facilityArray[i].isOpen}");
         }
     }
+
+    public void RandomQuest()//
+    {
+        questIndex = Random.Range(0,(playerLevel / 3)+1); // 重置任務索引
+        questCharacter = Random.Range(0,playerLevel+1); // 重置任務角色索引
+        int[] expList = new int[] { 500, 600, 700, 800 }; // 任務經驗值列表
+
+        questExp = expList[Random.Range(0,expList.Length)]; // 重置任務經驗值
+
+        int[] moneyList = new int[]{500, 600, 700, 800,900,1000,2000}; // 任務金錢獎勵列表
+        questMoney = moneyList[Random.Range(0,moneyList.Length)]; // 重置任務金錢獎勵
+        Debug.Log($"任務{playerLevel}/{questCharacter} /{questExp} /{questMoney}");
+
+        switch (questIndex)//隨機任務
+        {
+            case 0:
+                questDepiction.text = $"將{cropName[questCharacter]}存入到匯豐銀行";
+                questReward.text = $"EXP +{questExp}\nCoin +{questMoney}";
+                break;
+
+            case 1:
+                // 1級任務
+                questDepiction.text = $"讓{cropName[questCharacter]}進行結婚";
+                questReward.text = $"EXP +{questExp}\nCoin +{questMoney}";
+                break;
+
+            case 2:
+                // 2級任務
+                questDepiction.text = $"讓{cropName[questCharacter]}畫本出攤";
+                questReward.text = $"EXP +{questExp}\nCoin +{questMoney}";
+                break;
+            case 3:
+                // 3級任務
+                questDepiction.text = $"讓{cropName[questCharacter]}看演唱會";
+                questReward.text = $"EXP +{questExp}\nCoin +{questMoney}";
+                break;
+
+        }
+
         
+    }
+
+    public void CheckQuestComplete(int falicity, int cropIndex) // 檢查任務是否完成
+    {
+        if(questIndex == falicity && questCharacter == cropIndex)
+        {
+
+            AddExpCompute(cropIndex, questExp); // 計算經驗值
+            AddMoneyCompute(questMoney); // 計算金錢獎勵
+
+            showTextMessage($"完成任務：{questDepiction.text}");
+            RandomQuest(); // 重置隨機任務
+            
+        }
+        return;
+    }
 }
