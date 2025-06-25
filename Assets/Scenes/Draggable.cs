@@ -90,6 +90,7 @@ public class Draggable : MonoBehaviour
                 exchangeValue(TouchIndex);
                 return;
             }
+            GridManager.GetComponent<GridmManager>().ShowFacilityNotify(TouchIndex);
         }
         
         Collider2D NearestTriggerGrid = GetNearestGrid();//獲取當前碰直撞距離最近的格子(物件)

@@ -223,7 +223,12 @@ public class GridmManager : MonoBehaviour
             save.AddExp(facility, CropIndex, CropLevel);
         }
     }
+    public void ShowFacilityNotify(int facility)
+    {
+        facilityArray[facility].showNotify();
 
+
+    }
     public bool OpenGridCell()
     {
         if (Lands < width * height)

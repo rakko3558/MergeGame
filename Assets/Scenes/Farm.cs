@@ -142,5 +142,7 @@ public class Farm : MonoBehaviour
     public void GetRandomCrop(int PlayerLevel)
     {
         CropIndex = Random.Range(1, PlayerLevel+1);// cropNames.GetLength(0));
+        int[] levelProbability= new int[] { 0,0,0,0,0,0,0,0,0,0,0, 0, 1,1,2}; // 每個等級的機率百分比
+        CropLevel = levelProbability[Random.Range(0, levelProbability.Length)]; // 0-3 隨機等級
     }
 }
