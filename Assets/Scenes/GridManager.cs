@@ -144,26 +144,36 @@ public class GridmManager : MonoBehaviour
     //獲取鄰近一樣的作物格子
     public Queue<GameObject> SearchSameCrop(Queue<GameObject> CellsQueue, int x, int y)//, HashSet<(int, int)> visited)
     {
-        
+
         CellsQueue.Enqueue(GridPrefabs[x, y]);
-        if (IsValid(x - 1, y)&&(x/4)==((x-1)/4))
-            if (FindQueue(CellsQueue, GridPrefabs[x-1, y]) == false)
-                    if ( GridPrefabs[x , y].GetComponent<GridCell>().status == GridPrefabs[x - 1, y].GetComponent<GridCell>().status && GridPrefabs[x , y].GetComponent<GridCell>().level == GridPrefabs[x - 1, y].GetComponent<GridCell>().level)
-                CellsQueue=SearchSameCrop(CellsQueue,x - 1, y);
-        if (IsValid(x + 1, y) && ((x+1)/4) == (x/4))
+        if (IsValid(x - 1, y) && (x / 4) == ((x - 1) / 4))
+            if (FindQueue(CellsQueue, GridPrefabs[x - 1, y]) == false)
+                if (GridPrefabs[x, y].GetComponent<GridCell>().status == GridPrefabs[x - 1, y].GetComponent<GridCell>().status && GridPrefabs[x, y].GetComponent<GridCell>().level == GridPrefabs[x - 1, y].GetComponent<GridCell>().level)
+                {
+                    CellsQueue = SearchSameCrop(CellsQueue, x - 1, y);
+                    Debug.Log($"SearchSameCrop: {GridPrefabs[x - 1, y].GetComponent<GridCell>().status}, {GridPrefabs[x - 1, y].GetComponent<GridCell>().level}");
+                }
+        if (IsValid(x + 1, y) && ((x + 1) / 4) == (x / 4))
             if (FindQueue(CellsQueue, GridPrefabs[x + 1, y]) == false)
-                if ( GridPrefabs[x , y].GetComponent<GridCell>().status == GridPrefabs[x + 1, y].GetComponent<GridCell>().status && GridPrefabs[x , y].GetComponent<GridCell>().level == GridPrefabs[x + 1, y].GetComponent<GridCell>().level)
-                    CellsQueue=SearchSameCrop(CellsQueue,x + 1, y);
-        if (IsValid(x , y - 1))
+                if (GridPrefabs[x, y].GetComponent<GridCell>().status == GridPrefabs[x + 1, y].GetComponent<GridCell>().status && GridPrefabs[x, y].GetComponent<GridCell>().level == GridPrefabs[x + 1, y].GetComponent<GridCell>().level)
+                {
+                    CellsQueue = SearchSameCrop(CellsQueue, x + 1, y);
+                    Debug.Log($"SearchSameCrop: {GridPrefabs[x + 1, y].GetComponent<GridCell>().status}, {GridPrefabs[x + 1, y].GetComponent<GridCell>().level}");
+                }
+                    if (IsValid(x , y - 1))
             if (FindQueue(CellsQueue, GridPrefabs[x , y - 1]) == false)
                 if (IsValid(x ,y-1) && GridPrefabs[x , y].GetComponent<GridCell>().status == GridPrefabs[x, y - 1].GetComponent<GridCell>().status && GridPrefabs[x, y ].GetComponent<GridCell>().level == GridPrefabs[x, y - 1].GetComponent<GridCell>().level)
-                        CellsQueue =SearchSameCrop(CellsQueue, x, y - 1);
+                {  CellsQueue =SearchSameCrop(CellsQueue, x, y - 1);
+                    Debug.Log($"SearchSameCrop: {GridPrefabs[x , y-1].GetComponent<GridCell>().status}, {GridPrefabs[x , y-1].GetComponent<GridCell>().level}");
+                }
         if (IsValid(x , y+1))
             if (FindQueue(CellsQueue, GridPrefabs[x , y + 1]) == false)
                 if (IsValid(x , y+1) && GridPrefabs[x , y].GetComponent<GridCell>().status == GridPrefabs[x, y + 1].GetComponent<GridCell>().status && GridPrefabs[x, y ].GetComponent<GridCell>().level == GridPrefabs[x, y + 1].GetComponent<GridCell>().level)
-                        CellsQueue = SearchSameCrop(CellsQueue, x, y + 1);
-                
-              
+                { CellsQueue = SearchSameCrop(CellsQueue, x, y + 1);
+                    Debug.Log($"SearchSameCrop: {GridPrefabs[x , y+ 1].GetComponent<GridCell>().status}, {GridPrefabs[x , y+ 1].GetComponent<GridCell>().level}");
+                }
+
+
 
         return CellsQueue; 
     }

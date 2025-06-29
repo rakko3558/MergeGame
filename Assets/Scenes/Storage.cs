@@ -44,16 +44,16 @@ public class Storage : MonoBehaviour
     private static string[,] cropNames = new string[,]
         {
            { "coin0","coin1","coin2","coin3","coin4","coin5","coin6","coin7","coin_C", "coin_C5", "coin_S", "coin_S5","coin_G","coin_G5"},
-           { "ts0", "ts1", "ts2", "ts3","","","","","","","","","",""},
+           { "Paper_00", "Paper_01", "Paper_02", "Paper_03","","","","","","","","","",""},
            { "ylr0", "ylr1", "ylr2", "ylr3","","","","","","","","","",""},
            { "uu0", "uu1", "uu2", "uu3","","","","","","","","","",""},
            { "tk0", "tk1", "tk2", "tk3","","","","","","","","","",""},
-           { "t00", "t01", "t02", "t03","","","","","","","","","",""},
+           { "Plus0_00", "Plus0_01", "Plus0_02", "Plus0_03","","","","","","","","","",""},
            { "sc0", "sc1", "sc2", "sc3","","","","","","","","","",""},
            { "rik0", "rik1", "rik2", "rik3","","","","","","","","","",""},
            { "pkc0", "pkc1", "pkc2", "pkc3","","","","","","","","","",""},
            { "pj0", "pj1", "pj2", "pj3","","","","","","","","","",""},
-           { "gz0", "gz1", "gz2", "gz3","","","","","","","","","",""}
+           { "Princess_00", "Princess_01", "Princess_02", "Princess_03","","","","","","","","","",""}
         };
     public GameObject[] CharaterIndex;
     // Start is called before the first frame update
