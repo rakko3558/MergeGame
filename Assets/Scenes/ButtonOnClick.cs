@@ -45,6 +45,7 @@ public class ButtonOnClick : MonoBehaviour
                 NewCrop.GetRandomCrop(playerLevel);
                 NewCrop.ChangeSprite();
                 GridManager.CropAmount++;
+
                 return;
             }
 

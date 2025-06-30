@@ -1431,6 +1431,8 @@ MonoBehaviour:
   maxX: 0.4
   minY: 1
   maxY: 20
+  DragCrop: 0
+  Crop: {fileID: 0}
 --- !u!1 &74850586
 GameObject:
   m_ObjectHideFlags: 0
@@ -13142,7 +13144,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d3d0951f7b18334096c6821f2662091, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  money: 120000
+  money: 1200
   txt_money: {fileID: 206789267}
   txt_level:
   - {fileID: 0}
@@ -18585,6 +18587,7 @@ GameObject:
   - component: {fileID: 1338559544}
   - component: {fileID: 1338559546}
   - component: {fileID: 1338559547}
+  - component: {fileID: 1338559548}
   m_Layer: 6
   m_Name: BoxPrefab
   m_TagString: Untagged
@@ -18639,6 +18642,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   collidingGrids: []
+  TheCamera: {fileID: 52118418}
   GridManager: {fileID: 500587564}
   BoxPrefabs: {fileID: 1338559540}
 --- !u!50 &1338559546
@@ -18703,6 +18707,22 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 0.37
+--- !u!114 &1338559548
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1338559540}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f248eda005e1c7a4e80efe8f79127282, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  speed: 10
+  targetPosition: {x: 0, y: 0, z: 0}
+  stopDistance: 0.01
+  willDestroy: 0
 --- !u!1 &1339894634
 GameObject:
   m_ObjectHideFlags: 0

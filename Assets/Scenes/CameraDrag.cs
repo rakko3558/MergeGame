@@ -30,7 +30,10 @@ public class CameraDrag : MonoBehaviour
     private Collider2D hit;
     private Vector3 currentMousePosition;
 
-
+    public bool DragCrop = false;
+    public GameObject Crop;
+    private float borderThickness = 50.0f;
+    private float scrollSpeed = 5f;
 
     void Start()
     {
@@ -49,7 +52,8 @@ public class CameraDrag : MonoBehaviour
         if (isZooming == true && Input.touchCount == 0)
         {
             isZooming = false;
-        }else if (Input.touchCount == 2)
+        }
+        else if (Input.touchCount == 2)
         {
             Touch touchZero = Input.GetTouch(0);
             Touch touchOne = Input.GetTouch(1);
@@ -198,6 +202,37 @@ public class CameraDrag : MonoBehaviour
                 transform.position = newPosition;
 
             }
+
+            if (DragCrop)
+            {
+                Vector3 pos = transform.position;
+                Vector3 DraggingPosition = Camera.main.WorldToScreenPoint(Crop.transform.position);
+
+                if (DraggingPosition.x >= Screen.width - borderThickness)
+                {
+                    pos.x += scrollSpeed * Time.deltaTime;                    
+                }
+                else if (DraggingPosition.x <= borderThickness)
+                {
+                    pos.x -= scrollSpeed * Time.deltaTime;
+                }
+                if (DraggingPosition.y >= Screen.height - borderThickness)
+                {
+                    pos.y += scrollSpeed * Time.deltaTime;
+                }
+                else if (DraggingPosition.y <= borderThickness)
+                {
+                    pos.y -= scrollSpeed * Time.deltaTime;
+
+                    
+                }
+                
+                pos.x = Mathf.Clamp(pos.x, minX, maxX);
+                pos.y = Mathf.Clamp(pos.y, minY, maxY);
+
+                transform.position = pos;
+            }
+
         }
 
 
