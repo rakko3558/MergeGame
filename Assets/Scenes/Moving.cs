@@ -44,6 +44,6 @@ public class Moving : MonoBehaviour
         targetPosition = newPosition; // 設定新的目標位置
         speed = Vector2.Distance(targetPosition , transform.position)*10;
         isMoving = true; // 開始移動
-        Debug.Log($"Moving: {gameObject.name} to {targetPosition}");
+        //Debug.Log($"Moving: {gameObject.name} to {targetPosition}");
     }
 }

@@ -17,13 +17,13 @@ public class WorldButton : MonoBehaviour
 
     void OnMouseEnter()
     {
-        HintUI.SetActive(true);
+        //HintUI.SetActive(true);
         sr.color = hoverColor;  // 滑鼠移入改色
     }
 
     void OnMouseExit()
     {
-        HintUI.SetActive(false); // 滑鼠移出隱藏提示
+        //HintUI.SetActive(false); // 滑鼠移出隱藏提示
         sr.color = normalColor; // 滑鼠移出恢復
     }
 

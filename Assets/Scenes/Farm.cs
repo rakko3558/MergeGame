@@ -22,7 +22,8 @@ public class Farm : MonoBehaviour
 
     //public GameObject image;
 
-    //public int PlayerLevel = 1;
+    //public int
+    //= 1;
     public int CropIndex=0;
     public int CropLevel=0;
     public int HaveCoin =0;
@@ -43,7 +44,7 @@ public class Farm : MonoBehaviour
 
         if (CropLevel == 3 && CropIndex!=0)
         {
-            HaveCoin= GridsManager.save.cropLevel[CropIndex];
+            HaveCoin= GridsManager.save.data.cropLevel[CropIndex];
            
             U_Sprite.color = new Color(1f, 0.9f, 0.5f, 1f);
         }

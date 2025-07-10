@@ -96,15 +96,15 @@ public class Draggable : MonoBehaviour
             {
                 Queue<GameObject> SameCropCells = new Queue<GameObject>()  ;
                 SameCropCells = GridManager.GetComponent<GridmManager>().SearchSameCrop(SameCropCells, NearestTriggerGrid.GetComponent<GridCell>().x, NearestTriggerGrid.GetComponent<GridCell>().y);//, new HashSet<(int, int)>()); // 搜索同樣作物
-                Debug.Log($"數量:{SameCropCells.Count}");
+                //Debug.Log($"數量:{SameCropCells.Count}");
                 if (SameCropCells.Count >= 2)
                 {
                     int LevelingAmount = (SameCropCells.Count+1) / 5 * 2 + ((SameCropCells.Count+1)%5)/ 3;
                     int LeaveAmount = (SameCropCells.Count+1)%5%3;
-                    Debug.Log($"升級數量:{LevelingAmount}, 剩餘數量{LeaveAmount}");
+                    //Debug.Log($"升級數量:{LevelingAmount}, 剩餘數量{LeaveAmount}");
                     foreach (var item in SameCropCells)
                     {
-                        Debug.Log($"result:{item.GetComponent<GridCell>().x},{item.GetComponent<GridCell>().y}");
+                        //Debug.Log($"result:{item.GetComponent<GridCell>().x},{item.GetComponent<GridCell>().y}");
                         
                         item.GetComponent<GridCell>().Crop.GetComponent<Moving>().StartMoving(true, transform.position);
                         DestroyCrop(item);
@@ -139,7 +139,7 @@ public class Draggable : MonoBehaviour
                     GridCell GridCellTmp = NearestTriggerGrid.GetComponent<GridCell>();//要移動上去的那一塊地
                     GameObject TmpCrop = GridCellTmp.Crop;//要移動上去的那一塊地上原本的作物
                     Collider2D NearestTmpEmptyGrid = TmpCrop.GetComponent<Draggable>().NocolliderGetNearestGrid();//要移動上去的那一塊地上原本的作物 離他最近的其他空地
-                    Debug.Log($"!!!!!!!!!{NearestTmpEmptyGrid}");
+                  
                     TmpCrop.GetComponent<Draggable>().MoveToGrid(NearestTmpEmptyGrid);//該作物移去該空地
                     NearestTmpEmptyGrid.GetComponent<GridCell>().Crop = TmpCrop;
 
