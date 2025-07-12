@@ -40,18 +40,23 @@ public class ButtonOnClick : MonoBehaviour
             GridCell Script = GridPrefabs[i].GetComponent<GridCell>();
             if (Script.Crop == null)
             {
-                GameObject chosenA = GridPrefabs[i];
-                spawnPoint = chosenA.transform;
-                //Script.status = 1;
-                GameObject spawnedB = Instantiate(BoxPrefabs, spawnPoint.position, Quaternion.identity);
-                //spawnedB.transform.rotation = Quaternion.Euler(0, 0, 0);
-                Script.Crop = spawnedB;
-                Farm NewCrop = spawnedB.GetComponent<Farm>();
+                int Index = Random.Range(1, GridManager.save.data.playerLevel + 1);// cropNames.GetLength(0));
+                int[] levelProbability = new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 2 }; // 每個等級的機率百分比
+                int Level = levelProbability[Random.Range(0, levelProbability.Length)]; // 0-3 隨機等級
 
-                NewCrop.OnThisGrid = GridPrefabs[i];
-                NewCrop.GetRandomCrop(save.data.playerLevel);
-                NewCrop.ChangeSprite();
-                GridManager.CropAmount++;
+                GridManager.SpawnSpecifyCrop(i/10,i%10, i / 10, i % 10, Index, Level,0);
+
+                //GameObject chosenA = GridPrefabs[i];
+                //spawnPoint = chosenA.transform;
+                //GameObject spawnedB = Instantiate(BoxPrefabs, spawnPoint.position, Quaternion.identity);
+                //Script.Crop = spawnedB;
+                //Farm NewCrop = spawnedB.GetComponent<Farm>();
+
+                //NewCrop.OnThisGrid = GridPrefabs[i];//位置
+                //NewCrop.GetRandomCrop(save.data.playerLevel);
+                //NewCrop.ChangeSprite();//詳細作物資訊
+                               
+                //GridManager.CropAmount++;
                 save.AddBoxs(-1); // 減少剩餘箱子數量
                 showBox.text = save.data.Boxs.ToString();
                 return;

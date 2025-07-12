@@ -1,14 +1,16 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
+using System; //
+using System.Linq; // ä¸€å®šè¦åŠ åœ¨æª”æ¡ˆæœ€ä¸Šæ–¹ï¼
 public class Storage : MonoBehaviour
 {
-    public string playerID = "0000";// ª±®aª÷¿ú
-    //public int money = 1200000;// ª±®aª÷¿ú
+    public string playerID = "0000";// ç©å®¶é‡‘éŒ¢
+    //public int money = 1200000;// ç©å®¶é‡‘éŒ¢
     public TextMeshProUGUI txt_money;
-    public TextMeshProUGUI[] txt_level= new TextMeshProUGUI[11];
+    public TextMeshProUGUI[] txt_level = new TextMeshProUGUI[11];
     public GameObject panel_TextArea;
     public TextMeshProUGUI TextPerfab;
     public FirebaseTest Database;
@@ -19,50 +21,73 @@ public class Storage : MonoBehaviour
 
     public ButtonOnClick ButtonOnClickScript;
 
-    //¥ô°È¬ÛÃö
+    //ä»»å‹™ç›¸é—œ
     public TextMeshProUGUI questDepiction;
     public TextMeshProUGUI questReward;
-    public int questIndex = -1; // ¥Ø«e¥ô°È¯Á¤Ş¡A-1 ¥Nªí¨S¦³¥ô°È 0:»È¦æ¡A1:µ²±B¡A2:¥XÅu¡A3:ºt°Û·|
-    public int questCharacter = -1; // ¥Ø«e¥ô°È¯Á¤Ş¡A-1 ¥Nªí¨S¦³¥ô°È 0:¿ú¡A1:¯È®h¡A2:....
-    public int questExp = 0; // ¥ô°È¸gÅç­È
-    public int questMoney = 0; // ¥ô°Èª÷¿ú¼úÀy
-    //public int playerLevel = 1;//¶}±Òªº¨¤¦â¼Æ¶q
-    //public int Boxs = 100;// ³Ñ¾l½c¤l¼Æ¶q
-    public ShowExhibit exhibit; // Åã¥Ü®iÄıªº¸}¥»
-    
-    public  int MaxLevel = 50;
+    /*
+    public int questIndex = -1; // ç›®å‰ä»»å‹™ç´¢å¼•ï¼Œ-1 ä»£è¡¨æ²’æœ‰ä»»å‹™ 0:éŠ€è¡Œï¼Œ1:çµå©šï¼Œ2:å‡ºæ”¤ï¼Œ3:æ¼”å”±æœƒ
+    public int questCharacter = -1; // ç›®å‰ä»»å‹™ç´¢å¼•ï¼Œ-1 ä»£è¡¨æ²’æœ‰ä»»å‹™ 0:éŒ¢ï¼Œ1:ç´™å±‘ï¼Œ2:....
+    public int questExp = 0; // ä»»å‹™ç¶“é©—å€¼
+    public int questMoney = 0; // ä»»å‹™é‡‘éŒ¢çå‹µ
+    */
+    //public int playerLevel = 1;//é–‹å•Ÿçš„è§’è‰²æ•¸é‡
+    //public int Boxs = 100;// å‰©é¤˜ç®±å­æ•¸é‡
+    public ShowExhibit exhibit; // é¡¯ç¤ºå±•è¦½çš„è…³æœ¬
+
+    public int MaxLevel = 50;
 
     //public int[] cropExp   = new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-    //public int[] cropLevel = new int[] { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 }; // §@ª«µ¥¯Å¡A¹w³]¬° 1 µ¥¯Å
+    //public int[] cropLevel = new int[] { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 }; // ä½œç‰©ç­‰ç´šï¼Œé è¨­ç‚º 1 ç­‰ç´š
     public GridmManager GridManager;
     //public int Lands = 20;
 
     [System.Serializable]
     public class PlayerData
     {
-        public int money;// ª±®aª÷¿ú
+        public int money;// ç©å®¶é‡‘éŒ¢
         public int playerLevel;
         public int Lands;
-        public int Boxs;// ³Ñ¾l½c¤l¼Æ¶q
-        public int[] cropExp ;
-        public int[] cropLevel; // §@ª«µ¥¯Å¡A¹w³]¬° 1 µ¥¯Å
+        public int Boxs;// å‰©é¤˜ç®±å­æ•¸é‡
+
+        public int[] cropExp;
+        public int[] cropLevel; // ä½œç‰©ç­‰ç´šï¼Œé è¨­ç‚º 1 ç­‰ç´š
+
+        public string date;// å‰©é¤˜ç®±å­æ•¸é‡
+
+        public int[] GridStatus; // ç”¨ä¾†å­˜æ”¾æ ¼å­ç‹€æ…‹ï¼Œ0:ç©ºæ ¼ï¼Œ1:æœ‰ä½œç‰©ï¼Œ2:æœ‰ç®±å­
+        public int[] GridLevel; // ç”¨ä¾†å­˜æ”¾æ ¼å­ç­‰ç´šï¼Œ0:ç„¡ç­‰ç´šï¼Œ1:æœ‰ç­‰ç´š1çš„ä½œç‰©ï¼Œ2:æœ‰ç­‰ç´š2çš„ä½œç‰©ï¼Œ3:æœ‰ç­‰ç´š3çš„ä½œç‰©
+        public int[] CropCoin;  // ç”¨ä¾†å­˜æ”¾æ ¼å­ä½œç‰©çš„é‡‘éŒ¢å€¼ï¼Œ0:ç„¡ä½œç‰©ï¼Œ1:æœ‰ä½œç‰©1çš„é‡‘éŒ¢å€¼ï¼Œ2:æœ‰ä½œç‰©2çš„é‡‘éŒ¢å€¼ï¼Œ3:æœ‰ä½œç‰©3çš„é‡‘éŒ¢å€¼
+
+        public int questFalicity;
+        public int questCropIndex;
+        public int questMoney;
+        public int questExp;
 
     }
 
-    public PlayerData data = new PlayerData
+    public PlayerData data = new PlayerData//æ˜¯ä¸æ˜¯æ‡‰è©²æ”¾åœ¨ createAccount è£¡é¢ï¼Ÿ
     {
-        money = 1200,// ª±®aª÷¿ú
+        money = 1200,// ç©å®¶é‡‘éŒ¢
         playerLevel = 1,
         Lands = 20,
-        Boxs = 100,// ³Ñ¾l½c¤l¼Æ¶q
-        cropExp = new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-        cropLevel = new int[] { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 }, // §@ª«µ¥¯Å¡A¹w³]¬° 1 µ¥¯Å
+        Boxs = 100,// å‰©é¤˜ç®±å­æ•¸é‡
+        cropExp = new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+        cropLevel = new int[] { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 }, // ä½œç‰©ç­‰ç´šï¼Œé è¨­ç‚º 1 ç­‰ç´š
+        date = "0",
+        GridStatus = Enumerable.Repeat(-1, 120).ToArray(),
+        GridLevel =new int[120],
+        CropCoin=new int[120],
 
+        questFalicity=0,
+        questCropIndex=1,
+        questMoney=50,
+        questExp=50
     };
-    public Facilitys[] facilityArray;
-    //private int facility = 0; // 0:»È¦æ¡A1:µ²±B¡A2:¥XÅu¡A3:ºt°Û·|
 
-    private string[] cropName = new string[] { "ª÷¿ú", "¯È®h", "¦Ï¦×Äl", "ªüÃZ", "Taki", "+0", "SC", "Riku", "¥Ö¥d¥C", "ªi¦N", "¤½¥D" };
+    public Facilitys[] facilityArray;
+    //private int facility = 0; // 0:éŠ€è¡Œï¼Œ1:çµå©šï¼Œ2:å‡ºæ”¤ï¼Œ3:æ¼”å”±æœƒ
+
+    private string[] cropName = new string[] { "é‡‘éŒ¢", "ç´™å±‘", "ç¾Šè‚‰çˆ", "é˜¿éµ", "Taki", "+0", "SC", "Riku", "çš®å¡ä¸˜", "æ³¢å‰", "å…¬ä¸»" };
     private static string[,] cropNames = new string[,]
         {
            { "coin0","coin1","coin2","coin3","coin4","coin5","coin6","coin7","coin_C", "coin_C5", "coin_S", "coin_S5","coin_G","coin_G5"},
@@ -82,30 +107,23 @@ public class Storage : MonoBehaviour
 
     void Start()
     {
-        
 
+        //checkFacility();
 
-        checkFacility();
-
-        RandomQuest(); // ªì©l¤ÆÀH¾÷¥ô°È //©Î¸ü¤J¤§«eªº¥ô°È
+        //RandomQuest(); // åˆå§‹åŒ–éš¨æ©Ÿä»»å‹™ //æˆ–è¼‰å…¥ä¹‹å‰çš„ä»»å‹™
     }
 
     public void createAccount(string playerID)
     {
-        //   \"Tag\":{data},
-        //   \"cropExp\":{cropExp},
+        data.date=System.DateTime.Now.ToString("yyyyMMdd");//é ˆé‡ç½®æ—¥æœŸ å¦å‰‡æœƒæ˜¯PUBLICè¨­å®šçš„å€¼
         string cropExpString = JsonUtility.ToJson(data.cropExp);
-        //string cropExpString = "a,b,c,d";//string.Join(",", this.cropExp); // ±N cropExp °}¦CÂà´«¬°³r¸¹¤À¹jªº¦r¦ê
         string newPlayerData = JsonUtility.ToJson(data);
-        //$"{{\"cropExp\":{cropExpString},\"Boxs\":{data.Boxs},\"Lands\":{data.Lands},\"playerLevel\":{data.playerLevel},\"money\":{data.money}}}";
         Debug.Log(newPlayerData);
         Database.StartCoroutine(Database.WriteData(playerID, newPlayerData));
+
+        LoginRefreshValue();
     }
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+
 
     private void showTextMessage(string message)
     {
@@ -114,12 +132,12 @@ public class Storage : MonoBehaviour
 
         clonedTextGO.transform.SetParent(panel_TextArea.transform, false);
 
-        // ±Ò¥Î GameObject¡]¦pªG template ¬O hidden ªº¸Ü¡^
+        // å•Ÿç”¨ GameObjectï¼ˆå¦‚æœ template æ˜¯ hidden çš„è©±ï¼‰
         
         //GameObject clonedTextGO = Instantiate(TextPerfab.gameObject);
         //clonedTextGO.GetComponent<TextMeshProUGUI>().text = message;
-        //clonedTextGO.transform.SetParent(panel_TextArea.transform, false); // ³]©w¤÷ª«¥ó
-        clonedTextGO.SetActive(true); // ±Ò¥Î GameObject¡]¦pªG template ¬O hidden ªº¸Ü¡^
+        //clonedTextGO.transform.SetParent(panel_TextArea.transform, false); // è¨­å®šçˆ¶ç‰©ä»¶
+        clonedTextGO.SetActive(true); // å•Ÿç”¨ GameObjectï¼ˆå¦‚æœ template æ˜¯ hidden çš„è©±ï¼‰
     }
 
     private void showTextMessageMoney(int message)
@@ -135,21 +153,21 @@ public class Storage : MonoBehaviour
             clonedTextGO.GetComponent<TextMeshProUGUI>().text = message.ToString();
         }
         clonedTextGO.transform.SetParent(panel_TextAreaMoney.transform, false);
-        clonedTextGO.SetActive(true); // ±Ò¥Î GameObject¡]¦pªG template ¬O hidden ªº¸Ü¡^
+        clonedTextGO.SetActive(true); // å•Ÿç”¨ GameObjectï¼ˆå¦‚æœ template æ˜¯ hidden çš„è©±ï¼‰
     }
 
 
-    public void AddMoney(int amount) //±Mfor »È¦æ
+    public void AddMoney(int amount) //å°ˆfor éŠ€è¡Œ
     {
        
-        string message = $"{amount}¤¸¦s¤J¤F¶×Â×»È¦æ";
+        string message = $"{amount}å…ƒå­˜å…¥äº†åŒ¯è±éŠ€è¡Œ";
         showTextMessage(message);
         //showTextMessageMoney(amount);
         AddMoneyCompute(amount);
 
         //GameObject clonedTextGO = Instantiate(TextPerfab.gameObject);
-        //clonedTextGO.GetComponent<TextMeshProUGUI>().text = $"{amount}¤¸¦s¤J¤F¶×Â×»È¦æ";
-        //Debug.Log($"ª±®aª÷¿ú¼W¥[¡G{amount}¡A¥Ø«eª÷¿ú¡G{money}");
+        //clonedTextGO.GetComponent<TextMeshProUGUI>().text = $"{amount}å…ƒå­˜å…¥äº†åŒ¯è±éŠ€è¡Œ";
+        //Debug.Log($"ç©å®¶é‡‘éŒ¢å¢åŠ ï¼š{amount}ï¼Œç›®å‰é‡‘éŒ¢ï¼š{money}");
     }
     public void AddMoneyCompute(int amount)
     {
@@ -159,177 +177,186 @@ public class Storage : MonoBehaviour
         showTextMessageMoney(amount);
         StartCoroutine(Database.UpdateData($"{playerID}/money", data.money.ToString()));
     }
-    public void AddExp(int facility ,int CropIndex, int CropExp)//CropExp¬O§@ª«¶i¤Æ¶¥¬q //¦W¦r¨úªºÄê ³o±Mfor³]¬I
+    public void AddExp(int facility ,int CropIndex, int CropExp)//CropExpæ˜¯ä½œç‰©é€²åŒ–éšæ®µ //åå­—å–çš„çˆ› é€™å°ˆforè¨­æ–½
     {
 
-        //­pºâ¸gÅç­È
+        //è¨ˆç®—ç¶“é©—å€¼
         if (data.cropLevel[CropIndex] == MaxLevel)
         {
-            //Debug.Log($"¤wº¡µ¥¡I¥Ø«eµ¥¯Å¡G{cropLevel[CropIndex]}");
+            //Debug.Log($"å·²æ»¿ç­‰ï¼ç›®å‰ç­‰ç´šï¼š{cropLevel[CropIndex]}");
             return;
         }
         
         GameObject clonedTextGO = Instantiate(TextPerfab.gameObject);
-        //Åã¥Ü¤å¦r¬¡°Ê
+        //é¡¯ç¤ºæ–‡å­—æ´»å‹•
         int encreaseExp = 0;
         string description;
         switch (facility)
         {
-            case 0: // »È¦æ
+            case 0: // éŠ€è¡Œ
                 int[] CropExpLevel = new int[] { 1, 3, 10, 50 };
                 encreaseExp = CropExpLevel[CropExp];
-                AddExpCompute(CropIndex,encreaseExp); // ­pºâ¸gÅç­È
+                AddExpCompute(CropIndex,encreaseExp); // è¨ˆç®—ç¶“é©—å€¼
 
-                description = $"±N{cropName[CropIndex]}¦s¤J¤F¶×Â×»È¦æ¡I(EXP+{encreaseExp})";
+                description = $"å°‡{cropName[CropIndex]}å­˜å…¥äº†åŒ¯è±éŠ€è¡Œï¼(EXP+{encreaseExp})";
 
                 clonedTextGO.GetComponent<TextMeshProUGUI>().text = description;
 
 
-                description= $"±N{cropName[CropIndex]}\n¦s¤J¤F¶×Â×»È¦æ¡I";
+                description= $"å°‡{cropName[CropIndex]}\nå­˜å…¥äº†åŒ¯è±éŠ€è¡Œï¼";
                 exhibit.showEventExhibit(description, cropNames[CropIndex, CropExp],encreaseExp, 0);
                 break;
-            case 1: // µ²±B
+            case 1: // çµå©š
                 encreaseExp = facilityArray[1].expAmount;
-                AddExpCompute(CropIndex, encreaseExp); // ­pºâ¸gÅç­È
-                string[] marriageNames = { "¯È®h", "¦Ï¦×Äl", "ªüÃZ", "Taki", "+0", "SC", "Riku", "ªi¦N", "¤½¥D" };
+                AddExpCompute(CropIndex, encreaseExp); // è¨ˆç®—ç¶“é©—å€¼
+                string[] marriageNames = { "ç´™å±‘", "ç¾Šè‚‰çˆ", "é˜¿éµ", "Taki", "+0", "SC", "Riku", "æ³¢å‰", "å…¬ä¸»" };
 
-                string marrayName = marriageNames[Random.Range(0, marriageNames.Length)];
+                string marrayName = marriageNames[UnityEngine.Random.Range(0, marriageNames.Length)];
 
-                clonedTextGO.GetComponent<TextMeshProUGUI>().text = $"®¥³ß{cropName[CropIndex]}¸ò{marrayName}µ²±B¤F¡IEXP +{encreaseExp}";
-                description = $"®¥³ß\n{cropName[CropIndex]}¸ò{marrayName}µ²±B¤F¡I";
+                clonedTextGO.GetComponent<TextMeshProUGUI>().text = $"æ­å–œ{cropName[CropIndex]}è·Ÿ{marrayName}çµå©šäº†ï¼EXP +{encreaseExp}";
+                description = $"æ­å–œ\n{cropName[CropIndex]}è·Ÿ{marrayName}çµå©šäº†ï¼";
                 exhibit.showEventExhibit(description, cropNames[CropIndex, 3], encreaseExp, 0);
                 break;
-            case 2: // ¥XÅu
+            case 2: // å‡ºæ”¤
                 encreaseExp = facilityArray[2].expAmount;
-                AddExpCompute(CropIndex, encreaseExp); // ­pºâ¸gÅç­È
+                AddExpCompute(CropIndex, encreaseExp); // è¨ˆç®—ç¶“é©—å€¼
                 string CPName1;
                 string CPName2;
-                int a = Random.Range(0, 1);
+                int a = UnityEngine.Random.Range(0, 1);
                 if (a==0)
                 {
-                    string[] CPNames = { "¼Ö©`", "·R­µ", "Øp¹Ú", "·ü", "²n¥@", "²»¤l", "ªìµØ", "®ü¹a", "¥ß§Æ", "¿O" };
-                    CPName1 = CPNames[Random.Range(0, CPNames.Length)];
-                    CPName2 = CPNames[Random.Range(0, CPNames.Length)];
+                    string[] CPNames = { "æ¨‚å¥ˆ", "æ„›éŸ³", "å–µå¤¢", "ç¦", "çˆ½ä¸–", "ç¥¥å­", "åˆè¯", "æµ·éˆ´", "ç«‹å¸Œ", "ç‡ˆ" };
+                    CPName1 = CPNames[UnityEngine.Random.Range(0, CPNames.Length)];
+                    CPName2 = CPNames[UnityEngine.Random.Range(0, CPNames.Length)];
                     while (CPName2 == CPName1)
                     {
-                        CPName2 = CPNames[Random.Range(0, CPNames.Length)];
+                        CPName2 = CPNames[UnityEngine.Random.Range(0, CPNames.Length)];
                     }
                 }
 
                 else
                 {
-                    string[] CPNames = {  "®ç­»", "Îö", "¤¯µæ", "Rupa", "´¼" };
-                    CPName1 = CPNames[Random.Range(0, CPNames.Length)];
-                    CPName2 = CPNames[Random.Range(0, CPNames.Length)];
+                    string[] CPNames = {  "æ¡ƒé¦™", "æ˜´", "ä»èœ", "Rupa", "æ™º" };
+                    CPName1 = CPNames[UnityEngine.Random.Range(0, CPNames.Length)];
+                    CPName2 = CPNames[UnityEngine.Random.Range(0, CPNames.Length)];
                     while (CPName2 == CPName1)
                     {
-                        CPName2 = CPNames[Random.Range(0, CPNames.Length)];
+                        CPName2 = CPNames[UnityEngine.Random.Range(0, CPNames.Length)];
                     }
                 }
                 clonedTextGO.GetComponent<TextMeshProUGUI>().text =
-                            $"{cropName[CropIndex]}¥XÅu½æ¥»({CPName1} x {CPName2})¡I(EXP+{encreaseExp})";
+                            $"{cropName[CropIndex]}å‡ºæ”¤è³£æœ¬({CPName1} x {CPName2})ï¼(EXP+{encreaseExp})";
                 break;
-            case 3: // ºt°Û·|
+            case 3: // æ¼”å”±æœƒ
                 encreaseExp = facilityArray[3].expAmount;
-                AddExpCompute(CropIndex, encreaseExp); // ­pºâ¸gÅç­È
-                string[] bandname = { "¬ù§ô¬ù¹Î", "Ave Mujica", "MyGO!!!!!", "¦³¨ëµL¨ë" };//, "Poppin'Party", "Roselia", "Afterglow", "Pastel*Palettes", "Hello, Happy World!","RAISE A SUILEN", "Morfonica", "¹Ú­­¤jMewType",""};
+                AddExpCompute(CropIndex, encreaseExp); // è¨ˆç®—ç¶“é©—å€¼
+                string[] bandname = { "ç´„æŸç´„åœ˜", "Ave Mujica", "MyGO!!!!!", "æœ‰åˆºç„¡åˆº" };//, "Poppin'Party", "Roselia", "Afterglow", "Pastel*Palettes", "Hello, Happy World!","RAISE A SUILEN", "Morfonica", "å¤¢é™å¤§MewType",""};
 
 
 
-                clonedTextGO.GetComponent<TextMeshProUGUI>().text = $"{cropName[CropIndex]}¥h¬İ¤F{bandname[Random.Range(0, bandname.Length)]}ªººt°Û·|¡I(EXP+{encreaseExp})";
+                clonedTextGO.GetComponent<TextMeshProUGUI>().text = $"{cropName[CropIndex]}å»çœ‹äº†{bandname[UnityEngine.Random.Range(0, bandname.Length)]}çš„æ¼”å”±æœƒï¼(EXP+{encreaseExp})";
                 break;
             default:
-                //Debug.LogWarning("¥¼ª¾ªº³]¬IÃş«¬¡I");
+                //Debug.LogWarning("æœªçŸ¥çš„è¨­æ–½é¡å‹ï¼");
                 return;
         }
         clonedTextGO.transform.SetParent(panel_TextArea.transform, false); 
 
-        // ±Ò¥Î GameObject¡]¦pªG template ¬O hidden ªº¸Ü¡^
+        // å•Ÿç”¨ GameObjectï¼ˆå¦‚æœ template æ˜¯ hidden çš„è©±ï¼‰
         clonedTextGO.SetActive(true);
-        //½T»{µ¥¯Å
-        CheckQuestComplete(facility, CropIndex); // ÀË¬d¥ô°È¬O§_§¹¦¨
-        CheckLevelUp(CropIndex);
+        //ç¢ºèªç­‰ç´š
+        CheckQuestComplete(facility, CropIndex); // æª¢æŸ¥ä»»å‹™æ˜¯å¦å®Œæˆ
+        CheckLevelUp(CropIndex);//ä¸èƒ½æ“ºé€²AddExpComputeè£¡é¢ å› ç‚ºæœƒé‡è¤‡æ›´æ–°
+        StartCoroutine(Database.UpdateData($"{playerID}/cropExp/{CropIndex}", data.cropExp[CropIndex].ToString()));
+        StartCoroutine(Database.UpdateData($"{playerID}/cropLevel/{CropIndex}", data.cropLevel[CropIndex].ToString()));
+        
 
-        //Debug.Log($"§@ª«{CropIndex}¸gÅç­È¼W¥[¡G{CropExp * 50}¡A¥Ø«e¸gÅç­È¡G{cropExp[CropIndex]}¡Aµ¥¯Å¡G{cropLevel[CropIndex]}");
+        //Debug.Log($"ä½œç‰©{CropIndex}ç¶“é©—å€¼å¢åŠ ï¼š{CropExp * 50}ï¼Œç›®å‰ç¶“é©—å€¼ï¼š{cropExp[CropIndex]}ï¼Œç­‰ç´šï¼š{cropLevel[CropIndex]}");
     }
 
     public void AddExpCompute(int CropIndex, int encreaseExp)
     {
         data.cropExp[CropIndex] += encreaseExp;
+       //StartCoroutine(Database.ReadData(playerID.ToString()));
     }
 
-    // §PÂ_¬O§_¤É¯Å
+    // åˆ¤æ–·æ˜¯å¦å‡ç´š
     private void CheckLevelUp(int CropIndex)
     {
+        Debug.Log($"{CropIndex}");
         txt_level[CropIndex].text = data.cropLevel[CropIndex].ToString();
-        //Debug.Log($"{cropExp[CropIndex]}/{ExpToNextLevel(cropLevel[CropIndex])}");
+       
         txt_level[CropIndex].GetComponentInChildren<Slider>().value = data.cropExp[CropIndex] / ExpToNextLevel(data.cropLevel[CropIndex]);
         txt_level[CropIndex].GetComponentInChildren<Slider>().GetComponentInChildren<TextMeshProUGUI>().text = $"{data.cropExp[CropIndex]}/{ExpToNextLevel(data.cropLevel[CropIndex])}";
 
         while (data.cropExp[CropIndex] >= ExpToNextLevel(data.cropLevel[CropIndex]))
         {
-
+           
             data.cropExp[CropIndex] -= ExpToNextLevel(data.cropLevel[CropIndex]);
             data.cropLevel[CropIndex]++;
             
             txt_level[CropIndex].text = data.cropLevel[CropIndex].ToString();
             txt_level[CropIndex].GetComponentInChildren<Slider>().value = data.cropExp[CropIndex]/ ExpToNextLevel(data.cropLevel[CropIndex]);
             txt_level[CropIndex].GetComponentInChildren<Slider>().GetComponentInChildren<TextMeshProUGUI>().text =$"{data.cropExp[CropIndex]}/{ExpToNextLevel(data.cropLevel[CropIndex])}";
-            //Debug.Log($"¤É¯Å¡I¥Ø«eµ¥¯Å¡G{cropLevel[CropIndex]}");
+            
+            //Debug.Log($"å‡ç´šï¼ç›®å‰ç­‰ç´šï¼š{cropLevel[CropIndex]}");
 
-            // TODO: ¥i¥[§Ş¯àÂI¼Æ¡B¼úÀy¡B¸ÑÂêª««~µ¥
+            // TODO: å¯åŠ æŠ€èƒ½é»æ•¸ã€çå‹µã€è§£é–ç‰©å“ç­‰
         }
         
     }
     private int ExpToNextLevel(int level)
     {
-        return 100 + (level - 1) * 50; // µ¥¯Å1»İ100¡B2»İ150¡B3»İ200...
+        return 100 + (level - 1) * 50; // ç­‰ç´š1éœ€100ã€2éœ€150ã€3éœ€200...
     }
 
     public void buyLand()
     {
-        int LandPrice = data.Lands * 5; // ¨C¤gªº»ù®æ
+        int LandPrice = data.Lands * 5; // æ¯åœŸçš„åƒ¹æ ¼
         if (data.money < LandPrice)
         {
 
-            showTextMessage($"¦s´Ú¤£¨¬");
+            showTextMessage($"å­˜æ¬¾ä¸è¶³");
             return;
         }
         if (GridManager.OpenGridCell())
         {
-            data.money = data.money - LandPrice;
-            txt_money.text = data.money.ToString();
-            string message = $"Àò±o·s¤g¦a(-{LandPrice} Coins)";
+            //data.money = data.money - LandPrice;
+            AddMoneyCompute(-LandPrice);
+            //txt_money.text = data.money.ToString();
+            string message = $"ç²å¾—æ–°åœŸåœ°(-{LandPrice} Coins)";
             showTextMessage(message);
 
-            showTextMessageMoney(LandPrice*-1);
+            //showTextMessageMoney(LandPrice*-1);
+            StartCoroutine(Database.UpdateData($"{playerID}/Lands", data.Lands.ToString()));
+
         }
 
     }
 
     public void buyChatacter()
     {
-        int price = data.playerLevel *1000; // ¨C­Ó¨¤¦âªº»ù®æ
+        int price = data.playerLevel *1000; // æ¯å€‹è§’è‰²çš„åƒ¹æ ¼
         if (data.money < price)
         {
            
-            showTextMessage($"¦s´Ú¤£¨¬");
+            showTextMessage($"å­˜æ¬¾ä¸è¶³");
             return;
         }
         if (SetPlayerLevel())
         {
             
-            //money = money - price;// ¼È©w¨C­Ó¨¤¦â100¤¸
+            //money = money - price;// æš«å®šæ¯å€‹è§’è‰²100å…ƒ
             //txt_money.text = money.ToString();
-            string message = $"Àò±o·s¨¤¦â(-{price} Coins)";
+            string message = $"ç²å¾—æ–°è§’è‰²(-{price} Coins)";
             showTextMessage(message);
             AddMoneyCompute(-price);
             //showTextMessageMoney(price * -1);
-            UnlockCharacter.text = $"¸ÑÂê¨¤¦â\n({data.playerLevel * 1000} Coins)";
+            UnlockCharacter.text = $"è§£é–è§’è‰²\n({data.playerLevel * 1000} Coins)";
             
 
              //GameObject clonedTextGO = Instantiate(TextPerfab.gameObject);
-             //clonedTextGO.GetComponent<TextMeshProUGUI>().text = $"{amount}¤¸¦s¤J¤F¶×Â×»È¦æ";
+             //clonedTextGO.GetComponent<TextMeshProUGUI>().text = $"{amount}å…ƒå­˜å…¥äº†åŒ¯è±éŠ€è¡Œ";
              checkFacility();
              CheckLevelUp(data.playerLevel);
         }
@@ -343,7 +370,7 @@ public class Storage : MonoBehaviour
             CharaterIndex[data.playerLevel -1].SetActive(true);
             if (data.playerLevel == cropName.Length-1)
             {
-                CharaterIndex[data.playerLevel].SetActive(false);//³£¸Ñª±§¹ ÁôÂÃ¸ÑÂê«ö¶s
+                CharaterIndex[data.playerLevel].SetActive(false);//éƒ½è§£ç©å®Œ éš±è—è§£é–æŒ‰éˆ•
             }
             
 
@@ -368,62 +395,70 @@ public class Storage : MonoBehaviour
         }
     }
 
-    public void RandomQuest()//
+    public void RandomQuest()
     {
-        questIndex = Random.Range(0,(data.playerLevel / 3)+1); // ­«¸m¥ô°È¯Á¤Ş
-        questCharacter = Random.Range(1, data.playerLevel +1); // ­«¸m¥ô°È¨¤¦â¯Á¤Ş
-        int[] expList = new int[] { 50, 50, 50, 50, 50, 100, 100, 200, 300 }; // ¥ô°È¸gÅç­È¦Cªí
+        data.questFalicity = UnityEngine.Random.Range(0,(data.playerLevel / 3)+1); // é‡ç½®ä»»å‹™ç´¢å¼•
+        data.questCropIndex= UnityEngine.Random.Range(1, data.playerLevel +1); // é‡ç½®ä»»å‹™è§’è‰²ç´¢å¼•
+        int[] expList = new int[] { 50, 50, 50, 50, 50, 100, 100, 200, 300 }; // ä»»å‹™ç¶“é©—å€¼åˆ—è¡¨
 
-        questExp = expList[Random.Range(0,expList.Length)]; // ­«¸m¥ô°È¸gÅç­È
+        data.questExp = expList[UnityEngine.Random.Range(0,expList.Length)]; // é‡ç½®ä»»å‹™ç¶“é©—å€¼
 
-        int[] moneyList = new int[]{50, 50, 50, 50, 50, 100, 100, 200,300}; // ¥ô°Èª÷¿ú¼úÀy¦Cªí
-        questMoney = moneyList[Random.Range(0,moneyList.Length)]; // ­«¸m¥ô°Èª÷¿ú¼úÀy
-        //Debug.Log($"¥ô°È{playerLevel}/{questCharacter} /{questExp} /{questMoney}");
+        int[] moneyList = new int[]{50, 50, 50, 50, 50, 100, 100, 200,300}; // ä»»å‹™é‡‘éŒ¢çå‹µåˆ—è¡¨
+        data.questMoney = moneyList[UnityEngine.Random.Range(0,moneyList.Length)]; // é‡ç½®ä»»å‹™é‡‘éŒ¢çå‹µ
+                                                                                   //Debug.Log($"ä»»å‹™{playerLevel}/{questCharacter} /{questExp} /{questMoney}");
 
-        switch (questIndex)//ÀH¾÷¥ô°È
+        StartCoroutine(Database.UpdateData($"{playerID}/questFalicity", data.questFalicity.ToString()));
+        StartCoroutine(Database.UpdateData($"{playerID}/questCropIndex", data.questCropIndex.ToString()));
+        StartCoroutine(Database.UpdateData($"{playerID}/questExp", data.questExp.ToString()));
+        StartCoroutine(Database.UpdateData($"{playerID}/questMoney", data.questMoney.ToString()));
+        showQuestDepiction(); // é¡¯ç¤ºä»»å‹™æè¿°
+
+
+
+    }
+    private void showQuestDepiction()
+    {
+        switch (data.questFalicity)//éš¨æ©Ÿä»»å‹™
         {
             case 0:
-                questDepiction.text = $"±N{cropName[questCharacter]}¦s¤J¶×Â×»È¦æ";
-                questReward.text = $"EXP +{questExp}\nCoin +{questMoney}";
+                questDepiction.text = $"å°‡{cropName[data.questCropIndex]}å­˜å…¥åŒ¯è±éŠ€è¡Œ";
+                questReward.text = $"EXP +{data.questExp}\nCoin +{data.questMoney}";
 
                 break;
 
             case 1:
-                // 1¯Å¥ô°È
-                questDepiction.text = $"Åı{cropName[questCharacter]}¶i¦æµ²±B";
-                questReward.text = $"EXP +{questExp}\nCoin +{questMoney}";
+                // 1ç´šä»»å‹™
+                questDepiction.text = $"è®“{cropName[data.questCropIndex]}é€²è¡Œçµå©š";
+                questReward.text = $"EXP +{data.questExp}\nCoin +{data.questMoney}";
 
                 break;
 
             case 2:
-                // 2¯Å¥ô°È
-                questDepiction.text = $"Åı{cropName[questCharacter]}µe¥»¥XÅu";
-                questReward.text = $"EXP +{questExp}\nCoin +{questMoney}";
+                // 2ç´šä»»å‹™
+                questDepiction.text = $"è®“{cropName[data.questCropIndex]}ç•«æœ¬å‡ºæ”¤";
+                questReward.text = $"EXP +{data.questExp}\nCoin +{data.questMoney}";
 
                 break;
             case 3:
-                // 3¯Å¥ô°È
-                questDepiction.text = $"Åı{cropName[questCharacter]}¬İºt°Û·|";
-                questReward.text = $"EXP +{questExp}\nCoin +{questMoney}";
+                // 3ç´šä»»å‹™
+                questDepiction.text = $"è®“{cropName[data.questCropIndex]}çœ‹æ¼”å”±æœƒ";
+                questReward.text = $"EXP +{data.questExp}\nCoin +{data.questMoney}";
 
                 break;
 
         }
-
-        
     }
-
-    public void CheckQuestComplete(int falicity, int cropIndex) // ÀË¬d¥ô°È¬O§_§¹¦¨
+    public void CheckQuestComplete(int falicity, int cropIndex) // æª¢æŸ¥ä»»å‹™æ˜¯å¦å®Œæˆ
     {
-        if(questIndex == falicity && questCharacter == cropIndex)
+        if(data.questFalicity == falicity && data.questCropIndex == cropIndex)
         {
 
-            AddExpCompute(cropIndex, questExp); // ­pºâ¸gÅç­È
-            AddMoneyCompute(questMoney); // ­pºâª÷¿ú¼úÀy
-            exhibit.showBonus(questMoney, questExp);
-            //showTextMessage($"§¹¦¨¥ô°È¡G{questDepiction.text}");
+            AddExpCompute(cropIndex, data.questExp); // è¨ˆç®—ç¶“é©—å€¼
+            AddMoneyCompute(data.questMoney); // è¨ˆç®—é‡‘éŒ¢çå‹µ
+            exhibit.showBonus(data.questMoney, data.questExp);
+            //showTextMessage($"å®Œæˆä»»å‹™ï¼š{questDepiction.text}");
 
-            RandomQuest(); // ­«¸mÀH¾÷¥ô°È
+            RandomQuest(); // é‡ç½®éš¨æ©Ÿä»»å‹™
             
         }
         return;
@@ -439,21 +474,60 @@ public class Storage : MonoBehaviour
         data.playerLevel++;
         StartCoroutine(Database.UpdateData($"{playerID}/playerLevel", data.playerLevel.ToString()));
     }
-
+    public void UpdateCrop(int Position, int Status,int Level,int coin)
+    {
+        data.GridStatus[Position] = Status;
+        data.GridLevel[Position] = Level; // åŸæœ¬ä½ç½®çš„ç­‰ç´š
+        StartCoroutine(Database.UpdateData($"{playerID}/GridStatus/{Position}", data.GridStatus[Position].ToString()));
+        StartCoroutine(Database.UpdateData($"{playerID}/GridLevel/{Position}", data.GridLevel[Position].ToString()));
+        UpdateCropCoin(Position, coin);
+    }
+    public void UpdateCropPosition(int prevPosition,int newPosition)
+    {
+        //ä½œç‰©åˆ°æ–°ä½ç½®
+        UpdateCrop(newPosition, data.GridStatus[prevPosition], data.GridLevel[prevPosition], data.CropCoin[prevPosition]);
+        UpdateCrop(prevPosition, -1, 0, 0); // æ¸…é™¤åŸæœ¬ä½ç½®çš„ä½œç‰©
+    }
+    public void UpdateCropCoin(int Position, int RemainCoin)
+    {
+        data.CropCoin[Position] = RemainCoin;
+        StartCoroutine(Database.UpdateData($"{playerID}/CropCoin/{Position}", data.CropCoin[Position].ToString()));
+    }
 
     public void LoginRefreshValue()
     {
         ButtonOnClickScript.showBox.text = data.Boxs.ToString();
         txt_money.text = data.money.ToString();
-       
-        for (int i = 0; i < data.playerLevel; i++)
+
+        for (int i = 0; i < data.cropExp.Length-2; i++)
         {
-            
-            CharaterIndex[i].SetActive(true);  
-            CheckLevelUp(i+1);//­nÂ\¦b¦U¨¤¦âµ¥¯Å«á­±  ¥H½T»{§ó·s¸gÅç­È
-                               
+            CheckLevelUp(i+1);//æ›´æ–°ç­‰ç´š ç¶“é©—å€¼é¡¯ç¤º                
+            if(i<data.playerLevel)
+                CharaterIndex[i].SetActive(true);  
         }
        checkFacility();
 
+        for (int i=20;i<data.Lands;i++)
+        {
+            GridManager.ShowGridCell(i);
+        }
+        string today = System.DateTime.Now.ToString("yyyyMMdd");
+        Debug.Log($"ä»Šå¤©æ—¥æœŸï¼š{today}ï¼Œç™»å…¥æ—¥æœŸï¼š{data.date}");
+        if (int.Parse(data.date) < int.Parse(today))
+        { 
+            AddBoxs(100); // æ¯å¤©ç™»å…¥çå‹µ10å€‹ç®±å­
+            ButtonOnClickScript.showBox.text = data.Boxs.ToString();
+            StartCoroutine(Database.UpdateData($"{playerID}/Boxs", data.Boxs.ToString()));
+            data.date = today; // æ›´æ–°æ—¥æœŸ
+            StartCoroutine(Database.UpdateData($"{playerID}/date", data.date));
+        }
+
+        for (int i = 0; i < data.Lands; i++)
+        {         
+            if (data.GridStatus[i] != -1)// å¦‚æœæ ¼å­ç‹€æ…‹ç‚º-1ï¼Œå‰‡è·³é
+                GridManager.SpawnSpecifyCrop(i/10, i%10, i / 10, i % 10, data.GridStatus[i], data.GridLevel[i], data.CropCoin[i]); // ç”ŸæˆæŒ‡å®šä½ç½®çš„ä½œç‰©
+        }
+
+        showQuestDepiction();
     }
 }

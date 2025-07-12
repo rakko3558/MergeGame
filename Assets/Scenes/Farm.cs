@@ -36,17 +36,23 @@ public class Farm : MonoBehaviour
     }
     public void ChangeSprite()
     {
+        /*
         OnThisGrid.GetComponent<GridCell>().status = CropIndex; // 設定格子狀態為有作物
         OnThisGrid.GetComponent<GridCell>().level = CropLevel;
+        */
         Sprite firstSprite = Resources.Load<Sprite>("Source/"+ cropNames[CropIndex,CropLevel]);
         SpriteRenderer U_Sprite = GetComponentInChildren<SpriteRenderer>();
         U_Sprite.sprite = firstSprite;
 
-        if (CropLevel == 3 && CropIndex!=0)
+        if (CropLevel == 3 && CropIndex!=0 && HaveCoin>0)
         {
-            HaveCoin= GridsManager.save.data.cropLevel[CropIndex];
-           
+            
             U_Sprite.color = new Color(1f, 0.9f, 0.5f, 1f);
+        }
+        if (CropLevel == 3 && CropIndex != 0 && HaveCoin == 0)
+        {
+
+            U_Sprite.color = new Color(0.5f, 0.5f, 0.5f, 1f);
         }
     }
     // Update is called once per frame

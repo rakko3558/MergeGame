@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
 using UnityEngine.Networking;
 using System.Collections;
-
+using System; //
+using System.Linq;
 public class FirebaseTest : MonoBehaviour
 {
     public Storage save;
@@ -52,7 +53,7 @@ public class FirebaseTest : MonoBehaviour
     }
     public IEnumerator generateID()
     {
-        string random = Random.Range(0, 9).ToString() + Random.Range(0, 9).ToString() + Random.Range(0, 9).ToString() + Random.Range(0, 9).ToString(); // 生成隨機用戶ID
+        string random = UnityEngine.Random.Range(0, 9).ToString() + UnityEngine.Random.Range(0, 9).ToString() + UnityEngine.Random.Range(0, 9).ToString() + UnityEngine.Random.Range(0, 9).ToString(); // 生成隨機用戶ID
 
         string url = $"https://merge-3ac49-default-rtdb.firebaseio.com/{random}.json";
         UnityWebRequest request = UnityWebRequest.Get(url);
@@ -86,7 +87,7 @@ public class FirebaseTest : MonoBehaviour
         
     }
 
-    IEnumerator ReadData(string key)
+    public IEnumerator ReadData(string key)
     {
         string url = $"https://merge-3ac49-default-rtdb.firebaseio.com/{key}.json";
         UnityWebRequest request = UnityWebRequest.Get(url);
@@ -106,11 +107,42 @@ public class FirebaseTest : MonoBehaviour
             save.data.Boxs = playerData.Boxs;
             save.data.money = playerData.money;
             save.data.playerLevel = playerData.playerLevel;
+            save.data.cropExp = playerData.cropExp; // 初始化 CropLevel 陣列
+            save.data.cropLevel = playerData.cropLevel; // 初始化 CropLevel 陣列
+            if (save.data.cropLevel == null)
+            {
+                save.data.cropLevel = new int[] { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 }; // 確保陣列不為 null，避免後續操作出錯
+            }
+            if (save.data.cropExp == null)
+            {
+                save.data.cropExp = new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }; // 確保陣列不為 null，避免後續操作出錯
+            }
+                //string loginDate = playerData.logingDate;
 
-            //string loginDate = playerData.logingDate;
-            
             save.data.Lands = playerData.Lands;
+            save.data.date = playerData.date;
+            if (save.data.date == null || save.data.date == "")
+            {
+                save.data.date = System.DateTime.Now.ToString("yyyyMMdd");
+            }
 
+            save.data.GridStatus = playerData.GridStatus;
+            save.data.GridLevel = playerData.GridLevel;
+            save.data.CropCoin = playerData.CropCoin;
+            if (save.data.GridStatus == null)
+            {
+                save.data.GridStatus = Enumerable.Repeat(-1, 120).ToArray();
+                save.data.GridLevel = new int[120];
+                save.data.CropCoin = new int[120];
+            }
+            //寫回去 以免資料不完整 寫入有缺誤 下次讀取變null值
+
+            save.data.questFalicity= playerData.questFalicity ;
+            save.data.questCropIndex=playerData.questCropIndex;
+            save.data.questMoney=    playerData.questMoney;
+            save.data.questExp= playerData.questExp ;
+
+            StartCoroutine(WriteData(save.playerID, JsonUtility.ToJson(save.data)));
 
             save.LoginRefreshValue();
             // 測試用印出
@@ -146,15 +178,18 @@ public class FirebaseTest : MonoBehaviour
 [System.Serializable]
 public class PlayerData
 {
-    //public string playerID;
-    public int Boxs;
-    public int money;
+    public int money;// 玩家金錢
     public int playerLevel;
-
-    public string logingDate;
-    
     public int Lands;
-    
-
-
+    public int Boxs;// 剩餘箱子數量
+    public int[] cropExp;
+    public int[] cropLevel; // 作物等級，預設為 1 等級
+    public string date; // 登入日期
+    public int[] GridStatus;
+     public int[] GridLevel;
+    public int[] CropCoin;
+    public int questFalicity; // 任務設施
+    public int questCropIndex;
+    public int questMoney;
+    public int questExp;
 }

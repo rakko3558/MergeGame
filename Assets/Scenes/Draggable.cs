@@ -27,23 +27,30 @@ public class Draggable : MonoBehaviour
 
         if ( GetComponent<Farm>().CropIndex != 0 && GetComponent<Farm>().CropLevel == 3 && GetComponent<Farm>().HaveCoin != 0)
             {
-
-            while (GetComponent<Farm>().HaveCoin > 0)
+            if (GetComponent<Farm>().HaveCoin > 0)
             {
-                Collider2D NearestEmptyGrid = NocolliderGetNearestGrid();
-                if (NearestEmptyGrid != null)
+                while (GetComponent<Farm>().HaveCoin > 0)
                 {
-                    GetComponent<Farm>().HaveCoin--;
-                    //Collider2D NearestEmptyGrid = NocolliderGetNearestGrid();
+                    Collider2D NearestEmptyGrid = NocolliderGetNearestGrid();
+                    if (NearestEmptyGrid != null)
+                    {
+                        GetComponent<Farm>().HaveCoin--;
+                        //Collider2D NearestEmptyGrid = NocolliderGetNearestGrid();
+                        int x = NearestEmptyGrid.GetComponent<GridCell>().x;
+                        int y = NearestEmptyGrid.GetComponent<GridCell>().y;
+                        int x1 = GetComponent<Farm>().OnThisGrid.GetComponent<GridCell>().x;
+                        int y1 = GetComponent<Farm>().OnThisGrid.GetComponent<GridCell>().y;
+                        GridManager.GetComponent<GridmManager>().SpawnSpecifyCrop(x, y,x1,y1, 0, 0, 0);
 
-                    SpawnSpecifyCrop(NearestEmptyGrid.GetComponent<GridCell>().x, NearestEmptyGrid.GetComponent<GridCell>().y, 0, 0);
+                        //GetComponentInChildren<SpriteRenderer>().color = new Color(1f, 1f, 1f, 1f);
+                    }
+                    else
+                    {
+                        break;
+                    }
 
-                    //GetComponentInChildren<SpriteRenderer>().color = new Color(1f, 1f, 1f, 1f);
                 }
-                else {
-                    break;
-                }
-                  
+                GridManager.GetComponent<GridmManager>().save.UpdateCropCoin(GetComponent<Farm>().OnThisGrid.GetComponent<GridCell>().x*10+ GetComponent<Farm>().OnThisGrid.GetComponent<GridCell>().y, GetComponent<Farm>().HaveCoin);
             }
             if (GetComponent<Farm>().HaveCoin <= 0)
             {
@@ -60,10 +67,13 @@ public class Draggable : MonoBehaviour
 
         if (GetComponent<Farm>().OnThisGrid != null)
         {
+            GridManager.GetComponent<GridmManager>().save.UpdateCrop(GetComponent<Farm>().OnThisGrid.GetComponent<GridCell>().x * 10 + GetComponent<Farm>().OnThisGrid.GetComponent<GridCell>().y, -1, 0, 0);
+
             GetComponent<Farm>().OnThisGrid.GetComponent<GridCell>().status = -1;
             GetComponent<Farm>().OnThisGrid.GetComponent<GridCell>().level = 0;
             GetComponent<Farm>().OnThisGrid.GetComponent<GridCell>().Crop = null;// 清除原格子引用
             GetComponent<Farm>().OnThisGrid = null; //清除原格子上的作物引用 
+
         }
     }
     public void OnReleased()
@@ -90,14 +100,14 @@ public class Draggable : MonoBehaviour
         Collider2D NearestTriggerGrid = GetNearestGrid();//獲取當前碰直撞距離最近的格子(物件)
 
 
-        if (NearestTriggerGrid != null)
+        if (NearestTriggerGrid != null)//放上去的格子有東西
         {
             if (NearestTriggerGrid.GetComponent<GridCell>().Crop != null && NearestTriggerGrid.GetComponent<GridCell>().status == GetComponent<Farm>().CropIndex && NearestTriggerGrid.GetComponent<GridCell>().level == GetComponent<Farm>().CropLevel &&( NearestTriggerGrid.GetComponent<GridCell>().level<3 || (NearestTriggerGrid.GetComponent<GridCell>().status == 0 && NearestTriggerGrid.GetComponent<GridCell>().level < 5)))//同樣物品進行合成
             {
                 Queue<GameObject> SameCropCells = new Queue<GameObject>()  ;
                 SameCropCells = GridManager.GetComponent<GridmManager>().SearchSameCrop(SameCropCells, NearestTriggerGrid.GetComponent<GridCell>().x, NearestTriggerGrid.GetComponent<GridCell>().y);//, new HashSet<(int, int)>()); // 搜索同樣作物
                 //Debug.Log($"數量:{SameCropCells.Count}");
-                if (SameCropCells.Count >= 2)
+                if (SameCropCells.Count >= 2) //同物件 數量3個以上 融合
                 {
                     int LevelingAmount = (SameCropCells.Count+1) / 5 * 2 + ((SameCropCells.Count+1)%5)/ 3;
                     int LeaveAmount = (SameCropCells.Count+1)%5%3;
@@ -111,31 +121,44 @@ public class Draggable : MonoBehaviour
                     }
                     GridManager.GetComponent<GridmManager>().CropAmount = GridManager.GetComponent<GridmManager>().CropAmount - (SameCropCells.Count + 1);
 
-                    MoveToGrid(NearestTriggerGrid);
-                    NearestTriggerGrid.GetComponent<GridCell>().Crop = gameObject;
+                    
                     
                     
                     
                     GetComponent<Farm>().CropLevel++; // 合成後等級提升
+                    if (GetComponent<Farm>().CropLevel == 3 && GetComponent<Farm>().CropIndex != 0)
+                    {
+                        GetComponent<Farm>().HaveCoin = GridManager.GetComponent<GridmManager>().save.data.cropLevel[GetComponent<Farm>().CropIndex];
+                    }
+                    Debug.Log($"合成後等級:{GetComponent<Farm>().CropLevel}");
                     GetComponent<Farm>().ChangeSprite(); // 更新圖片
+                    //GridManager.GetComponent<GridmManager>().save.UpdateCrop(GetComponent<Farm>().OnThisGrid.GetComponent<GridCell>().x*10+ GetComponent<Farm>().OnThisGrid.GetComponent<GridCell>().y, GetComponent<Farm>().CropIndex, GetComponent<Farm>().CropLevel, GetComponent<Farm>().HaveCoin);
+                    MoveToGrid(NearestTriggerGrid);//連著以上更新的資訊一起存檔
+                    NearestTriggerGrid.GetComponent<GridCell>().Crop = gameObject;
                     for (int i = 0; i < LevelingAmount-1; i++)
                     {
                         Collider2D NearestEmptyGrid = NocolliderGetNearestGrid();
-
-                        SpawnSpecifyCrop(NearestEmptyGrid.GetComponent<GridCell>().x, NearestEmptyGrid.GetComponent<GridCell>().y, GetComponent<Farm>().CropIndex,GetComponent<Farm>().CropLevel);
+                        int x = NearestEmptyGrid.GetComponent<GridCell>().x;
+                        int y = NearestEmptyGrid.GetComponent<GridCell>().y;
+                        int x1 = GetComponent<Farm>().OnThisGrid.GetComponent<GridCell>().x;
+                        int y1 = GetComponent<Farm>().OnThisGrid.GetComponent<GridCell>().y;
+                        GridManager.GetComponent<GridmManager>().SpawnSpecifyCrop(x, y, x1,y1,GetComponent<Farm>().CropIndex,GetComponent<Farm>().CropLevel, GetComponent<Farm>().HaveCoin);
                     }
                     for (int i = 0; i < LeaveAmount; i++)
                     {
                         Collider2D NearestEmptyGrid = NocolliderGetNearestGrid();
 
-
-                        SpawnSpecifyCrop(NearestEmptyGrid.GetComponent<GridCell>().x, NearestEmptyGrid.GetComponent<GridCell>().y, GetComponent<Farm>().CropIndex, GetComponent<Farm>().CropLevel-1);
+                        int x = NearestEmptyGrid.GetComponent<GridCell>().x;
+                        int y = NearestEmptyGrid.GetComponent<GridCell>().y;
+                        int x1 = GetComponent<Farm>().OnThisGrid.GetComponent<GridCell>().x;
+                        int y1 = GetComponent<Farm>().OnThisGrid.GetComponent<GridCell>().y;
+                        GridManager.GetComponent<GridmManager>().SpawnSpecifyCrop(x, y,x1,y1, GetComponent<Farm>().CropIndex, GetComponent<Farm>().CropLevel-1, GetComponent<Farm>().HaveCoin);
 
                     }
                    
                     //GridManager.GetComponent<GridmManager>().CropAmount = GridManager.GetComponent<GridmManager>().CropAmount - (SameCropCells.Count+1) + LevelingAmount+ LeaveAmount;//整體作物數量
                 }
-                else {//同物件 數量不夠
+                else {//同物件 數量不夠 互換位置
                     GridCell GridCellTmp = NearestTriggerGrid.GetComponent<GridCell>();//要移動上去的那一塊地
                     GameObject TmpCrop = GridCellTmp.Crop;//要移動上去的那一塊地上原本的作物
                     Collider2D NearestTmpEmptyGrid = TmpCrop.GetComponent<Draggable>().NocolliderGetNearestGrid();//要移動上去的那一塊地上原本的作物 離他最近的其他空地
@@ -143,9 +166,13 @@ public class Draggable : MonoBehaviour
                     TmpCrop.GetComponent<Draggable>().MoveToGrid(NearestTmpEmptyGrid);//該作物移去該空地
                     NearestTmpEmptyGrid.GetComponent<GridCell>().Crop = TmpCrop;
 
+                    /*
+                    GridManager.GetComponent<GridmManager>().save.UpdateCrop(NearestTriggerGrid.GetComponent<GridCell>().x * 10 + NearestTriggerGrid.GetComponent<GridCell>().y, -1, 0, 0);
+
                     NearestTriggerGrid.GetComponent<GridCell>().status = -1;
                     NearestTriggerGrid.GetComponent<GridCell>().level = 0;
                     NearestTriggerGrid.GetComponent<GridCell>().Crop = null;
+                    */
                     //GridCellTmp.Crop.GetComponent<Draggable>().MoveToGrid(GridCellTmpSecond);
 
                     //GridCellTmp.Crop = null;
@@ -167,10 +194,13 @@ public class Draggable : MonoBehaviour
                    
                     TmpCrop.GetComponent<Draggable>().MoveToGrid(NearestTmpEmptyGrid);//該作物移去該空地
                     NearestTmpEmptyGrid.GetComponent<GridCell>().Crop = TmpCrop;
-
+/*
+                    GridManager.GetComponent<GridmManager>().save.UpdateCrop(NearestTriggerGrid.GetComponent<GridCell>().x * 10 + NearestTriggerGrid.GetComponent<GridCell>().y, -1, 0, 0);
+                    
                     NearestTriggerGrid.GetComponent<GridCell>().status = -1;
                     NearestTriggerGrid.GetComponent<GridCell>().level = 0;
                     NearestTriggerGrid.GetComponent<GridCell>().Crop = null;
+                    */
                     //!GridCellTmp.Crop.GetComponent<Farm>().MoveToOtherGrid(GridCellTmp.x, GridCellTmp.y);
 
                 }
@@ -179,7 +209,7 @@ public class Draggable : MonoBehaviour
                 NearestTriggerGrid.GetComponent<GridCell>().Crop = gameObject;
             }
         }
-        else if (NearestTriggerGrid == null)// 沒有碰撞時 獲取的格子中距離最近的空格子
+        else if (NearestTriggerGrid == null)// 沒有碰撞時 獲取的格子中距離最近的空格子 //放上去的格子沒東西
         {
             Collider2D NearestEmptyGrid = NocolliderGetNearestGrid();
 
@@ -202,7 +232,9 @@ public class Draggable : MonoBehaviour
             }
             GridManager.GetComponent<GridmManager>().ChargeBank(initailChange);
             GridManager.GetComponent<GridmManager>().CropAmount--;
+            //GridManager.GetComponent<GridmManager>().save.UpdateCrop.(GetComponent<Farm>().OnThisGrid.GetComponent<GridCell>().x*10 + GetComponent<Farm>().OnThisGrid.GetComponent<GridCell>().y, -1, 0, 0); // 更新儲存格子資訊
             Destroy(gameObject); // 刪除作物
+
             return; //如果是初始作物，直接換算錢錢
         }
         else if (Crop.CropIndex != 0)
@@ -210,11 +242,13 @@ public class Draggable : MonoBehaviour
             GridManager.GetComponent<GridmManager>().ChargeCropExp(facility,Crop.CropIndex, Crop.CropLevel);
 
             GridManager.GetComponent<GridmManager>().CropAmount--;
-
+           // GridManager.GetComponent<GridmManager>().save.UpdateCrop().( GetComponent<Farm>().OnThisGrid.GetComponent<GridCell>().x * 10 + GetComponent<Farm>().OnThisGrid.GetComponent<GridCell>().y, -1, 0, 0); // 更新儲存格子資訊
+            
             Destroy(gameObject); // 刪除作物
             return; //如果是初始作物，直接換算錢錢
         }
     }
+    /*
     public void SpawnSpecifyCrop(int x, int y, int status, int level)
     {
 
@@ -231,13 +265,15 @@ public class Draggable : MonoBehaviour
         GridManager.GetComponent<GridmManager>().CropAmount++;
         return;
     }
-
+    */
     private void DestroyCrop(GameObject Grid)//刪除作物
-    {
+    {    
+        GridManager.GetComponent<GridmManager>().save.UpdateCrop(Grid.GetComponent<GridCell>().x*10 + Grid.GetComponent<GridCell>().y,- 1,0,0);
+ 
         Grid.GetComponent<GridCell>().status = -1;
         Grid.GetComponent<GridCell>().level = 0;
         Grid.GetComponent<GridCell>().Crop = null;
-    }
+       }
     // 獲取當前碰撞的格子中距離最近的格子
     private Collider2D GetNearestGrid()
     {
@@ -293,13 +329,16 @@ public class Draggable : MonoBehaviour
     {
         // 移動到格子中心
         //GetComponent<Farm>().OnThisGrid.GetComponent<GridCell>().Crop = null;
-
+        //Debug.Log($"存在{GetComponent<Farm>().OnThisGrid.GetComponent<GridCell>().x}");
+        
         GetComponent<Moving>().StartMoving(false,grid.bounds.center);
         GetComponent<Farm>().OnThisGrid = grid.gameObject;
         GetComponent<Farm>().OnThisGrid.GetComponent<GridCell>().status =  GetComponent<Farm>().CropIndex;
         GetComponent<Farm>().OnThisGrid.GetComponent<GridCell>().level = GetComponent<Farm>().CropLevel;
+        Debug.Log($"{GetComponent<Farm>().CropIndex}");
+        GridManager.GetComponent<GridmManager>().save.UpdateCrop(GetComponent<Farm>().OnThisGrid.GetComponent<GridCell>().x * 10 + GetComponent<Farm>().OnThisGrid.GetComponent<GridCell>().y, GetComponent<Farm>().CropIndex, GetComponent<Farm>().CropLevel, GetComponent<Farm>().HaveCoin);
 
-       
+
     }
     void OnTriggerEnter2D(Collider2D other)
     {

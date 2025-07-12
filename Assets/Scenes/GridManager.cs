@@ -14,7 +14,7 @@ public class GridmManager : MonoBehaviour
     public float cellSpacing = 1f;
     public float originPosition = 0f;
     public GameObject Buttom;
-
+    public GameObject BoxPrefabs;
     public GameObject OpenLandButtom;
     public Storage save;
     public GameObject[,] GridPrefabs;
@@ -90,7 +90,7 @@ public class GridmManager : MonoBehaviour
     }
 
 
-    void GenerateGrid()
+    public void GenerateGrid()
     {
         Lands= save.data.Lands;
         int openLands = Lands;
@@ -241,27 +241,54 @@ public class GridmManager : MonoBehaviour
     }
     public bool OpenGridCell()
     {
-        if (Lands < width * height)
+        if (save.data.Lands < width * height)
         {
-            GameObject cell = GridPrefabs[Lands / 10, Lands % 10];
-            cell.GetComponent<GridCell>().isOpen = true;//啟用地
-            cell.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Source/Rectangle");
-            cell.GetComponent<SpriteRenderer>().color = new Color(1f, 1f, 1f, 0f); // 白色 + 半透明
-            Lands++;
-            save.data.Lands = Lands;
-            if (Lands < width * height)
-            {
-                //OpenLandButtom.GetComponentInChildren<TextMeshProUGUI>().text=new string($"開地({Lands*10} Coins)");
-                OpenLandText.text = new string($"{Lands*5}");
-                OpenLandButtom.transform.position = GridPrefabs[Lands / 10, Lands % 10].transform.position;
-               
+            save.data.Lands++;
 
-            }
-            else if (Lands == width * height)
-                OpenLandButtom.transform.position = new Vector3(0f,0f,-10f);
+            ShowGridCell(save.data.Lands-1);
             return true;
         }
         return false;
         
+    }
+    public void ShowGridCell(int openNo)
+    {
+        GameObject cell = GridPrefabs[openNo / 10, openNo % 10];
+        cell.GetComponent<GridCell>().isOpen = true;//啟用地
+        cell.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Source/Rectangle");
+        cell.GetComponent<SpriteRenderer>().color = new Color(1f, 1f, 1f, 0f); // 白色 + 半透明
+
+        if (openNo < width * height)
+        {
+            //OpenLandButtom.GetComponentInChildren<TextMeshProUGUI>().text=new string($"開地({Lands*10} Coins)");
+            OpenLandText.text = new string($"{openNo * 5}");
+            OpenLandButtom.transform.position = GridPrefabs[openNo / 10, openNo % 10].transform.position;
+
+
+        }
+        else if (openNo == width * height)
+            OpenLandButtom.transform.position = new Vector3(0f, 0f, -10f);
+    }
+    public void SpawnSpecifyCrop(int x, int y, int x1, int y1, int status, int level, int coin)
+    {
+
+        GameObject spawned = Instantiate(BoxPrefabs, GridPrefabs[x1, y1].transform.position, Quaternion.identity);
+
+        //spawnedB.transform.rotation = Quaternion.Euler(0, 0, 0);
+        spawned.GetComponentInChildren<SpriteRenderer>().color = new Color(1f, 1f, 1f, 1f);
+        GridPrefabs[x, y].GetComponent<GridCell>().Crop = spawned;
+        spawned.GetComponent<Moving>().StartMoving(false, GridPrefabs[x, y].transform.position);
+        spawned.GetComponent<Farm>().OnThisGrid = GridPrefabs[x, y];
+        spawned.GetComponent<Farm>().OnThisGrid.GetComponent<GridCell>().status = status;
+        spawned.GetComponent<Farm>().OnThisGrid.GetComponent<GridCell>().level = level;
+        spawned.GetComponent<Farm>().CropIndex = status;
+        spawned.GetComponent<Farm>().CropLevel = level;
+        spawned.GetComponent<Farm>().HaveCoin = coin;
+       
+        spawned.GetComponent<Farm>().ChangeSprite();
+        CropAmount++;
+
+        save.UpdateCrop(x*10+y, status,level,coin);
+        return;
     }
 }
