@@ -64,6 +64,7 @@ public class CameraDrag : MonoBehaviour
                 prevTouchZeroPos = touchZero.position;
                 prevTouchOnePos = touchOne.position;
                 isZooming = true;
+                isDragging = false;
                 return;
             }
 
@@ -83,19 +84,11 @@ public class CameraDrag : MonoBehaviour
         }
         else if(!isZooming)
         {
-
-
-
             //Debug.Log($"CameraDrag: {EventSystem.current.IsPointerOverGameObject()}");
-
-
-
             /*
             Vector3 mouseScreenPos = Input.mousePosition;
             mouseScreenPos.z = 10f; //  設定 z 軸為正數（對應 2D 相機）
             */
-
-
             /*       if (Input.GetMouseButtonDown(0))
                    {
                        if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject())
@@ -192,7 +185,7 @@ public class CameraDrag : MonoBehaviour
             {
                 isDragging = false;
             }
-
+            
             if (isDragging)
             {
                 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -203,7 +196,7 @@ public class CameraDrag : MonoBehaviour
                 transform.position = newPosition;
 
             }
-
+            
             if (DragCrop)//如果拖曳作物
             {
                 Vector3 pos = transform.position;

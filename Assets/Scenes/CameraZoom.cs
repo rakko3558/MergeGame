@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class CameraZoom : MonoBehaviour
 {
+    /*
     public float zoomSpeed = 5f;         // 簎近は莱硉
     public float minZoom = 3f;           // 程跌à程┰
     public float maxZoom = 8f;          // 程跌à程┰环
@@ -21,6 +22,7 @@ public class CameraZoom : MonoBehaviour
 
     void Update()
     {
+        Debug.Log($"CameraZoom Start{cam}");
         float scroll = Input.GetAxis("Mouse ScrollWheel"); // 眔簎近禸
 
         if (scroll != 0f)
@@ -61,5 +63,5 @@ public class CameraZoom : MonoBehaviour
         {
             isZooming = false;
         }
-    }
+    }*/
 }
