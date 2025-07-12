@@ -81,7 +81,7 @@ public class CameraDrag : MonoBehaviour
             prevTouchZeroPos = touchZero.position;
             prevTouchOnePos = touchOne.position;
         }
-        else
+        else if(!isZooming)
         {
 
 
@@ -92,7 +92,7 @@ public class CameraDrag : MonoBehaviour
 
             /*
             Vector3 mouseScreenPos = Input.mousePosition;
-            mouseScreenPos.z = 10f; // 🔧 設定 z 軸為正數（對應 2D 相機）
+            mouseScreenPos.z = 10f; //  設定 z 軸為正數（對應 2D 相機）
             */
 
 
@@ -136,6 +136,7 @@ public class CameraDrag : MonoBehaviour
                    }
                }
             */
+            /*
             if (Input.touchCount == 2)
             {
                 Touch touchZero = Input.GetTouch(0);
@@ -168,7 +169,7 @@ public class CameraDrag : MonoBehaviour
             {
                 isZooming = false;
             }
-
+            */
 
             if (Input.GetMouseButtonDown(0))
             {
@@ -203,7 +204,7 @@ public class CameraDrag : MonoBehaviour
 
             }
 
-            if (DragCrop)
+            if (DragCrop)//如果拖曳作物
             {
                 Vector3 pos = transform.position;
                 Vector3 DraggingPosition = Camera.main.WorldToScreenPoint(Crop.transform.position);
