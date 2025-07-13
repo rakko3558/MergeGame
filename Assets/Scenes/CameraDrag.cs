@@ -48,9 +48,10 @@ public class CameraDrag : MonoBehaviour
     {
         // 處理滾輪縮放
         float scroll = Input.GetAxis("Mouse ScrollWheel"); // 取得滾輪軸值
-
+        
         if (scroll != 0f)
         {
+            Debug.Log($"{scroll}");
             cam.orthographicSize -= scroll * zoomSpeed;
             cam.orthographicSize = Mathf.Clamp(cam.orthographicSize, minZoom, maxZoom);
         }
@@ -168,25 +169,23 @@ public class CameraDrag : MonoBehaviour
         if (touchStatus == 2)
         {
 
-            Touch touch1 = Input.GetTouch(0);
-            Touch touch2 = Input.GetTouch(1);
-            if (touch1.phase == TouchPhase.Began && touch2.phase == TouchPhase.Began)
-            {
-                lastDist = Vector2.Distance(touch1.position, touch2.position);
-            }
+            touchZero = Input.GetTouch(0);
+            touchOne = Input.GetTouch(1);
 
-            if (touch1.phase == TouchPhase.Moved && touch2.phase == TouchPhase.Moved)
-            {
-                float newDist = Vector2.Distance(touch1.position, touch2.position);
-                touchDist = lastDist - newDist;
-                lastDist = newDist;
+            // 計算上一幀與這一幀的距離差
+            float prevMagnitude = (prevTouchZeroPos - prevTouchOnePos).magnitude;
+            float currentMagnitude = (touchZero.position - touchOne.position).magnitude;
 
-                // Your Code Here
-                //cam.orthographicSize += touchDist * 0.01f;
-                cam.orthographicSize = Mathf.Clamp(cam.orthographicSize + touchDist * 0.01f, PhoneMinZoom, PhoneMaxZoom);
+            float difference = currentMagnitude - prevMagnitude;
 
-                //Camera.main.fieldOfView += touchDist * 0.1f;
-            }
+            // 縮放處理
+            cam.orthographicSize -= difference * 0.01f;
+            cam.orthographicSize = Mathf.Clamp(cam.orthographicSize, PhoneMinZoom, PhoneMaxZoom);
+
+            // 更新上一幀位置
+            prevTouchZeroPos = touchZero.position;
+            prevTouchOnePos = touchOne.position;
+
             /*  touchZero = Input.GetTouch(0);
              touchOne = Input.GetTouch(1);
 
@@ -205,8 +204,8 @@ public class CameraDrag : MonoBehaviour
              prevTouchOnePos = touchOne.position; */
 
         }
-       
 
+   
         /*
         if (Input.touchCount == 2)
         {
