@@ -17,8 +17,8 @@ public class CameraDrag : MonoBehaviour
     private bool isZooming = false;
     private Vector2 prevTouchZeroPos;
     private Vector2 prevTouchOnePos;
-    private Touch touchZero;
-    private Touch touchOne;
+    private Touch touch1;
+    private Touch touch2;
     float touchDist = 0;
     float lastDist = 0;
     public TextMeshProUGUI dist;
@@ -126,9 +126,12 @@ public class CameraDrag : MonoBehaviour
             // 第一次觸發縮放時，儲存初始位置
             if (touchStatus < 2)
             {
+                touch1 = Input.GetTouch(0);
+                touch2 = Input.GetTouch(1);             
+                lastDist = Vector2.Distance(touch1.position, touch2.position);
                 
-                prevTouchZeroPos = touchZero.position;
-                prevTouchOnePos = touchOne.position;
+                //prevTouchZeroPos = touchZero.position;
+                //prevTouchOnePos = touchOne.position;
                 touchStatus = 2; // 雙指觸控
                 return;
             }
@@ -172,18 +175,12 @@ public class CameraDrag : MonoBehaviour
         if (touchStatus == 2)
         {
 
-            Touch touch1 = Input.GetTouch(0);
-            Touch touch2 = Input.GetTouch(1);
-            if (touch1.phase == TouchPhase.Began && touch2.phase == TouchPhase.Began)
-            {
-                lastDist = Vector2.Distance(touch1.position, touch2.position);
-            }
+            
 
-            else if (touch1.phase == TouchPhase.Moved && touch2.phase == TouchPhase.Moved)
-            {
+           
                 float newDist = Vector2.Distance(touch1.position, touch2.position);
                 touchDist = lastDist - newDist;
-                lastDist = newDist;
+                //lastDist = newDist;
                
                     // Your Code Here
                 //cam.orthographicSize = cam.orthographicSize + touchDist * 0.01f;
@@ -191,19 +188,13 @@ public class CameraDrag : MonoBehaviour
 
                 
                 
-                if (touchDist != 0f)
-                {
-                    float sc = 0f;
-                    if (touchDist > 1)
-                        sc = touchDist;
-                    if (touchDist < 1)
-                        sc = touchDist;
-                    cam.orthographicSize = cam.orthographicSize - sc * 0.01f;
-                    cam.orthographicSize = Mathf.Clamp(cam.orthographicSize, PhoneMinZoom, PhoneMaxZoom);
+               
+                cam.orthographicSize = cam.orthographicSize + touchDist * 0.001f;
+                cam.orthographicSize = Mathf.Clamp(cam.orthographicSize, PhoneMinZoom, PhoneMaxZoom);
                     
-                }
+               
                 dist.text = $"間距:{touchDist},鏡頭:{cam.orthographicSize}";
-            }
+        }
             /*  touchZero = Input.GetTouch(0);
              touchOne = Input.GetTouch(1);
 
@@ -221,7 +212,7 @@ public class CameraDrag : MonoBehaviour
              prevTouchZeroPos = touchZero.position;
              prevTouchOnePos = touchOne.position; */
 
-        }
+        
 
 
         /*
