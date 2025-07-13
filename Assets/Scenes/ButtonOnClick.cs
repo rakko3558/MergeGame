@@ -28,13 +28,13 @@ public class ButtonOnClick : MonoBehaviour
             return; // 如果沒有剩餘的箱子，則不執行任何操作
 
         }
-        if (GridManager.Lands == GridManager.CropAmount)
+        if (GridManager.save.data.Lands == GridManager.CropAmount)
         {
             //Debug.Log("沒有空格子可以放置物品了！！");
             return;
         }
         //int index = Random.Range(0, GridPrefabs.Count);
-        for (int i = 0; i < GridManager.Lands; i++)
+        for (int i = 0; i < GridManager.save.data.Lands; i++)
         {
 
             GridCell Script = GridPrefabs[i].GetComponent<GridCell>();

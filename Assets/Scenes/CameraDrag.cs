@@ -169,7 +169,8 @@ public class CameraDrag : MonoBehaviour
         {
             Touch touch1 = Input.GetTouch(0);
             Touch touch2 = Input.GetTouch(1);
-            if (touch1.phase == TouchPhase.Began && touch2.phase == TouchPhase.Began)
+
+            if (touch1.phase == TouchPhase.Began || touch2.phase == TouchPhase.Began)
             {
                 lastDist = Vector2.Distance(touch1.position, touch2.position);
             }
@@ -177,32 +178,32 @@ public class CameraDrag : MonoBehaviour
             if (touch1.phase == TouchPhase.Moved && touch2.phase == TouchPhase.Moved)
             {
                 float newDist = Vector2.Distance(touch1.position, touch2.position);
-                touchDist = lastDist - newDist;
+                if (Mathf.Approximately(lastDist, 0f)) return; // 避免除以0
+
+                float zoomFactor = newDist / lastDist; // 重點改法：比例
+
+                cam.orthographicSize /= zoomFactor; // 小數大於1 = 放大
+                cam.orthographicSize = Mathf.Clamp(cam.orthographicSize, PhoneMinZoom, PhoneMaxZoom);
+
                 lastDist = newDist;
-
-                // Your Code Here
-                cam.orthographicSize += touchDist * 0.01f;
-                cam.orthographicSize = Mathf.Clamp(cam.orthographicSize, PhoneMinZoom, PhoneMaxZoom);
-
-                //Camera.main.fieldOfView += touchDist * 0.1f;
             }
-               /*  touchZero = Input.GetTouch(0);
-                touchOne = Input.GetTouch(1);
+            /*  touchZero = Input.GetTouch(0);
+             touchOne = Input.GetTouch(1);
 
-                // 計算上一幀與這一幀的距離差
-                float prevMagnitude = (prevTouchZeroPos - prevTouchOnePos).magnitude;
-                float currentMagnitude = (touchZero.position - touchOne.position).magnitude;
+             // 計算上一幀與這一幀的距離差
+             float prevMagnitude = (prevTouchZeroPos - prevTouchOnePos).magnitude;
+             float currentMagnitude = (touchZero.position - touchOne.position).magnitude;
 
-                float difference = currentMagnitude - prevMagnitude;
+             float difference = currentMagnitude - prevMagnitude;
 
-                // 縮放處理
-                cam.orthographicSize -= difference * 0.01f; 
-                cam.orthographicSize = Mathf.Clamp(cam.orthographicSize, PhoneMinZoom, PhoneMaxZoom);
+             // 縮放處理
+             cam.orthographicSize -= difference * 0.01f; 
+             cam.orthographicSize = Mathf.Clamp(cam.orthographicSize, PhoneMinZoom, PhoneMaxZoom);
 
-                // 更新上一幀位置
-                prevTouchZeroPos = touchZero.position;
-                prevTouchOnePos = touchOne.position; */
-            
+             // 更新上一幀位置
+             prevTouchZeroPos = touchZero.position;
+             prevTouchOnePos = touchOne.position; */
+
         }
        
 

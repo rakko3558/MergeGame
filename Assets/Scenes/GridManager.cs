@@ -22,7 +22,7 @@ public class GridmManager : MonoBehaviour
     public int CropAmount = 0; // 作物數量
     //public List<GameObject> GridPrefabs;
     // Start is called before the first frame update
-    public int Lands=0;
+    //public int Lands=0;
     public TextMeshPro OpenLandText;
 
     public LayerMask clickableLayer;
@@ -92,8 +92,8 @@ public class GridmManager : MonoBehaviour
 
     public void GenerateGrid()
     {
-        Lands= save.data.Lands;
-        int openLands = Lands;
+        
+        int openLands = save.data.Lands;
 
         GridPrefabs = new GameObject[width, height];
         for (int x = 0; x < width; x++)
@@ -134,9 +134,9 @@ public class GridmManager : MonoBehaviour
         Destroy(cellPrefab);
 
         //設定開地按鈕
-        if (Lands < width * height)
+        if (save.data.Lands < width * height)
         {
-            OpenLandButtom.transform.position = GridPrefabs[Lands / 10,Lands % 10].transform.position;
+            OpenLandButtom.transform.position = GridPrefabs[save.data.Lands / 10, save.data.Lands % 10].transform.position;
         }
         
     }
@@ -243,6 +243,7 @@ public class GridmManager : MonoBehaviour
     {
         if (save.data.Lands < width * height)
         {
+
             save.data.Lands++;
 
             ShowGridCell(save.data.Lands-1);
