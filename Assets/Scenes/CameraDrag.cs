@@ -21,6 +21,7 @@ public class CameraDrag : MonoBehaviour
     private Touch touch2;
     float touchDist = 0;
     float lastDist = 0;
+    float lastsize = 0;
     public TextMeshProUGUI dist;
 
     private Vector3 lastMousePosition;
@@ -129,7 +130,7 @@ public class CameraDrag : MonoBehaviour
                 touch1 = Input.GetTouch(0);
                 touch2 = Input.GetTouch(1);             
                 lastDist = Vector2.Distance(touch1.position, touch2.position);
-                
+                lastsize = cam.orthographicSize;
                 //prevTouchZeroPos = touchZero.position;
                 //prevTouchOnePos = touchOne.position;
                 touchStatus = 2; // 雙指觸控
@@ -190,7 +191,7 @@ public class CameraDrag : MonoBehaviour
                 
                 
                
-                cam.orthographicSize = cam.orthographicSize + touchDist * 0.001f;
+                cam.orthographicSize = lastsize + touchDist * 0.01f;
                 cam.orthographicSize = Mathf.Clamp(cam.orthographicSize, PhoneMinZoom, PhoneMaxZoom);
                     
                
