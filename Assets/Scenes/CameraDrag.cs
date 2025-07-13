@@ -37,6 +37,7 @@ public class CameraDrag : MonoBehaviour
     private int touchStatus = 0; // 0: 無觸控, 1: 單指觸控, 2: 雙指觸控
     Touch touchZero ;
     Touch touchOne  ;
+    bool spacekeyisdown=false;
     void Start()
     {
         cam = Camera.main;
@@ -52,13 +53,21 @@ public class CameraDrag : MonoBehaviour
             cam.orthographicSize -= scroll * zoomSpeed;
             cam.orthographicSize = Mathf.Clamp(cam.orthographicSize, minZoom, maxZoom);
         }
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            spacekeyisdown = true;
+        }
+        else
+        {
+            spacekeyisdown= false;
+        }
 
-        if (Input.GetMouseButtonUp(0))
+
+        if (Input.GetMouseButtonUp(0)&& Input.touchCount==0)
             touchStatus = 0;
 
         if (Input.touchCount == 1 && touchStatus < 2 || Input.GetMouseButtonDown(0) && touchStatus < 2)
         {
-            Debug.Log("1");
             if (touchStatus < 1)
             {
                 if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject())
@@ -66,23 +75,29 @@ public class CameraDrag : MonoBehaviour
 
                 Vector2 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
                 Collider2D hit = Physics2D.OverlapPoint(mouseWorldPos);
-                Debug.Log("1-1");
                 if (hit == null) // 沒碰到東西才能拖曳
                 {
-                    Debug.Log("1-2");
                     lastMousePosition = mouseWorldPos;
                     touchStatus = 1;
                     return;
                 }
             }
         }
-        if (Input.touchCount == 2)
+        if (Input.touchCount == 2 || Input.GetMouseButtonDown(0) && spacekeyisdown)
         {
             // 第一次觸發縮放時，儲存初始位置
             if (touchStatus < 2)
             {
                 prevTouchZeroPos = touchZero.position;
-                prevTouchOnePos = touchOne.position;
+                if (spacekeyisdown)
+                {
+
+                    prevTouchOnePos = new Vector2(0, 0);
+                }
+                else {
+
+                    prevTouchOnePos = touchOne.position;
+                }
                 touchStatus = 2; // 雙指觸控
                 return;
             }
@@ -95,34 +110,28 @@ public class CameraDrag : MonoBehaviour
 
         if (touchStatus==1)
         { 
-            Debug.Log($"QQ:{touchStatus}");
-            Debug.Log("0");
             if (touchStatus < 1)
             {
-                Debug.Log("1");
                 if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject())
                     return;
 
                 Vector2 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
                 Collider2D hit = Physics2D.OverlapPoint(mouseWorldPos);
-                Debug.Log("1-1");
+          
                 if (hit == null) // 沒碰到東西才能拖曳
                 {
-                    Debug.Log("1-2");
                     lastMousePosition = mouseWorldPos;
                     touchStatus = 1;
                     return;
                 }
             }
 
-            Debug.Log("2");
             mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             Vector3 newPosition = transform.position + lastMousePosition - (Vector3)mouseWorldPos;
             newPosition.x = Mathf.Clamp(newPosition.x, minX, maxX);
             newPosition.y = Mathf.Clamp(newPosition.y, minY, maxY);
 
             transform.position = newPosition;
-            Debug.Log("點擊了物件: " + newPosition);
         }
 
         if (touchStatus == 2)
@@ -143,7 +152,16 @@ public class CameraDrag : MonoBehaviour
 
             // 更新上一幀位置
             prevTouchZeroPos = touchZero.position;
-            prevTouchOnePos = touchOne.position;
+            if (spacekeyisdown)
+            {
+
+                prevTouchOnePos = new Vector2(0, 0);
+            }
+            else
+            {
+
+                prevTouchOnePos = touchOne.position;
+            }
         }
 
         if (DragCrop)//如果拖曳作物
