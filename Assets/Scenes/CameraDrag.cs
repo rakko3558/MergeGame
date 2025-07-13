@@ -22,7 +22,6 @@ public class CameraDrag : MonoBehaviour
     float touchDist = 0;
     float lastDist = 0;
     float lastsize = 0;
-    public TextMeshProUGUI dist;
 
     private Vector3 lastMousePosition;
     private bool isDragging = false;
@@ -198,7 +197,7 @@ public class CameraDrag : MonoBehaviour
 
 
                
-            } dist.text = $"last:{lastDist},new:{newDist},size:{cam.orthographicSize}";
+            } 
         }
             /*  touchZero = Input.GetTouch(0);
              touchOne = Input.GetTouch(1);
