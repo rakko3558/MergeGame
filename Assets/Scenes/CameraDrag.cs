@@ -21,14 +21,7 @@ public class CameraDrag : MonoBehaviour
     float lastDist = 0;
 
 
-    private bool wasZoomingLastFrame; // Touch mode only
-    private Vector2[] lastZoomPositions; // Touch mode only
     private Vector3 lastMousePosition;
-    private static readonly float[] ZoomBounds = new float[] { 10f, 85f };
-
-    private static readonly float ZoomSpeedTouch = 0.1f;
-
-
     private bool isDragging = false;
 
     public float minX = -10.0f;
@@ -139,7 +132,6 @@ public class CameraDrag : MonoBehaviour
         if (touchStatus==2 && Input.touchCount != 2) 
         {
             touchStatus = 3;
-            wasZoomingLastFrame = false;
         }
 
         if (touchStatus ==0)
@@ -176,25 +168,25 @@ public class CameraDrag : MonoBehaviour
         if (touchStatus == 2)
         {
 
-            Vector2[] ZnewPositions = new Vector2[] { Input.GetTouch(0).position, Input.GetTouch(1).position };
-            if (!wasZoomingLastFrame)
+            Touch touch1 = Input.GetTouch(0);
+            Touch touch2 = Input.GetTouch(1);
+            if (touch1.phase == TouchPhase.Began && touch2.phase == TouchPhase.Began)
             {
-                lastZoomPositions = ZnewPositions;
-                wasZoomingLastFrame = true;
+                lastDist = Vector2.Distance(touch1.position, touch2.position);
             }
-            else
+
+            if (touch1.phase == TouchPhase.Moved && touch2.phase == TouchPhase.Moved)
             {
-                // Zoom based on the distance between the new positions compared to the 
-                // distance between the previous positions.
-                float newDistance = Vector2.Distance(ZnewPositions[0], ZnewPositions[1]);
-                float oldDistance = Vector2.Distance(lastZoomPositions[0], lastZoomPositions[1]);
-                float offset = newDistance - oldDistance;
+                float newDist = Vector2.Distance(touch1.position, touch2.position);
+                touchDist = lastDist - newDist;
+                lastDist = newDist;
 
-                ZoomCamera(offset, ZoomSpeedTouch);
+                // Your Code Here
+                //cam.orthographicSize += touchDist * 0.01f;
+                cam.orthographicSize = Mathf.Clamp(cam.orthographicSize + touchDist * 0.01f, PhoneMinZoom, PhoneMaxZoom);
 
-                lastZoomPositions = ZnewPositions;
+                //Camera.main.fieldOfView += touchDist * 0.1f;
             }
-        
             /*  touchZero = Input.GetTouch(0);
              touchOne = Input.GetTouch(1);
 
@@ -238,16 +230,5 @@ public class CameraDrag : MonoBehaviour
         }
         */
 
-    }
-
-
-    void ZoomCamera(float offset, float speed)
-    {
-        if (offset == 0)
-        {
-            return;
-        }
-
-        cam.fieldOfView = Mathf.Clamp(cam.fieldOfView - (offset * speed), ZoomBounds[0], ZoomBounds[1]);
     }
 }
