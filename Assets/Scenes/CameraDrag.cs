@@ -193,7 +193,7 @@ public class CameraDrag : MonoBehaviour
                 cam.orthographicSize = Mathf.Clamp(cam.orthographicSize, PhoneMinZoom, PhoneMaxZoom);
                     
                
-                dist.text = $"間距:{touchDist},鏡頭:{cam.orthographicSize}";
+                dist.text = $"last:{lastDist},new:{newDist},size:{cam.orthographicSize}";
         }
             /*  touchZero = Input.GetTouch(0);
              touchOne = Input.GetTouch(1);
