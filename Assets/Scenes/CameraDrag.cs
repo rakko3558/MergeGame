@@ -15,7 +15,8 @@ public class CameraDrag : MonoBehaviour
     private bool isZooming = false;
     private Vector2 prevTouchZeroPos;
     private Vector2 prevTouchOnePos;
-
+    private Touch touchZero;
+    private Touch touchOne;
 
 
 
@@ -35,9 +36,8 @@ public class CameraDrag : MonoBehaviour
     private float borderThickness = 50.0f;
     private float scrollSpeed = 5f;
     private int touchStatus = 0; // 0: 無觸控, 1: 單指觸控, 2: 雙指觸控
-    Touch touchZero ;
-    Touch touchOne  ;
-    bool spacekeyisdown=false;
+    
+    bool mouseisdown = false;
     void Start()
     {
         cam = Camera.main;
@@ -53,20 +53,52 @@ public class CameraDrag : MonoBehaviour
             cam.orthographicSize -= scroll * zoomSpeed;
             cam.orthographicSize = Mathf.Clamp(cam.orthographicSize, minZoom, maxZoom);
         }
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetMouseButtonDown(0))
         {
-            spacekeyisdown = true;
+            mouseisdown = true;
         }
-        else
+        else if (Input.GetMouseButtonUp(0))
         {
-            spacekeyisdown= false;
+            mouseisdown = false;
         }
+        if (DragCrop)//如果拖曳作物
+        {
+            Vector3 pos = transform.position;
+            Vector3 DraggingPosition = Camera.main.WorldToScreenPoint(Crop.transform.position);
+
+            if (DraggingPosition.x >= Screen.width - borderThickness)
+            {
+                pos.x += scrollSpeed * Time.deltaTime;
+            }
+            else if (DraggingPosition.x <= borderThickness)
+            {
+                pos.x -= scrollSpeed * Time.deltaTime;
+            }
+            if (DraggingPosition.y >= Screen.height - borderThickness)
+            {
+                pos.y += scrollSpeed * Time.deltaTime;
+            }
+            else if (DraggingPosition.y <= borderThickness)
+            {
+                pos.y -= scrollSpeed * Time.deltaTime;
 
 
-        if (Input.GetMouseButtonUp(0)&& Input.touchCount==0)
+            }
+
+            pos.x = Mathf.Clamp(pos.x, minX, maxX);
+            pos.y = Mathf.Clamp(pos.y, minY, maxY);
+
+            transform.position = pos;
+            return;
+        }
+
+       
+
+
+        if (mouseisdown==false && Input.touchCount == 0 )
             touchStatus = 0;
 
-        if (Input.touchCount == 1 && touchStatus < 2 || Input.GetMouseButtonDown(0) && touchStatus < 2)
+        if (Input.touchCount == 1 && touchStatus < 2 || mouseisdown && touchStatus < 2)
         {
             if (touchStatus < 1)
             {
@@ -83,21 +115,16 @@ public class CameraDrag : MonoBehaviour
                 }
             }
         }
-        if (Input.touchCount == 2 || Input.GetMouseButtonDown(0) && spacekeyisdown)
+        if (Input.touchCount == 2 )
         {
+
+            Debug.Log($"ZOOM");
             // 第一次觸發縮放時，儲存初始位置
             if (touchStatus < 2)
             {
+                
                 prevTouchZeroPos = touchZero.position;
-                if (spacekeyisdown)
-                {
-
-                    prevTouchOnePos = new Vector2(0, 0);
-                }
-                else {
-
-                    prevTouchOnePos = touchOne.position;
-                }
+                prevTouchOnePos = touchOne.position;
                 touchStatus = 2; // 雙指觸控
                 return;
             }
@@ -137,61 +164,25 @@ public class CameraDrag : MonoBehaviour
         if (touchStatus == 2)
         {
             
-            touchZero = Input.GetTouch(0);
-            touchOne = Input.GetTouch(1);
+                touchZero = Input.GetTouch(0);
+                touchOne = Input.GetTouch(1);
 
-            // 計算上一幀與這一幀的距離差
-            float prevMagnitude = (prevTouchZeroPos - prevTouchOnePos).magnitude;
-            float currentMagnitude = (touchZero.position - touchOne.position).magnitude;
+                // 計算上一幀與這一幀的距離差
+                float prevMagnitude = (prevTouchZeroPos - prevTouchOnePos).magnitude;
+                float currentMagnitude = (touchZero.position - touchOne.position).magnitude;
 
-            float difference = currentMagnitude - prevMagnitude;
+                float difference = currentMagnitude - prevMagnitude;
 
-            // 縮放處理
-            cam.orthographicSize -= difference * 0.01f;
-            cam.orthographicSize = Mathf.Clamp(cam.orthographicSize, PhoneMinZoom, PhoneMaxZoom);
+                // 縮放處理
+                cam.orthographicSize -= difference * 0.01f; 
+                cam.orthographicSize = Mathf.Clamp(cam.orthographicSize, PhoneMinZoom, PhoneMaxZoom);
 
-            // 更新上一幀位置
-            prevTouchZeroPos = touchZero.position;
-            if (spacekeyisdown)
-            {
-
-                prevTouchOnePos = new Vector2(0, 0);
-            }
-            else
-            {
-
+                // 更新上一幀位置
+                prevTouchZeroPos = touchZero.position;
                 prevTouchOnePos = touchOne.position;
-            }
+            
         }
 
-        if (DragCrop)//如果拖曳作物
-        {
-            Vector3 pos = transform.position;
-            Vector3 DraggingPosition = Camera.main.WorldToScreenPoint(Crop.transform.position);
 
-            if (DraggingPosition.x >= Screen.width - borderThickness)
-            {
-                pos.x += scrollSpeed * Time.deltaTime;
-            }
-            else if (DraggingPosition.x <= borderThickness)
-            {
-                pos.x -= scrollSpeed * Time.deltaTime;
-            }
-            if (DraggingPosition.y >= Screen.height - borderThickness)
-            {
-                pos.y += scrollSpeed * Time.deltaTime;
-            }
-            else if (DraggingPosition.y <= borderThickness)
-            {
-                pos.y -= scrollSpeed * Time.deltaTime;
-
-
-            }
-
-            pos.x = Mathf.Clamp(pos.x, minX, maxX);
-            pos.y = Mathf.Clamp(pos.y, minY, maxY);
-
-            transform.position = pos;
-        }
     }
 }
