@@ -193,9 +193,9 @@ public class CameraDrag : MonoBehaviour
                 {
                     float sc = 0f;
                     if (touchDist > 1)
-                        sc = touchDist *- 1f;
+                        sc = touchDist;
                     if (touchDist < 1)
-                        sc = touchDist * 1f;
+                        sc = touchDist;
                     cam.orthographicSize -= sc * 0.01f;
                     cam.orthographicSize = Mathf.Clamp(cam.orthographicSize, PhoneMinZoom, PhoneMaxZoom);
                 }
