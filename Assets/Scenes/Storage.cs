@@ -507,7 +507,7 @@ public class Storage : MonoBehaviour
         }
        checkFacility();
 
-        for (int i=20;i<data.Lands;i++)
+        for (int i=20;i<data.Lands+1;i++)
         {
             GridManager.ShowGridCell(i);
         }

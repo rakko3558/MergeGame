@@ -164,11 +164,29 @@ public class CameraDrag : MonoBehaviour
 
             transform.position = newPosition;
         }
-        /*
+       
         if (touchStatus == 2)
         {
-            
-                touchZero = Input.GetTouch(0);
+            Touch touch1 = Input.GetTouch(0);
+            Touch touch2 = Input.GetTouch(1);
+            if (touch1.phase == TouchPhase.Began && touch2.phase == TouchPhase.Began)
+            {
+                lastDist = Vector2.Distance(touch1.position, touch2.position);
+            }
+
+            if (touch1.phase == TouchPhase.Moved && touch2.phase == TouchPhase.Moved)
+            {
+                float newDist = Vector2.Distance(touch1.position, touch2.position);
+                touchDist = lastDist - newDist;
+                lastDist = newDist;
+
+                // Your Code Here
+                cam.orthographicSize += touchDist * 0.01f;
+                cam.orthographicSize = Mathf.Clamp(cam.orthographicSize, PhoneMinZoom, PhoneMaxZoom);
+
+                //Camera.main.fieldOfView += touchDist * 0.1f;
+            }
+               /*  touchZero = Input.GetTouch(0);
                 touchOne = Input.GetTouch(1);
 
                 // 計算上一幀與這一幀的距離差
@@ -183,11 +201,12 @@ public class CameraDrag : MonoBehaviour
 
                 // 更新上一幀位置
                 prevTouchZeroPos = touchZero.position;
-                prevTouchOnePos = touchOne.position;
+                prevTouchOnePos = touchOne.position; */
             
         }
-        */
+       
 
+        /*
         if (Input.touchCount == 2)
         {
             Touch touch1 = Input.GetTouch(0);
@@ -208,7 +227,7 @@ public class CameraDrag : MonoBehaviour
                 Camera.main.fieldOfView += touchDist * 0.1f;
             }
         }
-
+        */
 
     }
 }
