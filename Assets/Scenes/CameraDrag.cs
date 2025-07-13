@@ -34,7 +34,9 @@ public class CameraDrag : MonoBehaviour
     public GameObject Crop;
     private float borderThickness = 50.0f;
     private float scrollSpeed = 5f;
-
+    private int touchStatus = 0; // 0: 無觸控, 1: 單指觸控, 2: 雙指觸控
+    Touch touchZero ;
+    Touch touchOne  ;
     void Start()
     {
         cam = Camera.main;
@@ -42,6 +44,7 @@ public class CameraDrag : MonoBehaviour
 
     void Update()
     {
+        // 處理滾輪縮放
         float scroll = Input.GetAxis("Mouse ScrollWheel"); // 取得滾輪軸值
 
         if (scroll != 0f)
@@ -49,24 +52,84 @@ public class CameraDrag : MonoBehaviour
             cam.orthographicSize -= scroll * zoomSpeed;
             cam.orthographicSize = Mathf.Clamp(cam.orthographicSize, minZoom, maxZoom);
         }
-        if (isZooming == true && Input.touchCount == 0)
-        {
-            isZooming = false;
-        }
-        else if (Input.touchCount == 2)
-        {
-            Touch touchZero = Input.GetTouch(0);
-            Touch touchOne = Input.GetTouch(1);
 
+        if (Input.GetMouseButtonUp(0))
+            touchStatus = 0;
+
+        if (Input.touchCount == 1 && touchStatus < 2 || Input.GetMouseButtonDown(0) && touchStatus < 2)
+        {
+            Debug.Log("1");
+            if (touchStatus < 1)
+            {
+                if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject())
+                    return;
+
+                Vector2 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                Collider2D hit = Physics2D.OverlapPoint(mouseWorldPos);
+                Debug.Log("1-1");
+                if (hit == null) // 沒碰到東西才能拖曳
+                {
+                    Debug.Log("1-2");
+                    lastMousePosition = mouseWorldPos;
+                    touchStatus = 1;
+                    return;
+                }
+            }
+        }
+        if (Input.touchCount == 2)
+        {
             // 第一次觸發縮放時，儲存初始位置
-            if (!isZooming)
+            if (touchStatus < 2)
             {
                 prevTouchZeroPos = touchZero.position;
                 prevTouchOnePos = touchOne.position;
-                isZooming = true;
-                isDragging = false;
+                touchStatus = 2; // 雙指觸控
                 return;
             }
+        }
+
+        if (touchStatus ==0)
+        {
+            //Debug.Log("YYY:{}");
+        }
+
+        if (touchStatus==1)
+        { 
+            Debug.Log($"QQ:{touchStatus}");
+            Debug.Log("0");
+            if (touchStatus < 1)
+            {
+                Debug.Log("1");
+                if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject())
+                    return;
+
+                Vector2 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                Collider2D hit = Physics2D.OverlapPoint(mouseWorldPos);
+                Debug.Log("1-1");
+                if (hit == null) // 沒碰到東西才能拖曳
+                {
+                    Debug.Log("1-2");
+                    lastMousePosition = mouseWorldPos;
+                    touchStatus = 1;
+                    return;
+                }
+            }
+
+            Debug.Log("2");
+            mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            Vector3 newPosition = transform.position + lastMousePosition - (Vector3)mouseWorldPos;
+            newPosition.x = Mathf.Clamp(newPosition.x, minX, maxX);
+            newPosition.y = Mathf.Clamp(newPosition.y, minY, maxY);
+
+            transform.position = newPosition;
+            Debug.Log("點擊了物件: " + newPosition);
+        }
+
+        if (touchStatus == 2)
+        {
+            
+            touchZero = Input.GetTouch(0);
+            touchOne = Input.GetTouch(1);
 
             // 計算上一幀與這一幀的距離差
             float prevMagnitude = (prevTouchZeroPos - prevTouchOnePos).magnitude;
@@ -82,153 +145,35 @@ public class CameraDrag : MonoBehaviour
             prevTouchZeroPos = touchZero.position;
             prevTouchOnePos = touchOne.position;
         }
-        else if(!isZooming)
+
+        if (DragCrop)//如果拖曳作物
         {
-            //Debug.Log($"CameraDrag: {EventSystem.current.IsPointerOverGameObject()}");
-            /*
-            Vector3 mouseScreenPos = Input.mousePosition;
-            mouseScreenPos.z = 10f; //  設定 z 軸為正數（對應 2D 相機）
-            */
-            /*       if (Input.GetMouseButtonDown(0))
-                   {
-                       if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject())
-                           return;
+            Vector3 pos = transform.position;
+            Vector3 DraggingPosition = Camera.main.WorldToScreenPoint(Crop.transform.position);
 
-
-                       mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-
-                       // 檢查是否點到任何 Collider2D
-                       hit = Physics2D.OverlapPoint(mouseWorldPos);
-
-                       if (hit != null)
-                           return; //有碰到就 return
-
-                       lastMousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-                       isDragging = true;
-                   }
-
-                   else if (Input.GetMouseButtonUp(0))
-                   {
-                       // ✅ 每幀更新位置，防止抖動
-                       lastMousePosition = currentMousePosition;
-                       isDragging = false;
-                   }
-
-                   if (isDragging)
-                   {
-                       currentMousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-                       Vector3 delta = lastMousePosition - currentMousePosition;
-
-                       Vector3 newPosition = transform.position + delta;
-                       newPosition.x = Mathf.Clamp(newPosition.x, minX, maxX);
-                       newPosition.y = Mathf.Clamp(newPosition.y, minY, maxY);
-
-                       transform.position = newPosition;
-
-
-                   }
-               }
-            */
-            /*
-            if (Input.touchCount == 2)
+            if (DraggingPosition.x >= Screen.width - borderThickness)
             {
-                Touch touchZero = Input.GetTouch(0);
-                Touch touchOne = Input.GetTouch(1);
-
-                // 第一次觸發縮放時，儲存初始位置
-                if (!isZooming)
-                {
-                    prevTouchZeroPos = touchZero.position;
-                    prevTouchOnePos = touchOne.position;
-                    isZooming = true;
-                    return;
-                }
-
-                // 計算上一幀與這一幀的距離差
-                float prevMagnitude = (prevTouchZeroPos - prevTouchOnePos).magnitude;
-                float currentMagnitude = (touchZero.position - touchOne.position).magnitude;
-
-                float difference = currentMagnitude - prevMagnitude;
-
-                // 縮放處理
-                cam.orthographicSize -= difference * 0.01f;
-                cam.orthographicSize = Mathf.Clamp(cam.orthographicSize, PhoneMinZoom, PhoneMaxZoom);
-
-                // 更新上一幀位置
-                prevTouchZeroPos = touchZero.position;
-                prevTouchOnePos = touchOne.position;
+                pos.x += scrollSpeed * Time.deltaTime;
             }
-            else
+            else if (DraggingPosition.x <= borderThickness)
             {
-                isZooming = false;
+                pos.x -= scrollSpeed * Time.deltaTime;
             }
-            */
-
-            if (Input.GetMouseButtonDown(0))
+            if (DraggingPosition.y >= Screen.height - borderThickness)
             {
-                if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject())
-                    return;
+                pos.y += scrollSpeed * Time.deltaTime;
+            }
+            else if (DraggingPosition.y <= borderThickness)
+            {
+                pos.y -= scrollSpeed * Time.deltaTime;
 
-                Vector2 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-                Collider2D hit = Physics2D.OverlapPoint(mouseWorldPos);
 
-                if (hit == null) // 沒碰到東西才能拖曳
-                {
-                    lastMousePosition = mouseWorldPos;
-                    //currentMousePosition = mouseWorldPos;
-                    //lastMousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-                    isDragging = true;
-                }
             }
 
-            else if (Input.GetMouseButtonUp(0))
-            {
-                isDragging = false;
-            }
-            
-            if (isDragging)
-            {
-                mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-                Vector3 newPosition = transform.position + lastMousePosition - (Vector3)mouseWorldPos;
-                newPosition.x = Mathf.Clamp(newPosition.x, minX, maxX);
-                newPosition.y = Mathf.Clamp(newPosition.y, minY, maxY);
+            pos.x = Mathf.Clamp(pos.x, minX, maxX);
+            pos.y = Mathf.Clamp(pos.y, minY, maxY);
 
-                transform.position = newPosition;
-
-            }
-            
-            if (DragCrop)//如果拖曳作物
-            {
-                Vector3 pos = transform.position;
-                Vector3 DraggingPosition = Camera.main.WorldToScreenPoint(Crop.transform.position);
-
-                if (DraggingPosition.x >= Screen.width - borderThickness)
-                {
-                    pos.x += scrollSpeed * Time.deltaTime;                    
-                }
-                else if (DraggingPosition.x <= borderThickness)
-                {
-                    pos.x -= scrollSpeed * Time.deltaTime;
-                }
-                if (DraggingPosition.y >= Screen.height - borderThickness)
-                {
-                    pos.y += scrollSpeed * Time.deltaTime;
-                }
-                else if (DraggingPosition.y <= borderThickness)
-                {
-                    pos.y -= scrollSpeed * Time.deltaTime;
-
-                    
-                }
-                
-                pos.x = Mathf.Clamp(pos.x, minX, maxX);
-                pos.y = Mathf.Clamp(pos.y, minY, maxY);
-
-                transform.position = pos;
-            }
-
+            transform.position = pos;
         }
-
-
     }
 }
