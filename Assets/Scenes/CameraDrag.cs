@@ -167,26 +167,26 @@ public class CameraDrag : MonoBehaviour
        
         if (touchStatus == 2)
         {
-            if (Input.touchCount >= 2)
+
+            Touch touch1 = Input.GetTouch(0);
+            Touch touch2 = Input.GetTouch(1);
+            if (touch1.phase == TouchPhase.Began && touch2.phase == TouchPhase.Began)
             {
-                Touch touch1 = Input.GetTouch(0);
-                Touch touch2 = Input.GetTouch(1);
+                lastDist = Vector2.Distance(touch1.position, touch2.position);
+                return;
+            }
 
-                if (touch1.phase == TouchPhase.Began || touch2.phase == TouchPhase.Began)
-                {
-                    lastDist = Vector2.Distance(touch1.position, touch2.position);
-                }
-                else if (touch1.phase == TouchPhase.Moved && touch2.phase == TouchPhase.Moved)
-                {
-                    float newDist = Vector2.Distance(touch1.position, touch2.position);
-                    if (Mathf.Approximately(lastDist, 0f)) return;
+            if (touch1.phase == TouchPhase.Moved && touch2.phase == TouchPhase.Moved)
+            {
+                float newDist = Vector2.Distance(touch1.position, touch2.position);
+                touchDist = lastDist - newDist;
+                lastDist = newDist;
 
-                    float zoomFactor = newDist / lastDist;
-                    cam.orthographicSize /= zoomFactor;
-                    cam.orthographicSize = Mathf.Clamp(cam.orthographicSize, PhoneMinZoom, PhoneMaxZoom);
+                // Your Code Here
+                cam.orthographicSize += touchDist * 0.01f;
+                cam.orthographicSize = Mathf.Clamp(cam.orthographicSize, PhoneMinZoom, PhoneMaxZoom);
 
-                    lastDist = newDist;
-                }
+                //Camera.main.fieldOfView += touchDist * 0.1f;
             }
             /*  touchZero = Input.GetTouch(0);
              touchOne = Input.GetTouch(1);
