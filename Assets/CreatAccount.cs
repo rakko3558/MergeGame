@@ -25,7 +25,7 @@ public class CreatAccount : MonoBehaviour
     public void backLogin()
     {
         LoginPanel.SetActive(true);
-        register.SetActive(false);
+        //register.SetActive(false);
     }
 
 

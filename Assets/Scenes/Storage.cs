@@ -17,6 +17,7 @@ public class Storage : MonoBehaviour
     public GameObject panel_TextAreaMoney;
     public TextMeshProUGUI TextPerfabMoney;
 
+    public TextMeshProUGUI UnlockCharacterHint;
     public TextMeshProUGUI UnlockCharacter;
 
     public ButtonOnClick ButtonOnClickScript;
@@ -62,6 +63,7 @@ public class Storage : MonoBehaviour
         public int questCropIndex;
         public int questMoney;
         public int questExp;
+        public int builds;
 
     }
 
@@ -70,7 +72,7 @@ public class Storage : MonoBehaviour
         money = 1200,// 玩家金錢
         playerLevel = 1,
         Lands = 20,
-        Boxs = 100,// 剩餘箱子數量
+        Boxs = 300,// 剩餘箱子數量
         cropExp = new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
         cropLevel = new int[] { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 }, // 作物等級，預設為 1 等級
         date = "0",
@@ -81,7 +83,8 @@ public class Storage : MonoBehaviour
         questFalicity=0,
         questCropIndex=1,
         questMoney=50,
-        questExp=50
+        questExp=50,
+        builds=1
     };
 
     public Facilitys[] facilityArray;
@@ -285,8 +288,10 @@ public class Storage : MonoBehaviour
     {
         Debug.Log($"{CropIndex}");
         txt_level[CropIndex].text = data.cropLevel[CropIndex].ToString();
-       
-        txt_level[CropIndex].GetComponentInChildren<Slider>().value = data.cropExp[CropIndex] / ExpToNextLevel(data.cropLevel[CropIndex]);
+        txt_level[CropIndex].GetComponentInChildren<Slider>().value = (float)data.cropExp[CropIndex] / (float)ExpToNextLevel(data.cropLevel[CropIndex]);
+     
+
+        Debug.Log($"EXP{txt_level[CropIndex].GetComponentInChildren<Slider>().value}");
         txt_level[CropIndex].GetComponentInChildren<Slider>().GetComponentInChildren<TextMeshProUGUI>().text = $"{data.cropExp[CropIndex]}/{ExpToNextLevel(data.cropLevel[CropIndex])}";
 
         while (data.cropExp[CropIndex] >= ExpToNextLevel(data.cropLevel[CropIndex]))
@@ -296,20 +301,42 @@ public class Storage : MonoBehaviour
             data.cropLevel[CropIndex]++;
             
             txt_level[CropIndex].text = data.cropLevel[CropIndex].ToString();
-            txt_level[CropIndex].GetComponentInChildren<Slider>().value = data.cropExp[CropIndex]/ ExpToNextLevel(data.cropLevel[CropIndex]);
+            txt_level[CropIndex].GetComponentInChildren<Slider>().value = (float)data.cropExp[CropIndex]/ (float)ExpToNextLevel(data.cropLevel[CropIndex]);
             txt_level[CropIndex].GetComponentInChildren<Slider>().GetComponentInChildren<TextMeshProUGUI>().text =$"{data.cropExp[CropIndex]}/{ExpToNextLevel(data.cropLevel[CropIndex])}";
             
             //Debug.Log($"升級！目前等級：{cropLevel[CropIndex]}");
 
             // TODO: 可加技能點數、獎勵、解鎖物品等
         }
-        
+        unlockCharacter();//查看前1角等級
     }
-    private int ExpToNextLevel(int level)
+    private int  ExpToNextLevel(int level)
     {
         return 100 + (level - 1) * 50; // 等級1需100、2需150、3需200...
     }
+    public void constructBuilding()
+    {
+        int buildPrice = data.builds * 4000;
+        if (data.money < buildPrice)
+        {
 
+            showTextMessage($"存款不足");
+            return;
+        }
+        if (GridManager.OpenBuild())
+        {
+            //data.money = data.money - LandPrice;
+            AddMoneyCompute(-buildPrice);
+            //txt_money.text = data.money.ToString();
+            string message = $"獲得新建設 (-{buildPrice} Coins)";
+            showTextMessage(message);
+            if(data.builds<facilityArray.Length)
+                facilityArray[data.builds].showButtom(data.builds*3000);
+            //showTextMessageMoney(LandPrice*-1);
+            StartCoroutine(Database.UpdateData($"{playerID}/builds", data.builds.ToString()));
+
+        }
+    }
     public void buyLand()
     {
         int LandPrice = data.Lands * 5; // 每土的價格
@@ -334,7 +361,7 @@ public class Storage : MonoBehaviour
 
     }
 
-    public void buyChatacter()
+    public void buyChatacter()//按鈕解鎖
     {
         int price = data.playerLevel *1000; // 每個角色的價格
         if (data.money < price)
@@ -345,10 +372,10 @@ public class Storage : MonoBehaviour
         }
         if (SetPlayerLevel())
         {
-            
+
             //money = money - price;// 暫定每個角色100元
             //txt_money.text = money.ToString();
-            string message = $"獲得新角色(-{price} Coins)";
+            string message = $"獲得新角色-{price} Coins)";
             showTextMessage(message);
             AddMoneyCompute(-price);
             //showTextMessageMoney(price * -1);
@@ -357,7 +384,7 @@ public class Storage : MonoBehaviour
 
              //GameObject clonedTextGO = Instantiate(TextPerfab.gameObject);
              //clonedTextGO.GetComponent<TextMeshProUGUI>().text = $"{amount}元存入了匯豐銀行";
-             checkFacility();
+             //checkFacility();
              CheckLevelUp(data.playerLevel);
         }
     }
@@ -368,36 +395,61 @@ public class Storage : MonoBehaviour
         {
             AddPlayerLevel();
             CharaterIndex[data.playerLevel -1].SetActive(true);
+            /*
             if (data.playerLevel == cropName.Length-1)
             {
                 CharaterIndex[data.playerLevel].SetActive(false);//都解玩完 隱藏解鎖按鈕
             }
-            
-
+            */
+            if (data.playerLevel == cropName.Length - 1)
+            {
+                CharaterIndex[data.playerLevel].SetActive(false);//都解玩完 隱藏解鎖按鈕
+            }
             return true;
         }
         return false;
        
     }
+    public void unlockCharacter()
+    {
+        if(data.cropLevel[data.playerLevel] >= 5)
+        if (SetPlayerLevel())
+        {
 
+            //money = money - price;// 暫定每個角色100元
+            //txt_money.text = money.ToString();
+            string message = $"獲得新角色 - {cropName[data.playerLevel]}";
+            UnlockCharacterHint.text = $"當{cropName[data.playerLevel]}達到等級5時解鎖新角色";
+            showTextMessage(message);
+            //showTextMessageMoney(price * -1);
+            //UnlockCharacter.text = $"解鎖角色\n({data.playerLevel * 1000} Coins)";
+
+
+            //GameObject clonedTextGO = Instantiate(TextPerfab.gameObject);
+            //clonedTextGO.GetComponent<TextMeshProUGUI>().text = $"{amount}元存入了匯豐銀行";
+            //checkFacility();
+            CheckLevelUp(data.playerLevel);
+        }
+    }
     public void checkFacility()
     {
-        for (int i = 0; i < facilityArray.Length; i++)
+        for (int i = 0; i < data.builds; i++)
         {
-            if ((data.playerLevel / 3)>= i)
+           
+            if (facilityArray[i].isOpen == false)
             {
-                if (facilityArray[i].isOpen == false)
-                {
-                    facilityArray[i].Open();
-                }
+                facilityArray[i].Open();
+                if (i+1 < facilityArray.Length)
+                    facilityArray[i+1].showButtom((i+1)* 3000);
             }
+            
             //Debug.Log($"{playerLevel / 2},{i},{facilityArray[i].isOpen}");
         }
     }
 
     public void RandomQuest()
     {
-        data.questFalicity = UnityEngine.Random.Range(0,(data.playerLevel / 3)+1); // 重置任務索引
+        data.questFalicity = UnityEngine.Random.Range(0,data.builds); // 重置任務索引
         data.questCropIndex= UnityEngine.Random.Range(1, data.playerLevel +1); // 重置任務角色索引
         int[] expList = new int[] { 50, 50, 50, 50, 50, 100, 100, 200, 300 }; // 任務經驗值列表
 
@@ -499,13 +551,14 @@ public class Storage : MonoBehaviour
         ButtonOnClickScript.showBox.text = data.Boxs.ToString();
         txt_money.text = data.money.ToString();
 
+        UnlockCharacterHint.text = $"當{cropName[data.playerLevel]}達到等級5時解鎖新角色";
         for (int i = 0; i < data.cropExp.Length-2; i++)
         {
             CheckLevelUp(i+1);//更新等級 經驗值顯示                
             if(i<data.playerLevel)
                 CharaterIndex[i].SetActive(true);  
         }
-       checkFacility();
+        checkFacility();
 
         for (int i=20;i<data.Lands;i++)
         {
@@ -515,7 +568,7 @@ public class Storage : MonoBehaviour
         Debug.Log($"今天日期：{today}，登入日期：{data.date}");
         if (int.Parse(data.date) < int.Parse(today))
         { 
-            AddBoxs(100); // 每天登入獎勵10個箱子
+            AddBoxs(300); // 每天登入獎勵10個箱子
             ButtonOnClickScript.showBox.text = data.Boxs.ToString();
             StartCoroutine(Database.UpdateData($"{playerID}/Boxs", data.Boxs.ToString()));
             data.date = today; // 更新日期

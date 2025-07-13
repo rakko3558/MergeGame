@@ -54,7 +54,7 @@ public class CameraDrag : MonoBehaviour
         
         if (scroll != 0f)
         {
-            Debug.Log($"{scroll}");
+            //Debug.Log($"{scroll}");
             cam.orthographicSize -= scroll * zoomSpeed;
             cam.orthographicSize = Mathf.Clamp(cam.orthographicSize, minZoom, maxZoom);
         }

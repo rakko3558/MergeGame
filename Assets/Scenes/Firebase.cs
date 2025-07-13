@@ -141,7 +141,7 @@ public class FirebaseTest : MonoBehaviour
             save.data.questCropIndex=playerData.questCropIndex;
             save.data.questMoney=    playerData.questMoney;
             save.data.questExp= playerData.questExp ;
-
+            save.data.builds = playerData.builds;
             StartCoroutine(WriteData(save.playerID, JsonUtility.ToJson(save.data)));
 
             save.LoginRefreshValue();
@@ -192,4 +192,5 @@ public class PlayerData
     public int questCropIndex;
     public int questMoney;
     public int questExp;
+    public int builds;
 }

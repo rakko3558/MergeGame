@@ -9,6 +9,7 @@ public class WorldButton : MonoBehaviour
     public Storage save;
 
     public GameObject HintUI;
+    public int BtnEvent=0;//0 買地 , 1 買建設
     void Start()
     {
         sr = GetComponent<SpriteRenderer>();
@@ -29,7 +30,10 @@ public class WorldButton : MonoBehaviour
 
     void OnMouseDown()
     {
-        save.buyLand();
+        if(BtnEvent==0)
+            save.buyLand();
+        if(BtnEvent==1)
+            save.constructBuilding();
     }
 }
 

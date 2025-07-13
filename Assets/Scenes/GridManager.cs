@@ -239,6 +239,19 @@ public class GridmManager : MonoBehaviour
 
 
     }
+    public bool OpenBuild()
+    {
+        if (save.data.builds < facilityArray.Length)
+        {
+           
+            facilityArray[save.data.builds].Open();
+            save.data.builds++;
+            
+            return true;
+        }
+        return false;
+
+    }
     public bool OpenGridCell()
     {
         if (save.data.Lands < width * height)

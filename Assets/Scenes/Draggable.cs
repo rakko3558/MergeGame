@@ -83,13 +83,13 @@ public class Draggable : MonoBehaviour
         TheCamera.Crop = null;
 
         if (TouchIndex!=-1)//§I´«»ù­È
-        {
+        {/*
             if (TouchIndex == 0)
             {
                 exchangeValue(TouchIndex);
                 return;
-            }
-            if (TouchIndex != 0 && GetComponent<Farm>().CropLevel == 3)
+            }*/
+            if (GetComponent<Farm>().CropIndex==0||GetComponent<Farm>().CropLevel == 3)
             {
                 exchangeValue(TouchIndex);
                 return;
