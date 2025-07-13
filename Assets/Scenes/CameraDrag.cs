@@ -17,7 +17,8 @@ public class CameraDrag : MonoBehaviour
     private Vector2 prevTouchOnePos;
     private Touch touchZero;
     private Touch touchOne;
-
+    float touchDist = 0;
+    float lastDist = 0;
 
 
     private Vector3 lastMousePosition;
@@ -118,7 +119,6 @@ public class CameraDrag : MonoBehaviour
         if (Input.touchCount == 2 )
         {
 
-            Debug.Log($"ZOOM");
             // 第一次觸發縮放時，儲存初始位置
             if (touchStatus < 2)
             {
@@ -164,7 +164,7 @@ public class CameraDrag : MonoBehaviour
 
             transform.position = newPosition;
         }
-
+        /*
         if (touchStatus == 2)
         {
             
@@ -185,6 +185,28 @@ public class CameraDrag : MonoBehaviour
                 prevTouchZeroPos = touchZero.position;
                 prevTouchOnePos = touchOne.position;
             
+        }
+        */
+
+        if (Input.touchCount == 2)
+        {
+            Touch touch1 = Input.GetTouch(0);
+            Touch touch2 = Input.GetTouch(1);
+
+            if (touch1.phase == TouchPhase.Began && touch2.phase == TouchPhase.Began)
+            {
+                lastDist = Vector2.Distance(touch1.position, touch2.position);
+            }
+
+            if (touch1.phase == TouchPhase.Moved && touch2.phase == TouchPhase.Moved)
+            {
+                float newDist = Vector2.Distance(touch1.position, touch2.position);
+                touchDist = lastDist - newDist;
+                lastDist = newDist;
+
+                // Your Code Here
+                Camera.main.fieldOfView += touchDist * 0.1f;
+            }
         }
 
 
