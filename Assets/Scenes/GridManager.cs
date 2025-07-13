@@ -259,11 +259,11 @@ public class GridmManager : MonoBehaviour
         cell.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Source/Rectangle");
         cell.GetComponent<SpriteRenderer>().color = new Color(1f, 1f, 1f, 0f); // 白色 + 半透明
 
-        if (openNo < width * height)
+        if (openNo+1 < width * height)
         {
             //OpenLandButtom.GetComponentInChildren<TextMeshProUGUI>().text=new string($"開地({Lands*10} Coins)");
-            OpenLandText.text = new string($"{openNo * 5}");
-            OpenLandButtom.transform.position = GridPrefabs[openNo / 10, openNo % 10].transform.position;
+            OpenLandText.text = new string($"{(openNo+1) * 5}");
+            OpenLandButtom.transform.position = GridPrefabs[(openNo+1) / 10, (openNo+1) % 10].transform.position;
 
 
         }

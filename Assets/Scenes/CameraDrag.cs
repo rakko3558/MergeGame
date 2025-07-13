@@ -170,10 +170,7 @@ public class CameraDrag : MonoBehaviour
        
         if (touchStatus == 2)
         {
-
-            // If there are two touches on the device...
-            if (Input.touchCount == 2)
-            {
+            
                 // Store both touches.
                 Touch touchZero = Input.GetTouch(0);
                 Touch touchOne = Input.GetTouch(1);
@@ -206,7 +203,8 @@ public class CameraDrag : MonoBehaviour
                     // Clamp the field of view to make sure it's between 0 and 180.
                     GetComponent<Camera>().fieldOfView = Mathf.Clamp(GetComponent<Camera>().fieldOfView, 0.1f, 179.9f);
                 }
-            }
+            
+
             /*  touchZero = Input.GetTouch(0);
              touchOne = Input.GetTouch(1);
 
