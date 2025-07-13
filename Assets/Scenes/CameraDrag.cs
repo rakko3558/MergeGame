@@ -196,7 +196,7 @@ public class CameraDrag : MonoBehaviour
                         sc = 0.1f;
                     if (touchDist < 0)
                         sc = -0.1f;
-                    cam.orthographicSize -= sc * 0.01f;
+                    cam.orthographicSize -= sc * 5f;
                     cam.orthographicSize = Mathf.Clamp(cam.orthographicSize, minZoom, maxZoom);
                 }
 
