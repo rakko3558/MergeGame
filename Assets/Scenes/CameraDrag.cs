@@ -167,25 +167,26 @@ public class CameraDrag : MonoBehaviour
        
         if (touchStatus == 2)
         {
-            Touch touch1 = Input.GetTouch(0);
-            Touch touch2 = Input.GetTouch(1);
-
-            if (touch1.phase == TouchPhase.Began || touch2.phase == TouchPhase.Began)
+            if (Input.touchCount >= 2)
             {
-                lastDist = Vector2.Distance(touch1.position, touch2.position);
-            }
+                Touch touch1 = Input.GetTouch(0);
+                Touch touch2 = Input.GetTouch(1);
 
-            if (touch1.phase == TouchPhase.Moved && touch2.phase == TouchPhase.Moved)
-            {
-                float newDist = Vector2.Distance(touch1.position, touch2.position);
-                if (Mathf.Approximately(lastDist, 0f)) return; // 避免除以0
+                if (touch1.phase == TouchPhase.Began || touch2.phase == TouchPhase.Began)
+                {
+                    lastDist = Vector2.Distance(touch1.position, touch2.position);
+                }
+                else if (touch1.phase == TouchPhase.Moved && touch2.phase == TouchPhase.Moved)
+                {
+                    float newDist = Vector2.Distance(touch1.position, touch2.position);
+                    if (Mathf.Approximately(lastDist, 0f)) return;
 
-                float zoomFactor = newDist / lastDist; // 重點改法：比例
+                    float zoomFactor = newDist / lastDist;
+                    cam.orthographicSize /= zoomFactor;
+                    cam.orthographicSize = Mathf.Clamp(cam.orthographicSize, PhoneMinZoom, PhoneMaxZoom);
 
-                cam.orthographicSize /= zoomFactor; // 小數大於1 = 放大
-                cam.orthographicSize = Mathf.Clamp(cam.orthographicSize, PhoneMinZoom, PhoneMaxZoom);
-
-                lastDist = newDist;
+                    lastDist = newDist;
+                }
             }
             /*  touchZero = Input.GetTouch(0);
              touchOne = Input.GetTouch(1);
