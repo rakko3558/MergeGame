@@ -175,11 +175,12 @@ public class CameraDrag : MonoBehaviour
         if (touchStatus == 2)
         {
 
-            
+            Touch touch3 = Input.GetTouch(0);
+            Touch touch4 = Input.GetTouch(1);
 
-           
-                float newDist = Vector2.Distance(touch1.position, touch2.position);
-                touchDist = lastDist - newDist;
+
+            float newDist = Vector2.Distance(touch3.position, touch4.position);
+            touchDist = lastDist - newDist;
                 //lastDist = newDist;
                
                     // Your Code Here
