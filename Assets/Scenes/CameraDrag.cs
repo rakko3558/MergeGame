@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
+
+using TMPro;
 //視角移動
 public class CameraDrag : MonoBehaviour
 {
@@ -19,7 +21,7 @@ public class CameraDrag : MonoBehaviour
     private Touch touchOne;
     float touchDist = 0;
     float lastDist = 0;
-
+    public TextMeshProUGUI dist;
 
     private Vector3 lastMousePosition;
     private bool isDragging = false;
@@ -196,10 +198,11 @@ public class CameraDrag : MonoBehaviour
                         sc = touchDist;
                     if (touchDist < 1)
                         sc = touchDist;
-                    cam.orthographicSize -= sc * 0.01f;
+                    cam.orthographicSize = cam.orthographicSize - sc * 0.01f;
                     cam.orthographicSize = Mathf.Clamp(cam.orthographicSize, PhoneMinZoom, PhoneMaxZoom);
+                    
                 }
-
+                dist.text = $"間距:{touchDist},鏡頭:{cam.orthographicSize}";
             }
             /*  touchZero = Input.GetTouch(0);
              touchOne = Input.GetTouch(1);
@@ -220,7 +223,7 @@ public class CameraDrag : MonoBehaviour
 
         }
 
-   
+
         /*
         if (Input.touchCount == 2)
         {
@@ -243,6 +246,6 @@ public class CameraDrag : MonoBehaviour
             }
         }
         */
-
     }
+
 }
