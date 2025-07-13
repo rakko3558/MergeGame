@@ -267,7 +267,7 @@ public class GridmManager : MonoBehaviour
 
 
         }
-        else if (openNo == width * height)
+        else if (openNo+1 == width * height)
             OpenLandButtom.transform.position = new Vector3(0f, 0f, -10f);
     }
     public void SpawnSpecifyCrop(int x, int y, int x1, int y1, int status, int level, int coin)

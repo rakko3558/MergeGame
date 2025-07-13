@@ -11,6 +11,9 @@ public class CameraDrag : MonoBehaviour
     public float PhoneMinZoom = 3f;           // 最小視角（最拉近）
     public float PhoneMaxZoom = 25f;          // 最大視角（最拉遠）
 
+    public float perspectiveZoomSpeed = 0.5f;        // The rate of change of the field of view in perspective mode.
+    public float orthoZoomSpeed = 0.5f;        // The rate of change of the orthographic size in orthographic mode.
+
     private Camera cam;
     private bool isZooming = false;
     private Vector2 prevTouchZeroPos;
@@ -168,25 +171,41 @@ public class CameraDrag : MonoBehaviour
         if (touchStatus == 2)
         {
 
-            Touch touch1 = Input.GetTouch(0);
-            Touch touch2 = Input.GetTouch(1);
-            if (touch1.phase == TouchPhase.Began && touch2.phase == TouchPhase.Began)
+            // If there are two touches on the device...
+            if (Input.touchCount == 2)
             {
-                lastDist = Vector2.Distance(touch1.position, touch2.position);
-                return;
-            }
+                // Store both touches.
+                Touch touchZero = Input.GetTouch(0);
+                Touch touchOne = Input.GetTouch(1);
 
-            if (touch1.phase == TouchPhase.Moved && touch2.phase == TouchPhase.Moved)
-            {
-                float newDist = Vector2.Distance(touch1.position, touch2.position);
-                touchDist = lastDist - newDist;
-                lastDist = newDist;
+                // Find the position in the previous frame of each touch.
+                Vector2 touchZeroPrevPos = touchZero.position - touchZero.deltaPosition;
+                Vector2 touchOnePrevPos = touchOne.position - touchOne.deltaPosition;
 
-                // Your Code Here
-                cam.orthographicSize += touchDist * 0.01f;
-                cam.orthographicSize = Mathf.Clamp(cam.orthographicSize, PhoneMinZoom, PhoneMaxZoom);
+                // Find the magnitude of the vector (the distance) between the touches in each frame.
+                float prevTouchDeltaMag = (touchZeroPrevPos - touchOnePrevPos).magnitude;
+                float touchDeltaMag = (touchZero.position - touchOne.position).magnitude;
 
-                //Camera.main.fieldOfView += touchDist * 0.1f;
+                // Find the difference in the distances between each frame.
+                float deltaMagnitudeDiff = prevTouchDeltaMag - touchDeltaMag;
+
+                // If the camera is orthographic...
+                if (GetComponent<Camera>().orthographic)
+                {
+                    // ... change the orthographic size based on the change in distance between the touches.
+                    GetComponent<Camera>().orthographicSize += deltaMagnitudeDiff * orthoZoomSpeed;
+
+                    // Make sure the orthographic size never drops below zero.
+                    GetComponent<Camera>().orthographicSize = Mathf.Max(GetComponent<Camera>().orthographicSize, 0.1f);
+                }
+                else
+                {
+                    // Otherwise change the field of view based on the change in distance between the touches.
+                    GetComponent<Camera>().fieldOfView += deltaMagnitudeDiff * perspectiveZoomSpeed;
+
+                    // Clamp the field of view to make sure it's between 0 and 180.
+                    GetComponent<Camera>().fieldOfView = Mathf.Clamp(GetComponent<Camera>().fieldOfView, 0.1f, 179.9f);
+                }
             }
             /*  touchZero = Input.GetTouch(0);
              touchOne = Input.GetTouch(1);
