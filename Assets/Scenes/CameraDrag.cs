@@ -181,15 +181,25 @@ public class CameraDrag : MonoBehaviour
             {
                 float newDist = Vector2.Distance(touch1.position, touch2.position);
                 touchDist = lastDist - newDist;
-
+                lastDist = newDist;
                
                     // Your Code Here
-                    cam.orthographicSize = cam.orthographicSize + touchDist * 0.001f;
-                    cam.orthographicSize = Mathf.Clamp(cam.orthographicSize, PhoneMinZoom, PhoneMaxZoom);
+                //cam.orthographicSize = cam.orthographicSize + touchDist * 0.01f;
+                //cam.orthographicSize = Mathf.Clamp(cam.orthographicSize, PhoneMinZoom, PhoneMaxZoom);
 
-                    lastDist = newDist;
                 
-                //Camera.main.fieldOfView += touchDist * 0.1f;
+                
+                if (touchDist != 0f)
+                {
+                    float sc = 0f;
+                    if (touchDist > 0)
+                        sc = 0.1f;
+                    if (touchDist < 0)
+                        sc = -0.1f;
+                    cam.orthographicSize -= sc * 0.01f;
+                    cam.orthographicSize = Mathf.Clamp(cam.orthographicSize, minZoom, maxZoom);
+                }
+
             }
             /*  touchZero = Input.GetTouch(0);
              touchOne = Input.GetTouch(1);
