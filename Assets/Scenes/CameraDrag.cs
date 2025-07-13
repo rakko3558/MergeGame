@@ -46,6 +46,7 @@ public class CameraDrag : MonoBehaviour
 
     void Update()
     {
+       
         // 處理滾輪縮放
         float scroll = Input.GetAxis("Mouse ScrollWheel"); // 取得滾輪軸值
         
@@ -180,12 +181,14 @@ public class CameraDrag : MonoBehaviour
             {
                 float newDist = Vector2.Distance(touch1.position, touch2.position);
                 touchDist = lastDist - newDist;
-                lastDist = newDist;
 
-                // Your Code Here
-                cam.orthographicSize += touchDist * 0.01f;
-                cam.orthographicSize = Mathf.Clamp(cam.orthographicSize, PhoneMinZoom, PhoneMaxZoom);
+               
+                    // Your Code Here
+                    cam.orthographicSize = cam.orthographicSize + touchDist * 0.001f;
+                    cam.orthographicSize = Mathf.Clamp(cam.orthographicSize, PhoneMinZoom, PhoneMaxZoom);
 
+                    lastDist = newDist;
+                
                 //Camera.main.fieldOfView += touchDist * 0.1f;
             }
             /*  touchZero = Input.GetTouch(0);
