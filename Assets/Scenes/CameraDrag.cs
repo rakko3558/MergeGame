@@ -129,6 +129,10 @@ public class CameraDrag : MonoBehaviour
                 return;
             }
         }
+        if (touchStatus==2 && Input.touchCount != 2) 
+        {
+            touchStatus = 3;
+        }
 
         if (touchStatus ==0)
         {
