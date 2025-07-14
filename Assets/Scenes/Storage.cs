@@ -95,7 +95,7 @@ public class Storage : MonoBehaviour
         {
            { "coin0","coin1","coin2","coin3","coin4","coin5","coin6","coin7","coin_C", "coin_C5", "coin_S", "coin_S5","coin_G","coin_G5"},
            { "Paper_00", "Paper_01", "Paper_02", "Paper_03","","","","","","","","","",""},
-           { "ylr0", "ylr1", "ylr2", "ylr3","","","","","","","","","",""},
+           { "Sheep_00", "Sheep_01", "Sheep_02", "Sheep_03","","","","","","","","","",""},
            { "uu0", "uu1", "uu2", "uu3","","","","","","","","","",""},
            { "tk0", "tk1", "tk2", "tk3","","","","","","","","","",""},
            { "Plus0_00", "Plus0_01", "Plus0_02", "Plus0_03","","","","","","","","","",""},

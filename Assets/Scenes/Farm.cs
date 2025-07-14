@@ -9,7 +9,7 @@ public class Farm : MonoBehaviour
         {
            { "coin0","coin1","coin2","coin3","coin4","coin5","coin6","coin7","coin_C", "coin_C5", "coin_S", "coin_S5","coin_G","coin_G5"},
            { "Paper_00", "Paper_01", "Paper_02", "Paper_03","","","","","","","","","",""},
-           { "ylr0", "ylr1", "ylr2", "ylr3","","","","","","","","","",""},
+           { "Sheep_00", "Sheep_01", "Sheep_02", "Sheep_03","","","","","","","","","",""},
            { "uu0", "uu1", "uu2", "uu3","","","","","","","","","",""},
            { "tk0", "tk1", "tk2", "tk3","","","","","","","","","",""},
            { "Plus0_00", "Plus0_01", "Plus0_02", "Plus0_03","","","","","","","","","",""},
@@ -30,6 +30,7 @@ public class Farm : MonoBehaviour
     public int CropValue = 1;//預設 1等 1塊錢
     public GridmManager GridsManager; // 這是用來顯示作物圖片的 UI 元件
     public GameObject OnThisGrid;
+    private PolygonCollider2D col;
     void Start()
     {
  
@@ -40,6 +41,7 @@ public class Farm : MonoBehaviour
         OnThisGrid.GetComponent<GridCell>().status = CropIndex; // 設定格子狀態為有作物
         OnThisGrid.GetComponent<GridCell>().level = CropLevel;
         */
+        /*
         Sprite firstSprite = Resources.Load<Sprite>("Source/"+ cropNames[CropIndex,CropLevel]);
         SpriteRenderer U_Sprite = GetComponentInChildren<SpriteRenderer>();
         U_Sprite.sprite = firstSprite;
@@ -47,6 +49,33 @@ public class Farm : MonoBehaviour
         if (CropLevel == 3 && CropIndex!=0 && HaveCoin>0)
         {
             
+            U_Sprite.color = new Color(1f, 0.9f, 0.5f, 1f);
+        }
+        if (CropLevel == 3 && CropIndex != 0 && HaveCoin == 0)
+        {
+
+            U_Sprite.color = new Color(0.5f, 0.5f, 0.5f, 1f);
+        }
+        */
+        Sprite firstSprite = Resources.Load<Sprite>("Source/" + cropNames[CropIndex, CropLevel]);
+        SpriteRenderer U_Sprite = GetComponent<SpriteRenderer>();
+        U_Sprite.sprite = firstSprite;
+
+        //GetComponent<SpriteRenderer>().sprite = newSprite;
+        //sr.sprite = sprites[index];
+
+        // 更新 PolygonCollider
+
+        //gameObject.SetActive(false);
+        if (col!=null)
+            Destroy(col);
+        col = gameObject.AddComponent<PolygonCollider2D>();
+        col.isTrigger = true;
+
+        //gameObject.SetActive(true);
+        if (CropLevel == 3 && CropIndex != 0 && HaveCoin > 0)
+        {
+
             U_Sprite.color = new Color(1f, 0.9f, 0.5f, 1f);
         }
         if (CropLevel == 3 && CropIndex != 0 && HaveCoin == 0)
