@@ -2,6 +2,7 @@ body {
   padding: 0;
   margin: 0;
   overflow: hidden;
+  background-color: #231F20; /* ← 加上這行 */
 }
 
 #unity-container {
