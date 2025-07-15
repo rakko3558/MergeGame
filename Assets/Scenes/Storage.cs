@@ -90,20 +90,20 @@ public class Storage : MonoBehaviour
     public Facilitys[] facilityArray;
     //private int facility = 0; // 0:銀行，1:結婚，2:出攤，3:演唱會
 
-    private string[] cropName = new string[] { "金錢", "紙屑", "羊肉爐", "阿鵝", "Taki", "+0", "SC", "Riku", "皮卡丘", "波吉", "公主" };
+    private string[] cropName = new string[] { "", "紙屑", "羊肉爐", "+0", "波吉", "公主" , "SC", "Riku", "Taki", "阿鵝", "皮卡丘"};
     private static string[,] cropNames = new string[,]
         {
-           { "coin0","coin1","coin2","coin3","coin4","coin5","coin6","coin7","coin_C", "coin_C5", "coin_S", "coin_S5","coin_G","coin_G5"},
-           { "Paper_00", "Paper_01", "Paper_02", "Paper_03","","","","","","","","","",""},
-           { "Sheep_00", "Sheep_01", "Sheep_02", "Sheep_03","","","","","","","","","",""},
-           { "uu0", "uu1", "uu2", "uu3","","","","","","","","","",""},
-           { "tk0", "tk1", "tk2", "tk3","","","","","","","","","",""},
-           { "Plus0_00", "Plus0_01", "Plus0_02", "Plus0_03","","","","","","","","","",""},
-           { "sc0", "sc1", "sc2", "sc3","","","","","","","","","",""},
-           { "rik0", "rik1", "rik2", "rik3","","","","","","","","","",""},
-           { "pkc0", "pkc1", "pkc2", "pkc3","","","","","","","","","",""},
-           { "pj0", "pj1", "pj2", "pj3","","","","","","","","","",""},
-           { "Princess_00", "Princess_01", "Princess_02", "Princess_03","","","","","","","","","",""}
+           { "coin_0","coin_1","coin_2","coin_3","coin_4"},
+           { "Paper_00", "Paper_01", "Paper_02", "Paper_03",""},
+           { "Sheep_00", "Sheep_01", "Sheep_02", "Sheep_03",""},          
+           { "Plus0_00", "Plus0_01", "Plus0_02", "Plus0_03",""},
+           { "pj0", "pj1", "pj2", "pj3",""},
+           { "Princess_00", "Princess_01", "Princess_02", "Princess_03",""},
+           { "sc0", "sc1", "sc2", "sc3",""},
+           { "rik0", "rik1", "rik2", "rik3",""},
+           { "tk0", "tk1", "tk2", "tk3",""},
+           { "uu0", "uu1", "uu2", "uu3",""},
+           { "pkc0", "pkc1", "pkc2", "pkc3",""}
         };
     public GameObject[] CharaterIndex;
     // Start is called before the first frame update
@@ -253,7 +253,7 @@ public class Storage : MonoBehaviour
             case 3: // 演唱會
                 encreaseExp = facilityArray[3].expAmount;
                 AddExpCompute(CropIndex, encreaseExp); // 計算經驗值
-                string[] bandname = { "約束約團", "Ave Mujica", "MyGO!!!!!", "有刺無刺" };//, "Poppin'Party", "Roselia", "Afterglow", "Pastel*Palettes", "Hello, Happy World!","RAISE A SUILEN", "Morfonica", "夢限大MewType",""};
+                string[] bandname = { "約束樂團", "Ave Mujica", "MyGO!!!!!", "有刺無刺" };//, "Poppin'Party", "Roselia", "Afterglow", "Pastel*Palettes", "Hello, Happy World!","RAISE A SUILEN", "Morfonica", "夢限大MewType",""};
 
 
 
@@ -412,7 +412,7 @@ public class Storage : MonoBehaviour
     }
     public void unlockCharacter()
     {
-        if(data.cropLevel[data.playerLevel] >= 5)
+        if(data.cropLevel[data.playerLevel] >= 5 && data.playerLevel<10)
         if (SetPlayerLevel())
         {
 
@@ -550,8 +550,10 @@ public class Storage : MonoBehaviour
     {
         ButtonOnClickScript.showBox.text = data.Boxs.ToString();
         txt_money.text = data.money.ToString();
-
-        UnlockCharacterHint.text = $"當{cropName[data.playerLevel]}達到等級5時解鎖新角色";
+        if(data.playerLevel< cropName.Length)
+            UnlockCharacterHint.text = $"當{cropName[data.playerLevel]}達到等級5時解鎖新角色";
+        if(data.playerLevel == cropName.Length)
+            UnlockCharacterHint.text = $"Comming Soon ...";
         for (int i = 0; i < data.cropExp.Length-2; i++)
         {
             CheckLevelUp(i+1);//更新等級 經驗值顯示                

@@ -4,26 +4,21 @@ using UnityEngine;
 //作物
 public class Farm : MonoBehaviour
 {
-
      private static string[,] cropNames= new string[,]
-        {
-           { "coin0","coin1","coin2","coin3","coin4","coin5","coin6","coin7","coin_C", "coin_C5", "coin_S", "coin_S5","coin_G","coin_G5"},
-           { "Paper_00", "Paper_01", "Paper_02", "Paper_03","","","","","","","","","",""},
-           { "Sheep_00", "Sheep_01", "Sheep_02", "Sheep_03","","","","","","","","","",""},
-           { "uu0", "uu1", "uu2", "uu3","","","","","","","","","",""},
-           { "tk0", "tk1", "tk2", "tk3","","","","","","","","","",""},
-           { "Plus0_00", "Plus0_01", "Plus0_02", "Plus0_03","","","","","","","","","",""},
-           { "sc0", "sc1", "sc2", "sc3","","","","","","","","","",""},
-           { "rik0", "rik1", "rik2", "rik3","","","","","","","","","",""},
-           { "pkc0", "pkc1", "pkc2", "pkc3","","","","","","","","","",""},
-           { "pj0", "pj1", "pj2", "pj3","","","","","","","","","",""},
-           { "Princess_00", "Princess_01", "Princess_02", "Princess_03","","","","","","","","","",""}
-        };
+     {
+           { "coin_0","coin_1","coin_2","coin_3","coin_4"},
+           { "Paper_00", "Paper_01", "Paper_02", "Paper_03",""},
+           { "Sheep_00", "Sheep_01", "Sheep_02", "Sheep_03",""},
+           { "Plus0_00", "Plus0_01", "Plus0_02", "Plus0_03",""},
+           { "pj0", "pj1", "pj2", "pj3",""},
+           { "Princess_00", "Princess_01", "Princess_02", "Princess_03",""},
+           { "sc0", "sc1", "sc2", "sc3",""},
+           { "rik0", "rik1", "rik2", "rik3",""},
+           { "tk0", "tk1", "tk2", "tk3",""},
+           { "uu0", "uu1", "uu2", "uu3",""},
+           { "pkc0", "pkc1", "pkc2", "pkc3",""}
+    };
 
-    //public GameObject image;
-
-    //public int
-    //= 1;
     public int CropIndex=0;
     public int CropLevel=0;
     public int HaveCoin =0;
@@ -37,42 +32,15 @@ public class Farm : MonoBehaviour
     }
     public void ChangeSprite()
     {
-        /*
-        OnThisGrid.GetComponent<GridCell>().status = CropIndex; // 設定格子狀態為有作物
-        OnThisGrid.GetComponent<GridCell>().level = CropLevel;
-        */
-        /*
-        Sprite firstSprite = Resources.Load<Sprite>("Source/"+ cropNames[CropIndex,CropLevel]);
-        SpriteRenderer U_Sprite = GetComponentInChildren<SpriteRenderer>();
-        U_Sprite.sprite = firstSprite;
-
-        if (CropLevel == 3 && CropIndex!=0 && HaveCoin>0)
-        {
-            
-            U_Sprite.color = new Color(1f, 0.9f, 0.5f, 1f);
-        }
-        if (CropLevel == 3 && CropIndex != 0 && HaveCoin == 0)
-        {
-
-            U_Sprite.color = new Color(0.5f, 0.5f, 0.5f, 1f);
-        }
-        */
         Sprite firstSprite = Resources.Load<Sprite>("Source/" + cropNames[CropIndex, CropLevel]);
         SpriteRenderer U_Sprite = GetComponent<SpriteRenderer>();
         U_Sprite.sprite = firstSprite;
 
-        //GetComponent<SpriteRenderer>().sprite = newSprite;
-        //sr.sprite = sprites[index];
-
-        // 更新 PolygonCollider
-
-        //gameObject.SetActive(false);
         if (col!=null)
             Destroy(col);
         col = gameObject.AddComponent<PolygonCollider2D>();
         col.isTrigger = true;
 
-        //gameObject.SetActive(true);
         if (CropLevel == 3 && CropIndex != 0 && HaveCoin > 0)
         {
 

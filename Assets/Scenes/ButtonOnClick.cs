@@ -13,6 +13,8 @@ public class ButtonOnClick : MonoBehaviour
     public Transform spawnPoint;
     public GridmManager GridManager;
     public TMP_Text showBox;
+
+    public AudioSource audio_put;
     void Start()
     {
        

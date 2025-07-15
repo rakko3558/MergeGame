@@ -9,10 +9,11 @@ public class Moving : MonoBehaviour
     public Vector3 targetPosition; // 目標位置
     public float stopDistance = 0.01f; // 停止移動的距離閾值
     public bool willDestroy = false;
-
+    public PlaySound DragAudio;
     // Start is called before the first frame update
     void Start()
     {
+        DragAudio= GetComponent<Draggable>().GridManager.GetComponent<PlaySound>();
         //this.enabled=false; // 禁用移動腳本
     }
 
@@ -29,6 +30,7 @@ public class Moving : MonoBehaviour
                 {
                     Destroy(gameObject);
                 }
+                DragAudio.Sound(1);
                 isMoving = false; // 到達目標位置，停止移動
                 this.enabled = false;
             } 
@@ -39,7 +41,9 @@ public class Moving : MonoBehaviour
 
     public void StartMoving(bool Destroy, Vector3 newPosition)
     {
-        willDestroy=Destroy; // 設定是否會銷毀物件
+
+        
+        willDestroy =Destroy; // 設定是否會銷毀物件
         this.enabled = true; // 禁用移動腳本
         targetPosition = newPosition; // 設定新的目標位置
         speed = Vector2.Distance(targetPosition , transform.position)*10;

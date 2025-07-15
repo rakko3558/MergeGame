@@ -305,4 +305,22 @@ public class GridmManager : MonoBehaviour
         save.UpdateCrop(x*10+y, status,level,coin);
         return;
     }
+    public void SpawnSpecifyCropWithInstantiate(GameObject Perfasb, int x, int y, int x1, int y1, int status, int level, int coin)
+    {
+
+        GameObject spawned = Instantiate(Perfasb, GridPrefabs[x1, y1].transform.position, Quaternion.identity);
+
+        //spawnedB.transform.rotation = Quaternion.Euler(0, 0, 0);
+        spawned.GetComponentInChildren<SpriteRenderer>().color = new Color(1f, 1f, 1f, 1f);
+        GridPrefabs[x, y].GetComponent<GridCell>().Crop = spawned;
+        spawned.GetComponent<Moving>().StartMoving(false, GridPrefabs[x, y].transform.position);
+        spawned.GetComponent<Farm>().OnThisGrid = GridPrefabs[x, y];
+        spawned.GetComponent<Farm>().OnThisGrid.GetComponent<GridCell>().status = status;
+        spawned.GetComponent<Farm>().OnThisGrid.GetComponent<GridCell>().level = level;
+
+        CropAmount++;
+
+        save.UpdateCrop(x * 10 + y, status, level, coin);
+        return;
+    }
 }

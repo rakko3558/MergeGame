@@ -38,15 +38,4 @@ public class CreatAccount : MonoBehaviour
         canvas.SetActive(false); // ¡Ù¬√µn§J§∂≠±
         }
     }
-
-    void Start()
-    {
-      
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }

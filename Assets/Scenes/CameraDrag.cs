@@ -14,9 +14,6 @@ public class CameraDrag : MonoBehaviour
     public float PhoneMaxZoom = 25f;          // 最大視角（最拉遠）
 
     private Camera cam;
-    private bool isZooming = false;
-    private Vector2 prevTouchZeroPos;
-    private Vector2 prevTouchOnePos;
     private Touch touch1;
     private Touch touch2;
     float touchDist = 0;
@@ -24,7 +21,6 @@ public class CameraDrag : MonoBehaviour
     float lastsize = 0;
 
     private Vector3 lastMousePosition;
-    private bool isDragging = false;
 
     public float minX = -10.0f;
     public float maxX = 10.0f;
@@ -32,7 +28,6 @@ public class CameraDrag : MonoBehaviour
     public float maxY = 10.0f;
     private Vector2 mouseWorldPos;
     private Collider2D hit;
-    private Vector3 currentMousePosition;
 
     public bool DragCrop = false;
     public GameObject Crop;
@@ -97,8 +92,6 @@ public class CameraDrag : MonoBehaviour
             return;
         }
 
-       
-
 
         if (mouseisdown==false && Input.touchCount == 0 )
             touchStatus = 0;
@@ -130,8 +123,6 @@ public class CameraDrag : MonoBehaviour
                 touch2 = Input.GetTouch(1);             
                 lastDist = Vector2.Distance(touch1.position, touch2.position);
                 lastsize = cam.orthographicSize;
-                //prevTouchZeroPos = touchZero.position;
-                //prevTouchOnePos = touchOne.position;
                 touchStatus = 2; // 雙指觸控
                 return;
             }
@@ -139,11 +130,6 @@ public class CameraDrag : MonoBehaviour
         if (touchStatus==2 && Input.touchCount != 2) 
         {
             touchStatus = 3;
-        }
-
-        if (touchStatus ==0)
-        {
-            //Debug.Log("YYY:{}");
         }
 
         if (touchStatus==1)
@@ -183,64 +169,13 @@ public class CameraDrag : MonoBehaviour
             if (newDist > 0)
             {
                 touchDist = lastDist - newDist;
-                //lastDist = newDist;
-
-                // Your Code Here
-                //cam.orthographicSize = cam.orthographicSize + touchDist * 0.01f;
-                //cam.orthographicSize = Mathf.Clamp(cam.orthographicSize, PhoneMinZoom, PhoneMaxZoom);
-
-
-
 
                 cam.orthographicSize = lastsize + touchDist * 0.01f;
                 cam.orthographicSize = Mathf.Clamp(cam.orthographicSize, PhoneMinZoom, PhoneMaxZoom);
 
-
-               
             } 
         }
-            /*  touchZero = Input.GetTouch(0);
-             touchOne = Input.GetTouch(1);
-
-             // 計算上一幀與這一幀的距離差
-             float prevMagnitude = (prevTouchZeroPos - prevTouchOnePos).magnitude;
-             float currentMagnitude = (touchZero.position - touchOne.position).magnitude;
-
-             float difference = currentMagnitude - prevMagnitude;
-
-             // 縮放處理
-             cam.orthographicSize -= difference * 0.01f; 
-             cam.orthographicSize = Mathf.Clamp(cam.orthographicSize, PhoneMinZoom, PhoneMaxZoom);
-
-             // 更新上一幀位置
-             prevTouchZeroPos = touchZero.position;
-             prevTouchOnePos = touchOne.position; */
-
-        
-
-
-        /*
-        if (Input.touchCount == 2)
-        {
-            Touch touch1 = Input.GetTouch(0);
-            Touch touch2 = Input.GetTouch(1);
-
-            if (touch1.phase == TouchPhase.Began && touch2.phase == TouchPhase.Began)
-            {
-                lastDist = Vector2.Distance(touch1.position, touch2.position);
-            }
-
-            if (touch1.phase == TouchPhase.Moved && touch2.phase == TouchPhase.Moved)
-            {
-                float newDist = Vector2.Distance(touch1.position, touch2.position);
-                touchDist = lastDist - newDist;
-                lastDist = newDist;
-
-                // Your Code Here
-                Camera.main.fieldOfView += touchDist * 0.1f;
-            }
-        }
-        */
+           
     }
 
 }
