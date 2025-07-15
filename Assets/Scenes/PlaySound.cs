@@ -10,7 +10,7 @@ public class PlaySound : MonoBehaviour
     public AudioClip audio_put;
     public AudioClip audio_pick;
 
-    //public AudioClip bgm;
+    public AudioClip bgm;
     // Start is called before the first frame update
 
     public void  Sound(int a)
@@ -31,7 +31,8 @@ public class PlaySound : MonoBehaviour
 
     void Start()
     {
-        //bgmSource.Play(audio_pick);
+        audioSource.PlayOneShot(bgm);
+        audioSource.volume = 0.1f; // 設定音量為 50%
     }
 
     // Update is called once per frame
