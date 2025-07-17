@@ -94,12 +94,12 @@ public class Storage : MonoBehaviour
     private static string[,] cropNames = new string[,]
         {
            { "coin_0","coin_1","coin_2","coin_3","coin_4"},
-           { "Paper_00", "Paper_01", "Paper_02", "Paper_03",""},
+           { "PaperW_00", "PaperW_01", "PaperW_02", "PaperW_03",""},
            { "Sheep_00", "Sheep_01", "Sheep_02", "Sheep_03",""},          
            { "Plus0_00", "Plus0_01", "Plus0_02", "Plus0_03",""},
-           { "pj0", "pj1", "pj2", "pj3",""},
+           { "Pochi_00", "Pochi_01", "Pochi_02", "Pochi_03",""},
            { "Princess_00", "Princess_01", "Princess_02", "Princess_03",""},
-           { "sc0", "sc1", "sc2", "sc3",""},
+           { "SC_00", "SC_01", "SC_02", "SC_03",""},
            { "rik0", "rik1", "rik2", "rik3",""},
            { "tk0", "tk1", "tk2", "tk3",""},
            { "uu0", "uu1", "uu2", "uu3",""},
@@ -190,7 +190,7 @@ public class Storage : MonoBehaviour
             return;
         }
         
-        GameObject clonedTextGO = Instantiate(TextPerfab.gameObject);
+        //GameObject clonedTextGO = Instantiate(TextPerfab.gameObject);
         //顯示文字活動
         int encreaseExp = 0;
         string description;
@@ -203,23 +203,59 @@ public class Storage : MonoBehaviour
 
                 description = $"將{cropName[CropIndex]}存入了匯豐銀行！(EXP+{encreaseExp})";
 
-                clonedTextGO.GetComponent<TextMeshProUGUI>().text = description;
+                //clonedTextGO.GetComponent<TextMeshProUGUI>().text = description;
 
 
                 description= $"將{cropName[CropIndex]}\n存入了匯豐銀行！";
                 exhibit.showEventExhibit(description, cropNames[CropIndex, CropExp],encreaseExp, 0);
                 break;
             case 1: // 結婚
+                
                 encreaseExp = facilityArray[1].expAmount;
                 AddExpCompute(CropIndex, encreaseExp); // 計算經驗值
-                string[] marriageNames = { "紙屑", "羊肉爐", "阿鵝", "Taki", "+0", "SC", "Riku", "波吉", "公主" };
+                //string[] marriageNames = { "紙屑", "羊肉爐", "阿鵝", "Taki", "+0", "SC", "Riku", "波吉", "公主" };
+                //string marrayName;
+                if (CropIndex == 1)
+                {
+                    //clonedTextGO.GetComponent<TextMeshProUGUI>().text = $"恭喜紙屑跟容老大結婚了！EXP +{encreaseExp}";
+                    description = $"恭喜\n紙屑跟容老大結婚了！";
+                }
+                
+                else
+                {
+                    int randomIndex = UnityEngine.Random.Range(2, data.playerLevel+1);
+                    if (randomIndex == CropIndex)
+                    {
+                        if (data.playerLevel <= 3)//只有1跟23作物 就看老大跟紙屑結婚
+                        {
+                            //clonedTextGO.GetComponent<TextMeshProUGUI>().text = $"{cropName[CropIndex]}參加了紙屑跟容老大的婚禮！EXP +{encreaseExp}";
+                            description = $"{cropName[CropIndex]}參加了\n紙屑跟容老大的婚禮！";
+                        }
+                        else//骰到自己  看別人跟別人結婚
+                        {
+                            int marrayIndex = UnityEngine.Random.Range(2, data.playerLevel+1);
+                            int marrayIndex2 = UnityEngine.Random.Range(2, data.playerLevel+1);
+                            while (marrayIndex == CropIndex || marrayIndex2 == CropIndex || marrayIndex == marrayIndex2)//不能跟自己結婚
+                            {
+                                marrayIndex = UnityEngine.Random.Range(2, data.playerLevel+1);
+                                marrayIndex2 = UnityEngine.Random.Range(2, data.playerLevel+1);
+                            }
 
-                string marrayName = marriageNames[UnityEngine.Random.Range(0, marriageNames.Length)];
-
-                clonedTextGO.GetComponent<TextMeshProUGUI>().text = $"恭喜{cropName[CropIndex]}跟{marrayName}結婚了！EXP +{encreaseExp}";
-                description = $"恭喜\n{cropName[CropIndex]}跟{marrayName}結婚了！";
+                            
+                            //clonedTextGO.GetComponent<TextMeshProUGUI>().text = $"{cropName[CropIndex]}參加了{cropName[marrayIndex]}跟{cropName[marrayIndex2]}的婚禮！EXP +{encreaseExp}";
+                            description = $"{cropName[CropIndex]}參加了\n{cropName[marrayIndex]}跟{cropName[marrayIndex2]}的婚禮！";
+                        }
+                            
+                    }
+                    else//跟人結婚
+                    {
+                        //clonedTextGO.GetComponent<TextMeshProUGUI>().text = $"恭喜{cropName[CropIndex]}跟{cropName[randomIndex]}結婚了！EXP +{encreaseExp}";
+                        description = $"恭喜\n{cropName[CropIndex]}跟{cropName[randomIndex]}結婚了！";
+                    }
+                }
                 exhibit.showEventExhibit(description, cropNames[CropIndex, 3], encreaseExp, 0);
                 break;
+
             case 2: // 出攤
                 encreaseExp = facilityArray[2].expAmount;
                 AddExpCompute(CropIndex, encreaseExp); // 計算經驗值
@@ -247,8 +283,7 @@ public class Storage : MonoBehaviour
                         CPName2 = CPNames[UnityEngine.Random.Range(0, CPNames.Length)];
                     }
                 }
-                clonedTextGO.GetComponent<TextMeshProUGUI>().text =
-                            $"{cropName[CropIndex]}出攤賣本({CPName1} x {CPName2})！(EXP+{encreaseExp})";
+                //clonedTextGO.GetComponent<TextMeshProUGUI>().text =$"{cropName[CropIndex]}出攤賣本({CPName1} x {CPName2})！(EXP+{encreaseExp})";
                 break;
             case 3: // 演唱會
                 encreaseExp = facilityArray[3].expAmount;
@@ -257,16 +292,16 @@ public class Storage : MonoBehaviour
 
 
 
-                clonedTextGO.GetComponent<TextMeshProUGUI>().text = $"{cropName[CropIndex]}去看了{bandname[UnityEngine.Random.Range(0, bandname.Length)]}的演唱會！(EXP+{encreaseExp})";
+                //clonedTextGO.GetComponent<TextMeshProUGUI>().text = $"{cropName[CropIndex]}去看了{bandname[UnityEngine.Random.Range(0, bandname.Length)]}的演唱會！(EXP+{encreaseExp})";
                 break;
             default:
                 //Debug.LogWarning("未知的設施類型！");
                 return;
         }
-        clonedTextGO.transform.SetParent(panel_TextArea.transform, false); 
+        //clonedTextGO.transform.SetParent(panel_TextArea.transform, false); 
 
         // 啟用 GameObject（如果 template 是 hidden 的話）
-        clonedTextGO.SetActive(true);
+        //clonedTextGO.SetActive(true);
         //確認等級
         CheckQuestComplete(facility, CropIndex); // 檢查任務是否完成
         CheckLevelUp(CropIndex);//不能擺進AddExpCompute裡面 因為會重複更新
@@ -331,7 +366,7 @@ public class Storage : MonoBehaviour
             string message = $"獲得新建設 (-{buildPrice} Coins)";
             showTextMessage(message);
             if(data.builds<facilityArray.Length)
-                facilityArray[data.builds].showButtom(data.builds*3000);
+                facilityArray[data.builds].showButtom(data.builds*2000);
             //showTextMessageMoney(LandPrice*-1);
             StartCoroutine(Database.UpdateData($"{playerID}/builds", data.builds.ToString()));
 
@@ -440,7 +475,7 @@ public class Storage : MonoBehaviour
             {
                 facilityArray[i].Open();
                 if (i+1 < facilityArray.Length)
-                    facilityArray[i+1].showButtom((i+1)* 3000);
+                    facilityArray[i+1].showButtom((i+1)* 2000);
             }
             
             //Debug.Log($"{playerLevel / 2},{i},{facilityArray[i].isOpen}");
@@ -480,7 +515,7 @@ public class Storage : MonoBehaviour
 
             case 1:
                 // 1級任務
-                questDepiction.text = $"讓{cropName[data.questCropIndex]}進行結婚";
+                questDepiction.text = $"讓{cropName[data.questCropIndex]}參加婚禮";
                 questReward.text = $"EXP +{data.questExp}\nCoin +{data.questMoney}";
 
                 break;

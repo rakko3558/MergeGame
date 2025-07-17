@@ -7,12 +7,12 @@ public class Farm : MonoBehaviour
      private static string[,] cropNames= new string[,]
      {
            { "coin_0","coin_1","coin_2","coin_3","coin_4"},
-           { "Paper_00", "Paper_01", "Paper_02", "Paper_03",""},
+           { "PaperW_00", "PaperW_01", "PaperW_02", "PaperW_03",""},
            { "Sheep_00", "Sheep_01", "Sheep_02", "Sheep_03",""},
            { "Plus0_00", "Plus0_01", "Plus0_02", "Plus0_03",""},
-           { "pj0", "pj1", "pj2", "pj3",""},
+           { "Pochi_00", "Pochi_01", "Pochi_02", "Pochi_03",""},
            { "Princess_00", "Princess_01", "Princess_02", "Princess_03",""},
-           { "sc0", "sc1", "sc2", "sc3",""},
+           { "SC_00", "SC_01", "SC_02", "SC_03",""},
            { "rik0", "rik1", "rik2", "rik3",""},
            { "tk0", "tk1", "tk2", "tk3",""},
            { "uu0", "uu1", "uu2", "uu3",""},
