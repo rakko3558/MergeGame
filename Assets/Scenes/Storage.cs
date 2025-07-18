@@ -201,7 +201,7 @@ public class Storage : MonoBehaviour
                 encreaseExp = CropExpLevel[CropExp];
                 AddExpCompute(CropIndex,encreaseExp); // 計算經驗值
 
-                description = $"將{cropName[CropIndex]}存入了匯豐銀行！(EXP+{encreaseExp})";
+                description = $"將{cropName[CropIndex]}存入了匯豐銀行！";
 
                 //clonedTextGO.GetComponent<TextMeshProUGUI>().text = description;
 
@@ -283,6 +283,8 @@ public class Storage : MonoBehaviour
                         CPName2 = CPNames[UnityEngine.Random.Range(0, CPNames.Length)];
                     }
                 }
+                description = $"{cropName[CropIndex]}\n出攤賣本({CPName1} x {CPName2})！";
+                exhibit.showEventExhibit(description, cropNames[CropIndex, 3], encreaseExp, 0);
                 //clonedTextGO.GetComponent<TextMeshProUGUI>().text =$"{cropName[CropIndex]}出攤賣本({CPName1} x {CPName2})！(EXP+{encreaseExp})";
                 break;
             case 3: // 演唱會
@@ -290,8 +292,8 @@ public class Storage : MonoBehaviour
                 AddExpCompute(CropIndex, encreaseExp); // 計算經驗值
                 string[] bandname = { "約束樂團", "Ave Mujica", "MyGO!!!!!", "有刺無刺" };//, "Poppin'Party", "Roselia", "Afterglow", "Pastel*Palettes", "Hello, Happy World!","RAISE A SUILEN", "Morfonica", "夢限大MewType",""};
 
-
-
+                description = $"{cropName[CropIndex]}去看了{bandname[UnityEngine.Random.Range(0, bandname.Length)]}\n的演唱會！";
+                exhibit.showEventExhibit(description, cropNames[CropIndex, 3], encreaseExp, 0);
                 //clonedTextGO.GetComponent<TextMeshProUGUI>().text = $"{cropName[CropIndex]}去看了{bandname[UnityEngine.Random.Range(0, bandname.Length)]}的演唱會！(EXP+{encreaseExp})";
                 break;
             default:
@@ -351,7 +353,7 @@ public class Storage : MonoBehaviour
     }
     public void constructBuilding()
     {
-        int buildPrice = data.builds * 4000;
+        int buildPrice = data.builds * 2000;
         if (data.money < buildPrice)
         {
 
