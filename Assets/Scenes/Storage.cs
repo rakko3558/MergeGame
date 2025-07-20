@@ -90,20 +90,20 @@ public class Storage : MonoBehaviour
     public Facilitys[] facilityArray;
     //private int facility = 0; // 0:銀行，1:結婚，2:出攤，3:演唱會
 
-    private string[] cropName = new string[] { "", "紙屑", "羊肉爐", "+0", "波吉", "公主" , "SC", "Riku", "Taki", "阿鵝", "皮卡丘"};
+    private string[] cropName = new string[] { "", "紙屑", "羊肉爐", "+0", "波吉", "公主" , "SC", "Riku", "Taki", "阿鵝", "狼"};
     private static string[,] cropNames = new string[,]
         {
            { "coin_0","coin_1","coin_2","coin_3","coin_4"},
            { "PaperW_00", "PaperW_01", "PaperW_02", "PaperW_03",""},
-           { "Sheep_00", "Sheep_01", "Sheep_02", "Sheep_03",""},          
+           { "Sheep_00", "Sheep_01", "Sheep_02", "Sheep_03",""},
            { "Plus0_00", "Plus0_01", "Plus0_02", "Plus0_03",""},
            { "Pochi_00", "Pochi_01", "Pochi_02", "Pochi_03",""},
            { "Princess_00", "Princess_01", "Princess_02", "Princess_03",""},
            { "SC_00", "SC_01", "SC_02", "SC_03",""},
-           { "rik0", "rik1", "rik2", "rik3",""},
-           { "tk0", "tk1", "tk2", "tk3",""},
-           { "uu0", "uu1", "uu2", "uu3",""},
-           { "pkc0", "pkc1", "pkc2", "pkc3",""}
+           { "Riku_00", "Riku_01", "Riku_02", "Riku_03",""},
+           { "Taki_00", "Taki_01", "Taki_02", "Taki_03",""},
+           { "Goosey_00", "Goosey_01", "Goosey_02", "Goosey_03",""},
+           { "Wolf_00", "Wolf_01", "Wolf_02", "Wolf_03",""}
         };
     public GameObject[] CharaterIndex;
     // Start is called before the first frame update
@@ -450,23 +450,23 @@ public class Storage : MonoBehaviour
     public void unlockCharacter()
     {
         if(data.cropLevel[data.playerLevel] >= 5 && data.playerLevel<10)
-        if (SetPlayerLevel())
-        {
+            if (SetPlayerLevel())
+            {
 
-            //money = money - price;// 暫定每個角色100元
-            //txt_money.text = money.ToString();
-            string message = $"獲得新角色 - {cropName[data.playerLevel]}";
-            UnlockCharacterHint.text = $"當{cropName[data.playerLevel]}達到等級5時解鎖新角色";
-            showTextMessage(message);
-            //showTextMessageMoney(price * -1);
-            //UnlockCharacter.text = $"解鎖角色\n({data.playerLevel * 1000} Coins)";
+                //money = money - price;// 暫定每個角色100元
+                //txt_money.text = money.ToString();
+                string message = $"獲得新角色 - {cropName[data.playerLevel]}";
+                UnlockCharacterHint.text = $"當{cropName[data.playerLevel]}達到等級5時解鎖新角色";
+                showTextMessage(message);
+                //showTextMessageMoney(price * -1);
+                //UnlockCharacter.text = $"解鎖角色\n({data.playerLevel * 1000} Coins)";
 
 
-            //GameObject clonedTextGO = Instantiate(TextPerfab.gameObject);
-            //clonedTextGO.GetComponent<TextMeshProUGUI>().text = $"{amount}元存入了匯豐銀行";
-            //checkFacility();
-            CheckLevelUp(data.playerLevel);
-        }
+                //GameObject clonedTextGO = Instantiate(TextPerfab.gameObject);
+                //clonedTextGO.GetComponent<TextMeshProUGUI>().text = $"{amount}元存入了匯豐銀行";
+                //checkFacility();
+                CheckLevelUp(data.playerLevel);
+            }
     }
     public void checkFacility()
     {
@@ -488,11 +488,11 @@ public class Storage : MonoBehaviour
     {
         data.questFalicity = UnityEngine.Random.Range(0,data.builds); // 重置任務索引
         data.questCropIndex= UnityEngine.Random.Range(1, data.playerLevel +1); // 重置任務角色索引
-        int[] expList = new int[] { 50, 50, 50, 50, 50, 100, 100, 200, 300 }; // 任務經驗值列表
+        int[] expList = new int[] {50, 50, 50, 50, 100,100, 100, 200,200, 300 ,400,500,600}; // 任務經驗值列表
 
         data.questExp = expList[UnityEngine.Random.Range(0,expList.Length)]; // 重置任務經驗值
 
-        int[] moneyList = new int[]{50, 50, 50, 50, 50, 100, 100, 200,300}; // 任務金錢獎勵列表
+        int[] moneyList = new int[]{50, 50, 50, 50, 100,100, 100, 200,200,300,400,500,600}; // 任務金錢獎勵列表
         data.questMoney = moneyList[UnityEngine.Random.Range(0,moneyList.Length)]; // 重置任務金錢獎勵
                                                                                    //Debug.Log($"任務{playerLevel}/{questCharacter} /{questExp} /{questMoney}");
 
@@ -589,7 +589,7 @@ public class Storage : MonoBehaviour
         txt_money.text = data.money.ToString();
         if(data.playerLevel< cropName.Length)
             UnlockCharacterHint.text = $"當{cropName[data.playerLevel]}達到等級5時解鎖新角色";
-        if(data.playerLevel == cropName.Length)
+        if(data.playerLevel+1 == cropName.Length)
             UnlockCharacterHint.text = $"Comming Soon ...";
         for (int i = 0; i < data.cropExp.Length-2; i++)
         {

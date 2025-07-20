@@ -13,10 +13,10 @@ public class Farm : MonoBehaviour
            { "Pochi_00", "Pochi_01", "Pochi_02", "Pochi_03",""},
            { "Princess_00", "Princess_01", "Princess_02", "Princess_03",""},
            { "SC_00", "SC_01", "SC_02", "SC_03",""},
-           { "rik0", "rik1", "rik2", "rik3",""},
-           { "tk0", "tk1", "tk2", "tk3",""},
-           { "uu0", "uu1", "uu2", "uu3",""},
-           { "pkc0", "pkc1", "pkc2", "pkc3",""}
+           { "Riku_00", "Riku_01", "Riku_02", "Riku_03",""},
+           { "Taki_00", "Taki_01", "Taki_02", "Taki_03",""},
+           { "Goosey_00", "Goosey_01", "Goosey_02", "Goosey_03",""},
+           { "Wolf_00", "Wolf_01", "Wolf_02", "Wolf_03",""}
     };
 
     public int CropIndex=0;
