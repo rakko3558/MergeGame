@@ -261,7 +261,7 @@ public class Storage : MonoBehaviour
                 AddExpCompute(CropIndex, encreaseExp); // 計算經驗值
                 string CPName1;
                 string CPName2;
-                int a = UnityEngine.Random.Range(0, 1);
+                int a = UnityEngine.Random.Range(0, 2);
                 if (a==0)
                 {
                     string[] CPNames = { "樂奈", "愛音", "喵夢", "睦", "爽世", "祥子", "初華", "海鈴", "立希", "燈" };
@@ -275,7 +275,7 @@ public class Storage : MonoBehaviour
 
                 else
                 {
-                    string[] CPNames = {  "桃香", "昴", "仁菜", "Rupa", "智" };
+                    string[] CPNames = {  "桃香", "昴", "仁菜" };
                     CPName1 = CPNames[UnityEngine.Random.Range(0, CPNames.Length)];
                     CPName2 = CPNames[UnityEngine.Random.Range(0, CPNames.Length)];
                     while (CPName2 == CPName1)
@@ -290,7 +290,7 @@ public class Storage : MonoBehaviour
             case 3: // 演唱會
                 encreaseExp = facilityArray[3].expAmount;
                 AddExpCompute(CropIndex, encreaseExp); // 計算經驗值
-                string[] bandname = { "約束樂團", "Ave Mujica", "MyGO!!!!!", "有刺無刺" };//, "Poppin'Party", "Roselia", "Afterglow", "Pastel*Palettes", "Hello, Happy World!","RAISE A SUILEN", "Morfonica", "夢限大MewType",""};
+                string[] bandname = { "結束樂團", "Ave Mujica", "MyGO!!!!!", "無刺有刺" };//, "Poppin'Party", "Roselia", "Afterglow", "Pastel*Palettes", "Hello, Happy World!","RAISE A SUILEN", "Morfonica", "夢限大MewType",""};
 
                 description = $"{cropName[CropIndex]}去看了{bandname[UnityEngine.Random.Range(0, bandname.Length)]}\n的演唱會！";
                 exhibit.showEventExhibit(description, cropNames[CropIndex, 3], encreaseExp, 0);
