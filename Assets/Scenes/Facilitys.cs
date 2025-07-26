@@ -19,7 +19,6 @@ public class Facilitys : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        //GetComponent<Collider2D>().enabled = false;  // 開啟
     }
 
     // Update is called once per frame
@@ -40,8 +39,6 @@ public class Facilitys : MonoBehaviour
             GetComponent<SpriteRenderer>().color = new Color(1f, 1f, 1f, 1f); // 白色 + 半透明
             GetComponent<Collider2D>().enabled = true;  // 開啟
             Destroy(OpenButtom);
-            //GetChildComponent<Collider2D>().
-            //GetChildComponent<Collider2D>().
         }
     }
 

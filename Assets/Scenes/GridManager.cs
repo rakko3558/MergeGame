@@ -18,17 +18,14 @@ public class GridmManager : MonoBehaviour
     public GameObject OpenLandButtom;
     public Storage save;
     public GameObject[,] GridPrefabs;
-    //public List<GameObject> CropdPrefabs; //記錄所有在場作物
     public int CropAmount = 0; // 作物數量
-    //public List<GameObject> GridPrefabs;
-    // Start is called before the first frame update
-    //public int Lands=0;
     public TextMeshPro OpenLandText;
 
     public LayerMask clickableLayer;
     public GameObject PressedObject;
 
     public Facilitys[] facilityArray;
+    public GuaGua Gua;
 
     void Start()
     {
@@ -52,15 +49,11 @@ public class GridmManager : MonoBehaviour
 
             if (hit.collider != null)
             {
-               // Debug.Log("點擊到：" + hit.collider.gameObject.name);
-
-                // 你可以根據 Tag 或元件類型來做事情
-                //if (hit.collider.CompareTag("Clickable"))
-                //{
+               
                     // 做作物的點擊處理
                  hit.collider.GetComponent<Draggable>()?.OnPressed(); // 假設你有 OnPressed()
                 PressedObject= hit.collider.gameObject; // 儲存被點擊的物件
-                //}
+                
             }
         }
         // 滑鼠左鍵放開時執行
@@ -70,19 +63,11 @@ public class GridmManager : MonoBehaviour
             // 將滑鼠位置轉成世界座標
             Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
-            // 射出 Raycast，偵測滑鼠放開時指向的物件
-            //RaycastHit2D hit = Physics2D.Raycast(mousePos, Vector2.zero, Mathf.Infinity, clickableLayer);
-
             if (PressedObject != null)
             {
-                //Debug.Log("滑鼠放開點到：" + PressedObject.name);
-
-                // 假設有 Crop Tag
-                //if (hit.collider.CompareTag("Clickable"))
-                //{
+               
                 PressedObject.GetComponent<Draggable>()?.OnReleased();
                 PressedObject = null;
-                //}
             }
         }
 
@@ -130,13 +115,16 @@ public class GridmManager : MonoBehaviour
                
             }
         }
-
+        
         Destroy(cellPrefab);
-
         //設定開地按鈕
         if (save.data.Lands < width * height)
         {
             OpenLandButtom.transform.position = GridPrefabs[save.data.Lands / 10, save.data.Lands % 10].transform.position;
+        }else if (save.data.Lands == width * height)//開呱呱
+        {
+            OpenLandButtom.SetActive(false);
+            Gua.Open();
         }
         
     }
@@ -258,8 +246,12 @@ public class GridmManager : MonoBehaviour
         {
 
             save.data.Lands++;
-
-            ShowGridCell(save.data.Lands-1);
+            ShowGridCell(save.data.Lands - 1);
+            if (save.data.Lands == width * height)//開呱呱
+            {
+                
+                Gua.Open();
+            }
             return true;
         }
         return false;
@@ -272,16 +264,21 @@ public class GridmManager : MonoBehaviour
         cell.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Source/Rectangle");
         cell.GetComponent<SpriteRenderer>().color = new Color(1f, 1f, 1f, 0f); // 白色 + 半透明
 
-        if (openNo+1 < width * height)
+        if (openNo + 1 < width * height)
         {
             //OpenLandButtom.GetComponentInChildren<TextMeshProUGUI>().text=new string($"開地({Lands*10} Coins)");
-            OpenLandText.text = new string($"{(openNo+1) * 5}");
-            OpenLandButtom.transform.position = GridPrefabs[(openNo+1) / 10, (openNo+1) % 10].transform.position;
+            OpenLandText.text = new string($"{(openNo + 1) * 5}");
+            OpenLandButtom.transform.position = GridPrefabs[(openNo + 1) / 10, (openNo + 1) % 10].transform.position;
 
 
         }
-        else if (openNo+1 == width * height)
+        else if (openNo + 1 == width * height)
+        {
+          
+                Gua.Open();
+           
             OpenLandButtom.transform.position = new Vector3(0f, 0f, -10f);
+        }
     }
     public void SpawnSpecifyCrop(int x, int y, int x1, int y1, int status, int level, int coin)
     {

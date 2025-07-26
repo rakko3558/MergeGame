@@ -25,23 +25,11 @@ public class Storage : MonoBehaviour
     //任務相關
     public TextMeshProUGUI questDepiction;
     public TextMeshProUGUI questReward;
-    /*
-    public int questIndex = -1; // 目前任務索引，-1 代表沒有任務 0:銀行，1:結婚，2:出攤，3:演唱會
-    public int questCharacter = -1; // 目前任務索引，-1 代表沒有任務 0:錢，1:紙屑，2:....
-    public int questExp = 0; // 任務經驗值
-    public int questMoney = 0; // 任務金錢獎勵
-    */
-    //public int playerLevel = 1;//開啟的角色數量
-    //public int Boxs = 100;// 剩餘箱子數量
     public ShowExhibit exhibit; // 顯示展覽的腳本
 
     public int MaxLevel = 50;
 
-    //public int[] cropExp   = new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-    //public int[] cropLevel = new int[] { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 }; // 作物等級，預設為 1 等級
     public GridmManager GridManager;
-    //public int Lands = 20;
-
     [System.Serializable]
     public class PlayerData
     {
@@ -121,7 +109,6 @@ public class Storage : MonoBehaviour
         data.date=System.DateTime.Now.ToString("yyyyMMdd");//須重置日期 否則會是PUBLIC設定的值
         string cropExpString = JsonUtility.ToJson(data.cropExp);
         string newPlayerData = JsonUtility.ToJson(data);
-        Debug.Log(newPlayerData);
         Database.StartCoroutine(Database.WriteData(playerID, newPlayerData));
 
         LoginRefreshValue();
@@ -134,12 +121,6 @@ public class Storage : MonoBehaviour
         clonedTextGO.GetComponent<TextMeshProUGUI>().text = message;
 
         clonedTextGO.transform.SetParent(panel_TextArea.transform, false);
-
-        // 啟用 GameObject（如果 template 是 hidden 的話）
-        
-        //GameObject clonedTextGO = Instantiate(TextPerfab.gameObject);
-        //clonedTextGO.GetComponent<TextMeshProUGUI>().text = message;
-        //clonedTextGO.transform.SetParent(panel_TextArea.transform, false); // 設定父物件
         clonedTextGO.SetActive(true); // 啟用 GameObject（如果 template 是 hidden 的話）
     }
 
@@ -165,12 +146,8 @@ public class Storage : MonoBehaviour
        
         string message = $"{amount}元存入了匯豐銀行";
         showTextMessage(message);
-        //showTextMessageMoney(amount);
         AddMoneyCompute(amount);
 
-        //GameObject clonedTextGO = Instantiate(TextPerfab.gameObject);
-        //clonedTextGO.GetComponent<TextMeshProUGUI>().text = $"{amount}元存入了匯豐銀行";
-        //Debug.Log($"玩家金錢增加：{amount}，目前金錢：{money}");
     }
     public void AddMoneyCompute(int amount)
     {
@@ -300,11 +277,6 @@ public class Storage : MonoBehaviour
                 //Debug.LogWarning("未知的設施類型！");
                 return;
         }
-        //clonedTextGO.transform.SetParent(panel_TextArea.transform, false); 
-
-        // 啟用 GameObject（如果 template 是 hidden 的話）
-        //clonedTextGO.SetActive(true);
-        //確認等級
         CheckQuestComplete(facility, CropIndex); // 檢查任務是否完成
         CheckLevelUp(CropIndex);//不能擺進AddExpCompute裡面 因為會重複更新
         StartCoroutine(Database.UpdateData($"{playerID}/cropExp/{CropIndex}", data.cropExp[CropIndex].ToString()));
@@ -323,12 +295,10 @@ public class Storage : MonoBehaviour
     // 判斷是否升級
     private void CheckLevelUp(int CropIndex)
     {
-        Debug.Log($"{CropIndex}");
         txt_level[CropIndex].text = data.cropLevel[CropIndex].ToString();
         txt_level[CropIndex].GetComponentInChildren<Slider>().value = (float)data.cropExp[CropIndex] / (float)ExpToNextLevel(data.cropLevel[CropIndex]);
      
 
-        Debug.Log($"EXP{txt_level[CropIndex].GetComponentInChildren<Slider>().value}");
         txt_level[CropIndex].GetComponentInChildren<Slider>().GetComponentInChildren<TextMeshProUGUI>().text = $"{data.cropExp[CropIndex]}/{ExpToNextLevel(data.cropLevel[CropIndex])}";
 
         while (data.cropExp[CropIndex] >= ExpToNextLevel(data.cropLevel[CropIndex]))
@@ -410,18 +380,11 @@ public class Storage : MonoBehaviour
         if (SetPlayerLevel())
         {
 
-            //money = money - price;// 暫定每個角色100元
-            //txt_money.text = money.ToString();
             string message = $"獲得新角色-{price} Coins)";
             showTextMessage(message);
             AddMoneyCompute(-price);
-            //showTextMessageMoney(price * -1);
             UnlockCharacter.text = $"解鎖角色\n({data.playerLevel * 1000} Coins)";
             
-
-             //GameObject clonedTextGO = Instantiate(TextPerfab.gameObject);
-             //clonedTextGO.GetComponent<TextMeshProUGUI>().text = $"{amount}元存入了匯豐銀行";
-             //checkFacility();
              CheckLevelUp(data.playerLevel);
         }
     }
@@ -432,12 +395,6 @@ public class Storage : MonoBehaviour
         {
             AddPlayerLevel();
             CharaterIndex[data.playerLevel -1].SetActive(true);
-            /*
-            if (data.playerLevel == cropName.Length-1)
-            {
-                CharaterIndex[data.playerLevel].SetActive(false);//都解玩完 隱藏解鎖按鈕
-            }
-            */
             if (data.playerLevel == cropName.Length - 1)
             {
                 CharaterIndex[data.playerLevel].SetActive(false);//都解玩完 隱藏解鎖按鈕
@@ -453,18 +410,9 @@ public class Storage : MonoBehaviour
             if (SetPlayerLevel())
             {
 
-                //money = money - price;// 暫定每個角色100元
-                //txt_money.text = money.ToString();
                 string message = $"獲得新角色 - {cropName[data.playerLevel]}";
                 UnlockCharacterHint.text = $"當{cropName[data.playerLevel]}達到等級5時解鎖新角色";
                 showTextMessage(message);
-                //showTextMessageMoney(price * -1);
-                //UnlockCharacter.text = $"解鎖角色\n({data.playerLevel * 1000} Coins)";
-
-
-                //GameObject clonedTextGO = Instantiate(TextPerfab.gameObject);
-                //clonedTextGO.GetComponent<TextMeshProUGUI>().text = $"{amount}元存入了匯豐銀行";
-                //checkFacility();
                 CheckLevelUp(data.playerLevel);
             }
     }
@@ -480,7 +428,6 @@ public class Storage : MonoBehaviour
                     facilityArray[i+1].showButtom((i+1)* 2000);
             }
             
-            //Debug.Log($"{playerLevel / 2},{i},{facilityArray[i].isOpen}");
         }
     }
 
@@ -604,7 +551,6 @@ public class Storage : MonoBehaviour
             GridManager.ShowGridCell(i);
         }
         string today = System.DateTime.Now.ToString("yyyyMMdd");
-        Debug.Log($"今天日期：{today}，登入日期：{data.date}");
         if (int.Parse(data.date) < int.Parse(today))
         { 
             AddBoxs(300); // 每天登入獎勵10個箱子

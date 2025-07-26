@@ -17,7 +17,6 @@ public class GridCell : MonoBehaviour
     void Start()
     {
        
-       // sr.sortingLayerName = "Foreground";
     }
 
 
@@ -30,11 +29,5 @@ public class GridCell : MonoBehaviour
         //gameObject.name = $"Cell ({x},{y})"; // 改名稱方便場景查看
     }
 
-    /*
-    public int GridCropMergeSearch()
-    {
-        GridCropMergeSearch()
-        return 0;
-    }*/
 
 }
