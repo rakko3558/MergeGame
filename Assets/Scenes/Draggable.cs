@@ -55,6 +55,8 @@ public class Draggable : MonoBehaviour
             }
             if (GetComponent<Farm>().HaveCoin <= 0)
             {
+
+                Destroy(GetComponent<Farm>().thisSparkle);
                 GetComponentInChildren<SpriteRenderer>().color = new Color(0.5f, 0.5f, 0.5f, 1f);
             }
         }
@@ -90,18 +92,24 @@ public class Draggable : MonoBehaviour
                 exchangeValue(TouchIndex);
                 return;
             }
-            if (GetComponent<Farm>().CropLevel == 3)
+            if (GetComponent<Farm>().CropLevel == 3 && GetComponent<Farm>().CropIndex != 0)
             {
                 exchangeValue(TouchIndex);
                 return;
             }
-            if (TouchIndex == 4&& GetComponent<Farm>().CropIndex != 0)
+            if (TouchIndex == 999&& GetComponent<Farm>().CropIndex != 0)
             {
                 exchangeValue(TouchIndex);
                 return;
             }
-            if (GetComponent<Farm>().CropIndex != 0 &&GetComponent<Farm>().CropLevel < 3)
-              GridManager.GetComponent<GridmManager>().ShowFacilityNotify(TouchIndex);
+            if (TouchIndex == 888 && GetComponent<Farm>().CropIndex == 1)
+            {
+                exchangeValue(TouchIndex);
+                return;
+            }
+            if(TouchIndex != 888)
+               if (GetComponent<Farm>().CropIndex != 0 && GetComponent<Farm>().CropLevel < 3)
+                GridManager.GetComponent<GridmManager>().ShowFacilityNotify(TouchIndex);
         }
         
         Collider2D NearestTriggerGrid = GetNearestGrid();//獲取當前碰直撞距離最近的格子(物件)
@@ -224,7 +232,7 @@ public class Draggable : MonoBehaviour
 
             return; //如果是初始作物，直接換算錢錢
         }
-        else if (Crop.CropIndex != 0 && Crop.CropLevel==3  && facility != 4)
+        else if (Crop.CropIndex != 0 && Crop.CropLevel==3 && facility != 888 && facility != 999)
         {
             GridManager.GetComponent<GridmManager>().ChargeCropExp(facility,Crop.CropIndex, Crop.CropLevel);
 
@@ -233,7 +241,7 @@ public class Draggable : MonoBehaviour
             Destroy(gameObject); // 刪除作物
             return; //如果是初始作物，直接換算錢錢
         }
-        else if (Crop.CropIndex != 0 && facility == 4)
+        else if (Crop.CropIndex != 0 && facility == 999)
         {
             for (int i = 0; i < GridManager.GetComponent<GridmManager>().save.data.Lands; i++)
             {
@@ -252,6 +260,30 @@ public class Draggable : MonoBehaviour
                     GetComponent<Farm>().ChangeSprite();
                     GridManager.GetComponent<GridmManager>().save.UpdateCrop(i / 10 + i, 0, 0, 0);
                     break; 
+                }
+            }
+
+            return;
+        }
+        else if (Crop.CropIndex ==1 && facility == 888)
+        {
+            for (int i = 0; i < GridManager.GetComponent<GridmManager>().save.data.Lands; i++)
+            {
+                GridCell Script = GridManager.GetComponent<GridmManager>().GridPrefabs[i / 10, i % 10].GetComponent<GridCell>();
+                if (Script.Crop == null)
+                {
+                    GetComponentInChildren<SpriteRenderer>().color = new Color(1f, 1f, 1f, 1f);
+                    GridManager.GetComponent<GridmManager>().GridPrefabs[i / 10, i % 10].GetComponent<GridCell>().Crop = gameObject;
+                    GetComponent<Moving>().StartMoving(false, GridManager.GetComponent<GridmManager>().GridPrefabs[i / 10, i % 10].transform.position);
+                    GetComponent<Farm>().OnThisGrid = GridManager.GetComponent<GridmManager>().GridPrefabs[i / 10, i % 10];
+                    GetComponent<Farm>().OnThisGrid.GetComponent<GridCell>().status = 0;
+                    GetComponent<Farm>().OnThisGrid.GetComponent<GridCell>().level = 2;
+                    GetComponent<Farm>().CropIndex = 0;
+                    GetComponent<Farm>().CropLevel = 2;
+                    GetComponent<Farm>().HaveCoin = 0;
+                    GetComponent<Farm>().ChangeSprite();
+                    GridManager.GetComponent<GridmManager>().save.UpdateCrop(i / 10 + i, 0, 2, 0);
+                    break;
                 }
             }
 
@@ -347,9 +379,27 @@ public class Draggable : MonoBehaviour
         }
         if (other.CompareTag("guagua"))
         {
+            TouchIndex = 999;
+
+
+        }
+        if (other.CompareTag("rong"))
+        {
+            TouchIndex = 888;
+
+
+        }
+        if (other.CompareTag("ACow"))
+        {
             TouchIndex = 4;
-                
-           
+        }
+        if (other.CompareTag("WolfGang"))
+        {
+            TouchIndex = 5;
+        }
+        if (other.CompareTag("Kaede"))
+        {
+            TouchIndex = 6;
         }
         if (other.CompareTag("Grid"))
         {
@@ -389,6 +439,24 @@ public class Draggable : MonoBehaviour
         if (other.CompareTag("guagua"))
         {
             TouchIndex = -1;
+        }
+        if (other.CompareTag("ACow"))
+        {
+            TouchIndex = -1;
+        }
+        if (other.CompareTag("rong"))
+        {
+            TouchIndex = -1;
+
+
+        }
+        if (other.CompareTag("WolfGang"))
+        {
+            TouchIndex = -1;
+        }
+        if (other.CompareTag("Kaede"))
+        {
+            TouchIndex =-1;
         }
 
     }

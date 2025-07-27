@@ -25,6 +25,9 @@ public class Farm : MonoBehaviour
     public int CropValue = 1;//預設 1等 1塊錢
     public GridmManager GridsManager; // 這是用來顯示作物圖片的 UI 元件
     public GameObject OnThisGrid;
+    public GameObject sparkle;
+
+    public GameObject thisSparkle;
     private PolygonCollider2D col;
     void Start()
     {
@@ -43,12 +46,13 @@ public class Farm : MonoBehaviour
 
         if (CropLevel == 3 && CropIndex != 0 && HaveCoin > 0)
         {
-
+            thisSparkle = Instantiate(sparkle, transform.position, Quaternion.identity);
+            thisSparkle.transform.SetParent(transform);
             U_Sprite.color = new Color(1f, 0.9f, 0.5f, 1f);
         }
         if (CropLevel == 3 && CropIndex != 0 && HaveCoin == 0)
         {
-
+            Destroy(thisSparkle);
             U_Sprite.color = new Color(0.5f, 0.5f, 0.5f, 1f);
         }
     }

@@ -22,6 +22,7 @@ public class Storage : MonoBehaviour
 
     public ButtonOnClick ButtonOnClickScript;
 
+    public RongRong Rong;
     //任務相關
     public TextMeshProUGUI questDepiction;
     public TextMeshProUGUI questReward;
@@ -159,14 +160,14 @@ public class Storage : MonoBehaviour
     }
     public void AddExp(int facility ,int CropIndex, int CropExp)//CropExp是作物進化階段 //名字取的爛 這專for設施
     {
-
+        /*
         //計算經驗值
         if (data.cropLevel[CropIndex] == MaxLevel)
         {
             //Debug.Log($"已滿等！目前等級：{cropLevel[CropIndex]}");
-            return;
+            
         }
-        
+        */
         //GameObject clonedTextGO = Instantiate(TextPerfab.gameObject);
         //顯示文字活動
         int encreaseExp = 0;
@@ -273,6 +274,50 @@ public class Storage : MonoBehaviour
                 exhibit.showEventExhibit(description, cropNames[CropIndex, 3], encreaseExp, 0);
                 //clonedTextGO.GetComponent<TextMeshProUGUI>().text = $"{cropName[CropIndex]}去看了{bandname[UnityEngine.Random.Range(0, bandname.Length)]}的演唱會！(EXP+{encreaseExp})";
                 break;
+            case 4: // 阿牛
+                encreaseExp = facilityArray[4].expAmount;
+                AddExpCompute(CropIndex, encreaseExp); // 計算經驗值
+                if (CropIndex == 2)
+                {
+
+                    description = $"阿牛煮好了一鍋羊肉爐";
+                }
+                else
+                {
+
+                    description = $"{cropName[CropIndex]}吃了{UnityEngine.Random.Range(0, 10)}口\n美味的羊肉！";
+                }
+                           
+                exhibit.showEventExhibit(description, cropNames[CropIndex, 3], encreaseExp, 0);
+                //clonedTextGO.GetComponent<TextMeshProUGUI>().text = $"{cropName[CropIndex]}去看了{bandname[UnityEngine.Random.Range(0, bandname.Length)]}的演唱會！(EXP+{encreaseExp})";
+                break;
+            case 5: 
+                encreaseExp = facilityArray[5].expAmount;
+                AddExpCompute(CropIndex, encreaseExp); // 計算經驗值
+                if (CropIndex == 3 || CropIndex == 10 )
+                {
+
+                    description = $"{cropName[CropIndex]}加入了狼狼幫!";
+                }
+                else
+                {
+                    string[] wolfname = { "狼", "天狼座", "+0", "魚もち","レイレイ"};
+                    description = $"{cropName[CropIndex]}被{wolfname[UnityEngine.Random.Range(0, wolfname.Length)]}吃掉了！";
+                }
+                           
+                exhibit.showEventExhibit(description, cropNames[CropIndex, 3], encreaseExp, 0);
+                //clonedTextGO.GetComponent<TextMeshProUGUI>().text = $"{cropName[CropIndex]}去看了{bandname[UnityEngine.Random.Range(0, bandname.Length)]}的演唱會！(EXP+{encreaseExp})";
+                break;
+            case 6: 
+                encreaseExp = facilityArray[6].expAmount;
+                AddExpCompute(CropIndex, encreaseExp); // 計算經驗值
+                string[] pray = { "身體健康", "的CP成真","抽到演唱會門票", "交到女朋友", "中頭獎", "冷傲退姬佬" };
+                description = $"大狐神庇佑\n{cropName[CropIndex]}{pray[UnityEngine.Random.Range(0, pray.Length)]}！";
+                
+                           
+                exhibit.showEventExhibit(description, cropNames[CropIndex, 3], encreaseExp, 0);
+                //clonedTextGO.GetComponent<TextMeshProUGUI>().text = $"{cropName[CropIndex]}去看了{bandname[UnityEngine.Random.Range(0, bandname.Length)]}的演唱會！(EXP+{encreaseExp})";
+                break;
             default:
                 //Debug.LogWarning("未知的設施類型！");
                 return;
@@ -288,34 +333,91 @@ public class Storage : MonoBehaviour
 
     public void AddExpCompute(int CropIndex, int encreaseExp)
     {
-        data.cropExp[CropIndex] += encreaseExp;
-       //StartCoroutine(Database.ReadData(playerID.ToString()));
+        if (data.cropLevel[CropIndex] < MaxLevel)
+            data.cropExp[CropIndex] += encreaseExp;
+        if (data.cropLevel[CropIndex] == MaxLevel)
+        {
+            data.cropExp[CropIndex] = 0;
+            txt_level[CropIndex].GetComponentInChildren<Slider>().GetComponentInChildren<TextMeshProUGUI>().text = "MAX";
+            txt_level[CropIndex].text = MaxLevel.ToString();
+            txt_level[CropIndex].GetComponentInChildren<Slider>().value =1;
+        }
+            //StartCoroutine(Database.ReadData(playerID.ToString()));
     }
 
     // 判斷是否升級
     private void CheckLevelUp(int CropIndex)
     {
-        txt_level[CropIndex].text = data.cropLevel[CropIndex].ToString();
-        txt_level[CropIndex].GetComponentInChildren<Slider>().value = (float)data.cropExp[CropIndex] / (float)ExpToNextLevel(data.cropLevel[CropIndex]);
-     
-
-        txt_level[CropIndex].GetComponentInChildren<Slider>().GetComponentInChildren<TextMeshProUGUI>().text = $"{data.cropExp[CropIndex]}/{ExpToNextLevel(data.cropLevel[CropIndex])}";
-
-        while (data.cropExp[CropIndex] >= ExpToNextLevel(data.cropLevel[CropIndex]))
+        if (data.cropLevel[CropIndex] != MaxLevel)
         {
-           
-            data.cropExp[CropIndex] -= ExpToNextLevel(data.cropLevel[CropIndex]);
-            data.cropLevel[CropIndex]++;
-            
             txt_level[CropIndex].text = data.cropLevel[CropIndex].ToString();
-            txt_level[CropIndex].GetComponentInChildren<Slider>().value = (float)data.cropExp[CropIndex]/ (float)ExpToNextLevel(data.cropLevel[CropIndex]);
-            txt_level[CropIndex].GetComponentInChildren<Slider>().GetComponentInChildren<TextMeshProUGUI>().text =$"{data.cropExp[CropIndex]}/{ExpToNextLevel(data.cropLevel[CropIndex])}";
-            
-            //Debug.Log($"升級！目前等級：{cropLevel[CropIndex]}");
+            txt_level[CropIndex].GetComponentInChildren<Slider>().value = (float)data.cropExp[CropIndex] / (float)ExpToNextLevel(data.cropLevel[CropIndex]);
 
-            // TODO: 可加技能點數、獎勵、解鎖物品等
+
+            txt_level[CropIndex].GetComponentInChildren<Slider>().GetComponentInChildren<TextMeshProUGUI>().text = $"{data.cropExp[CropIndex]}/{ExpToNextLevel(data.cropLevel[CropIndex])}";
+
+            while (data.cropExp[CropIndex] >= ExpToNextLevel(data.cropLevel[CropIndex]))
+            {
+
+                data.cropExp[CropIndex] -= ExpToNextLevel(data.cropLevel[CropIndex]);
+                data.cropLevel[CropIndex]++;
+
+                txt_level[CropIndex].text = data.cropLevel[CropIndex].ToString();
+                txt_level[CropIndex].GetComponentInChildren<Slider>().value = (float)data.cropExp[CropIndex] / (float)ExpToNextLevel(data.cropLevel[CropIndex]);
+                txt_level[CropIndex].GetComponentInChildren<Slider>().GetComponentInChildren<TextMeshProUGUI>().text = $"{data.cropExp[CropIndex]}/{ExpToNextLevel(data.cropLevel[CropIndex])}";
+
+                //Debug.Log($"升級！目前等級：{cropLevel[CropIndex]}");
+
+                // TODO: 可加技能點數、獎勵、解鎖物品等
+            }
+        }
+        if (data.cropLevel[CropIndex] == MaxLevel)
+        {
+            txt_level[CropIndex].GetComponentInChildren<Slider>().GetComponentInChildren<TextMeshProUGUI>().text = "MAX";
+            txt_level[CropIndex].text = MaxLevel.ToString();
+            txt_level[CropIndex].GetComponentInChildren<Slider>().value = 1;
         }
         unlockCharacter();//查看前1角等級
+        if (data.cropLevel[7] >= 10)//riku10等時 顯示
+        {
+            facilityArray[4].gameObject.SetActive(true);
+            if (data.builds < 5 && facilityArray[4].isNotiOpen == false)
+            {
+                facilityArray[4].isNotiOpen = true;
+                showTextMessage("出現了新設施 - 阿牛的羊肉爐");
+            }
+
+            if ( data.cropLevel[3] >= 15)//+0 15等時 顯示
+            {
+
+                facilityArray[5].gameObject.SetActive(true);
+                if (data.builds < 6 && facilityArray[5].isNotiOpen == false)
+                {
+                    facilityArray[5].isNotiOpen = true;
+                    showTextMessage("出現了新設施 - 狼狼幫");
+                }
+
+                if ( data.cropLevel[10] >= 20)//狼20等時 顯示
+                {
+                    facilityArray[6].gameObject.SetActive(true);
+                    if (data.builds < 7 && facilityArray[6].isNotiOpen == false)
+                    {
+                        facilityArray[6].isNotiOpen = true;
+                        showTextMessage("出現了新設施 - 楓玉神社");
+                    }
+                    
+                }
+            }
+        }
+        if (CropIndex == 1 && data.cropLevel[1] >= 25)//
+                    {
+                        Rong.Open();
+                        if (data.cropLevel[1] == 25 && Rong.isNotiOpen == false)
+                        {
+                            Rong.isNotiOpen = true;
+                            showTextMessage("解鎖了容老大");
+                        }
+                    }
     }
     private int  ExpToNextLevel(int level)
     {
@@ -360,7 +462,8 @@ public class Storage : MonoBehaviour
             //txt_money.text = data.money.ToString();
             string message = $"獲得新土地(-{LandPrice} Coins)";
             showTextMessage(message);
-
+            if(data.Lands==GridManager.GetComponent<GridmManager>().width*GridManager.GetComponent<GridmManager>().height)
+                showTextMessage($"解鎖呱呱!");
             //showTextMessageMoney(LandPrice*-1);
             StartCoroutine(Database.UpdateData($"{playerID}/Lands", data.Lands.ToString()));
 
@@ -397,7 +500,7 @@ public class Storage : MonoBehaviour
             CharaterIndex[data.playerLevel -1].SetActive(true);
             if (data.playerLevel == cropName.Length - 1)
             {
-                CharaterIndex[data.playerLevel].SetActive(false);//都解玩完 隱藏解鎖按鈕
+                CharaterIndex[data.playerLevel].SetActive(false);
             }
             return true;
         }
@@ -421,7 +524,7 @@ public class Storage : MonoBehaviour
         for (int i = 0; i < data.builds; i++)
         {
            
-            if (facilityArray[i].isOpen == false)
+            if (facilityArray[i].isOpen == false )
             {
                 facilityArray[i].Open();
                 if (i+1 < facilityArray.Length)
@@ -429,6 +532,11 @@ public class Storage : MonoBehaviour
             }
             
         }
+        /*
+        if (data.cropLevel[7] == 10)//riku10等時 顯示
+        {
+            facilityArray[4].gameObject.SetActive(true); 
+        }*/
     }
 
     public void RandomQuest()
@@ -481,6 +589,24 @@ public class Storage : MonoBehaviour
                 questReward.text = $"EXP +{data.questExp}\nCoin +{data.questMoney}";
 
                 break;
+            case 4:
+                // 4級任務
+                questDepiction.text = $"讓{cropName[data.questCropIndex]}去找阿牛";
+                questReward.text = $"EXP +{data.questExp}\nCoin +{data.questMoney}";
+
+                break;
+            case 5:
+                // 4級任務
+                questDepiction.text = $"讓{cropName[data.questCropIndex]}去找狼狼幫";
+                questReward.text = $"EXP +{data.questExp}\nCoin +{data.questMoney}";
+
+                break;
+            case 6:
+                // 4級任務
+                questDepiction.text = $"讓{cropName[data.questCropIndex]}參拜楓玉神社";
+                questReward.text = $"EXP +{data.questExp}\nCoin +{data.questMoney}";
+
+                break;
 
         }
     }
@@ -512,6 +638,7 @@ public class Storage : MonoBehaviour
     }
     public void UpdateCrop(int Position, int Status,int Level,int coin)
     {
+        Debug.Log(Position);
         data.GridStatus[Position] = Status;
         data.GridLevel[Position] = Level; // 原本位置的等級
         StartCoroutine(Database.UpdateData($"{playerID}/GridStatus/{Position}", data.GridStatus[Position].ToString()));
@@ -536,8 +663,12 @@ public class Storage : MonoBehaviour
         txt_money.text = data.money.ToString();
         if(data.playerLevel< cropName.Length)
             UnlockCharacterHint.text = $"當{cropName[data.playerLevel]}達到等級5時解鎖新角色";
-        if(data.playerLevel+1 == cropName.Length)
+        if (data.playerLevel + 1 == cropName.Length)
+        {
             UnlockCharacterHint.text = $"Comming Soon ...";
+            CharaterIndex[data.playerLevel].SetActive(false);
+        
+        }
         for (int i = 0; i < data.cropExp.Length-2; i++)
         {
             CheckLevelUp(i+1);//更新等級 經驗值顯示                

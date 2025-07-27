@@ -32,7 +32,7 @@ public class CameraDrag : MonoBehaviour
     public bool DragCrop = false;
     public GameObject Crop;
     private float borderThickness = 50.0f;
-    private float scrollSpeed = 5f;
+    private float scrollSpeed = 10f;
     private int touchStatus = 0; // 0: 無觸控, 1: 單指觸控, 2: 雙指觸控
     
     bool mouseisdown = false;

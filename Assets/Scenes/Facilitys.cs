@@ -9,7 +9,7 @@ public class Facilitys : MonoBehaviour
     public int expAmount = 100;//該設施可獲得的經驗量
 
     public bool isOpen = false;
-
+    public bool isNotiOpen = false;
     public GameObject NotifyUI;
 
     public GameObject OpenButtom;

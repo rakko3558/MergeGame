@@ -39,7 +39,6 @@ public class FirebaseTest : MonoBehaviour
         UnityWebRequest request = UnityWebRequest.Get(url);
         yield return request.SendWebRequest();
 
-        Debug.Log(request.result);
         if (request.result == UnityWebRequest.Result.Success && request.downloadHandler.text!="null")
         {
             loginPage.GetComponent<login>().canvas.SetActive(false); // 隱藏登入介面return;
@@ -69,7 +68,6 @@ public class FirebaseTest : MonoBehaviour
             if (json == "null")
             {
                 createAccPage.GetComponent<CreatAccount>().randomID.text = random;
-                Debug.Log($"{random}");
             }
             else
             {
@@ -158,19 +156,16 @@ public class FirebaseTest : MonoBehaviour
     {
         string url = $"https://merge-3ac49-default-rtdb.firebaseio.com/{path}.json";
         string json = value; // 直接數字，不用引號
-        Debug.Log(url);
         UnityWebRequest request = UnityWebRequest.Put(url, json);
         request.SetRequestHeader("Content-Type", "application/json");
         yield return request.SendWebRequest();
 
         if (request.result == UnityWebRequest.Result.Success)
         {
-            Debug.Log("更新成功");
             onComplete?.Invoke(true);
         }
         else
         {
-            Debug.LogError($"更新失敗：{request.responseCode} {request.error}");
             onComplete?.Invoke(false);
         }
     }
